@@ -1,8 +1,8 @@
 from __future__ import annotations
 from abc import abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import List, Optional
 
-class Task():
+class BaseTask():
 
   name: str
   chat_name: str
@@ -12,23 +12,40 @@ class Task():
   outputs: List[str] = []
   output_type: bool = False
 
+  @property
+  def dependencies(self):
+    return self.dependencies
+
+  @property
+  def inputs(self):
+    return ", ".join([f"{str(i)}-{input}" for i, input in enumerate(self.inputs)])
 
   @abstractmethod
   def execute(
         self,
-        inputs: Optional[List[str]],
-
-      ):
+        input: str,
+      ) -> str:
     """
     """
 
-  def dict():
-    return 
+  def parse_input(
+        self,
+        input: str,
+      ) -> List[str]:
+    return input.split(",")
+
+  def dict(self):
+    prompt = f"{self.name}: {self.description}."
+    if len(self.inputs) > 0:
+      prompt += f"The input to this tool should be comma separated list of data representing: {self.inputs}"
+    if len(self.dependencies) > 0:
+      prompt += f"\nThis task is dependent on the following tasks. You need too call these tasks first: {str(self.dependencies)}"
+    prompt += "\n"
+    return prompt
 
   def explain(
         self,
-      ):
-    return 
-    """
+      ) -> str:
+    return """
       Sample Explanation
     """
