@@ -5,7 +5,7 @@ https://github.com/langchain-ai/langchain
 from tasks.task import BaseTask
 from typing import Any, Optional, List, Dict
 from utils import get_from_dict_or_env
-from pydantic import Field, root_validator
+from pydantic import Field, model_validator
 import aiohttp
 
 class SerpAPI(BaseTask):
@@ -34,7 +34,7 @@ class SerpAPI(BaseTask):
   serpapi_api_key: Optional[str] = None
   aiosession: Optional[aiohttp.ClientSession] = None
 
-  @root_validator()
+  @model_validator(mode='before')
   def validate_environment(cls, values: Dict) -> Dict:
     """Validate that api key and python package exists in environment."""
     serpapi_api_key = get_from_dict_or_env(

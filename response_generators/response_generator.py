@@ -1,7 +1,6 @@
 from __future__ import annotations
 from abc import abstractmethod
 from typing import Any, List
-from action import Action
 
 from llms.llm import BaseLLM
 
@@ -23,7 +22,7 @@ class BaseResponseGenerator():
         self,
         query: str,
         **kwargs: Any,
-      ) -> List[Action]:
+      ) -> List[str]:
     """
     
     """

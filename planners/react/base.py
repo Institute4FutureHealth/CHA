@@ -3,7 +3,7 @@ Heavily borrowed from langchain: https://github.com/langchain-ai/langchain/
 """
 from planners.planner import BasePlanner
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from action import Action, PlanFinish
+from planners.action import Action, PlanFinish
 import re
 
 class ReActPlanner(BasePlanner):
@@ -38,16 +38,17 @@ Begin!
 
 Question: {input}
 Thought:{agent_scratchpad}"""
-
-  def get_available_tasks(self) -> Optional[List[str]]:
-    return self.available_tools
   
   def plan(
         self,
         query: str,
         **kwargs: Any,
-      ) -> List[Action]:
-    response = self._planner_model.generate(query)
+      ) -> List[Union[Action, PlanFinish]]:
+
+    prompt = self._planner_prompt.replace("{input}", query)\
+                                    .replace("{agent_scratchpad}", "")\
+                                    .replace("{tool_names}", self.get_available_tasks())
+    response = self._planner_model.generate(query=prompt, kwargs=kwargs)
     index = min([response.rfind(text) for text in self._stop])
     response = response[:index]
     actions = self.parse(response)
@@ -58,7 +59,7 @@ Thought:{agent_scratchpad}"""
         self,
         query: str,
         **kwargs: Any,
-      ) -> List[Action]:
+      ) -> List[Union[Action, PlanFinish]]:
     FINAL_ANSWER_ACTION = "Final Answer:"
     includes_answer = FINAL_ANSWER_ACTION in query
     regex = (

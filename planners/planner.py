@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from action import Action
+from planners.action import Action
 from tasks.task import BaseTask
 from llms.llm import BaseLLM
 
@@ -9,6 +9,10 @@ class BasePlanner():
   """Base Planner class."""
   llm_model: BaseLLM = None
   available_tasks: Optional[List[BaseTask]] = []
+
+  def __init__(self, llm_model, available_tasks):
+    self.llm_model = llm_model
+    self.available_tasks = available_tasks
 
   @property
   def _planner_type(self):
@@ -28,8 +32,8 @@ class BasePlanner():
     Sample prompt
     """
 
-  def get_available_tasks(self) -> Optional[List[str]]:
-    return "\n".join([task.dict() for task in self.available_tools])
+  def get_available_tasks(self) -> str:
+    return "\n".join([f"[{task.dict()}]" for task in self.available_tasks])
 
   @abstractmethod
   def plan(

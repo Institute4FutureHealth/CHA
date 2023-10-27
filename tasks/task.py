@@ -13,12 +13,20 @@ class BaseTask():
   output_type: bool = False
 
   @property
+  def name(self):
+    return self.name
+
+  @property
   def dependencies(self):
     return self.dependencies
 
   @property
   def inputs(self):
     return ", ".join([f"{str(i)}-{input}" for i, input in enumerate(self.inputs)])
+
+  @property
+  def output_type(self):
+    return self.output_type
 
   @abstractmethod
   def execute(
