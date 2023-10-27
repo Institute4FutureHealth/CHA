@@ -42,15 +42,28 @@ Thought:{agent_scratchpad}"""
   def plan(
         self,
         query: str,
+        previous_actions: List[Action],
         **kwargs: Any,
       ) -> List[Union[Action, PlanFinish]]:
 
+    agent_scratchpad = ""
+    if len(previous_actions) > 0:
+      agent_scratchpad = "\n".join([
+        f"Action: {action.task}\nAction Inputs:{action.task_input}\nObservation: {action.task_response}"
+        for action in previous_actions
+      ])
     prompt = self._planner_prompt.replace("{input}", query)\
-                                    .replace("{agent_scratchpad}", "")\
+                                    .replace("{agent_scratchpad}", agent_scratchpad)\
                                     .replace("{tool_names}", self.get_available_tasks())
+    print("prompt ", prompt, "\n")
     response = self._planner_model.generate(query=prompt, kwargs=kwargs)
+    print("response ", response, "\n")
+
     index = min([response.rfind(text) for text in self._stop])
-    response = response[:index]
+    index1 = response.rfind("\nAction:")
+    if index1 == -1:
+       index1 = 0
+    response = response[index1:index]
     actions = self.parse(response)
     return actions    
 
@@ -63,7 +76,7 @@ Thought:{agent_scratchpad}"""
     FINAL_ANSWER_ACTION = "Final Answer:"
     includes_answer = FINAL_ANSWER_ACTION in query
     regex = (
-        r"Action\s*\d*\s*:[\s]*(.*?)[\s]*Action\s*\d*\s*Input\s*\d*\s*:[\s]*(.*)"
+        r"Action\s*\d*\s*:[\s]*(.*?)[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
     )
     action_match = re.search(regex, query, re.DOTALL)
     if action_match:
@@ -79,29 +92,27 @@ Thought:{agent_scratchpad}"""
         if tool_input.startswith("SELECT ") is False:
             tool_input = tool_input.strip('"')
 
-        return Action(action, tool_input, query)
+        return [Action(action, tool_input, "", query)]
 
     elif includes_answer:
-        return PlanFinish(
-            {"output": query.split(FINAL_ANSWER_ACTION)[-1].strip()}, query
-        )
+        return [PlanFinish(
+            query.split(FINAL_ANSWER_ACTION)[-1].strip(), query
+        )]
 
     if not re.search(r"Action\s*\d*\s*:[\s]*(.*?)", query, re.DOTALL):
         raise ValueError(
             f"Could not parse LLM output: `{query}`",
-            observation="Invalid Format: Missing 'Action:' after 'Thought:'",
-            llm_output=query,
-            send_to_llm=True,
+            "Invalid Format: Missing 'Action:' after 'Thought:'",
+            query,
         )
     elif not re.search(
-        r"[\s]*Action\s*\d*\s*Input\s*\d*\s*:[\s]*(.*)", query, re.DOTALL
+        r"[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)", query, re.DOTALL
     ):
         raise ValueError(
             f"Could not parse LLM output: `{query}`",
-            observation="Invalid Format:"
+            "Invalid Format:",
             " Missing 'Action Input:' after 'Action:'",
-            llm_output=query,
-            send_to_llm=True,
+            query
         )
     else:
         raise ValueError(f"Could not parse LLM output: `{query}`")

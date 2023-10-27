@@ -33,12 +33,13 @@ class BasePlanner():
     """
 
   def get_available_tasks(self) -> str:
-    return "\n".join([f"[{task.dict()}]" for task in self.available_tasks])
+    return "\n".join([f"[{task.get_dict()}]" for task in self.available_tasks])
 
   @abstractmethod
   def plan(
         self,
         query: str,
+        previous_actions: List[Action],
         **kwargs: Any,
       ) -> List[Action]:
       """

@@ -5,6 +5,7 @@ from planners.action import Action, PlanFinish
 from datapipes.datapipe import DataPipe
 from response_generators.response_generator import BaseResponseGenerator
 from tasks.initialize_task import initialize_task
+from tasks.task import BaseTask
 from planners.initialize_planner import initialize_planner
 from datapipes.initialize_datapipe import initialize_datapipe
 
@@ -14,7 +15,7 @@ class Orchestrator():
   datapipe: DataPipe = None
   promptist: Any = None 
   response_generator: BaseResponseGenerator = None
-  available_tasks: List[str]
+  available_tasks: List[Dict[str, BaseTask]]
 
   role: int = 0
 
@@ -37,18 +38,18 @@ class Orchestrator():
         available_tasks: List[str] = [],
         **kwargs
       ):
-    planner = initialize_planner(tasks=available_tasks, llm=planner_llm, planner=planner, kwargs=kwargs)
+    tasks = {}
+    for task in available_tasks:
+      tasks[task] = initialize_task(task=task)
+    planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, kwargs=kwargs)
     datapipe = initialize_datapipe(datapipe=datapipe)
-    available_tasks = available_tasks
-    return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=None, available_tasks=available_tasks)
-
-
+    return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=None, available_tasks=tasks)
 
   def process_meta(self):
     return False 
   
-  def execute_task(self, action):
-    task = initialize_task(task=action.task)
+  def execute_task(self, action):   
+    task = self.available_tasks[action.task] 
     result = task.execute(action.task_input)
     if task.output_type:
       key = self.datapipe.store(result)
@@ -56,13 +57,14 @@ class Orchestrator():
         f"The result of the task {task.name} is stored in the datapipe with key: {key}"
         "pass this key to other tasks to get access to the result."
       )
+    print("task result", result)
     return result
 
   def generate_prompt(self, query):
     return query 
 
-  def plan(self, query):    
-    return self.planner.plan(query)
+  def plan(self, query, previous_actions):    
+    return self.planner.plan(query, previous_actions)
 
   def generate_final_answer(self, query):
     return query
@@ -77,20 +79,20 @@ class Orchestrator():
         use_history: bool = False,
         **kwargs: Any
       ) -> str: 
+    previous_actions = []
     prompt = self.generate_prompt(query)
-    planner_intermediate_response = "\nObservation: "
     final_response = ""
     finished = False
     while True:
-      actions = self.plan(prompt + "\nThougth:")
+      actions = self.plan(query=prompt, previous_actions=previous_actions)
       for action in actions:
         if isinstance(action, PlanFinish):
           final_response = action.response
           finished = True
           break 
-        else:
-          planner_intermediate_response += self.execute_task(action)
-          query += planner_intermediate_response
+        else:          
+          action.task_response = self.execute_task(action)
+          previous_actions.append(action)
       if finished:
         break 
     final_response = self.generate_prompt(final_response)

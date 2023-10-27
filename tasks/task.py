@@ -1,8 +1,9 @@
 from __future__ import annotations
 from abc import abstractmethod
 from typing import List, Optional
+from pydantic import BaseModel
 
-class BaseTask():
+class BaseTask(BaseModel):
 
   name: str
   chat_name: str
@@ -42,7 +43,7 @@ class BaseTask():
       ) -> List[str]:
     return input.split(",")
 
-  def dict(self):
+  def get_dict(self) -> str:
     prompt = f"{self.name}: {self.description}."
     if len(self.inputs) > 0:
       prompt += f"The input to this tool should be comma separated list of data representing: {self.inputs}"

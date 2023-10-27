@@ -23,7 +23,7 @@ def initialize_planner(
       f"Got unknown llm type: {llm}. "
       f"Valid types are: {LLM_TO_CLASS.keys()}."
     )
-    
+  
   planner_cls = PLANNER_TO_CLASS[planner]
   llm_model = LLM_TO_CLASS[llm]()
   planner = planner_cls(llm_model=llm_model, available_tasks=tasks)

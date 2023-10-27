@@ -55,6 +55,12 @@ class OpenAILLM(BaseLLM):
     tokenized_text = enc.encode(query)
     return model_max_token < len(tokenized_text)
 
+  def convert_query(self, query):
+    return [{ "role": "user", "content": query }]
+  
+  def parse_response(self, response):
+    return response.choices[0].message.content
+
   def generate(
         self,
         query: str,
@@ -71,5 +77,5 @@ class OpenAILLM(BaseLLM):
       )
 
     openai.api_key = api_key
-    response = openai.ChatCompletion.create(model=model_name, messages=query)
-    return response
+    response = openai.ChatCompletion.create(model=model_name, messages=self.convert_query(query))
+    return self.parse_response(response)

@@ -13,6 +13,6 @@ def initialize_task(
       f"Valid types are: {TASK_TO_CLASS.keys()}."
     )
     
-  task_cls = TASK_TO_CLASS[task]
-  task = task_cls()
+  task_cls = TASK_TO_CLASS[task]  
+  task = task_cls()  
   return task
