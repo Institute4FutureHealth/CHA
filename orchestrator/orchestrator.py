@@ -63,19 +63,20 @@ class Orchestrator():
   def generate_prompt(self, query):
     return query 
 
-  def plan(self, query, previous_actions):    
-    return self.planner.plan(query, previous_actions)
+  def plan(self, query, history, previous_actions, use_history):    
+    return self.planner.plan(query, history, previous_actions, use_history)
 
   def generate_final_answer(self, query):
     return query
 
   def initialize_orchestrator(self):
     return self
-
+  
   def run(
         self,
         query: str = "",
         meta: Any = {},
+        history: str = "",
         use_history: bool = False,
         **kwargs: Any
       ) -> str: 
@@ -84,7 +85,7 @@ class Orchestrator():
     final_response = ""
     finished = False
     while True:
-      actions = self.plan(query=prompt, previous_actions=previous_actions)
+      actions = self.plan(query=prompt, history=history, previous_actions=previous_actions, use_history=use_history)
       for action in actions:
         if isinstance(action, PlanFinish):
           final_response = action.response

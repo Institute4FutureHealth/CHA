@@ -39,7 +39,9 @@ class BasePlanner():
   def plan(
         self,
         query: str,
+        history: str,
         previous_actions: List[Action],
+        use_history: bool = False,
         **kwargs: Any,
       ) -> List[Action]:
       """

@@ -26,35 +26,40 @@ class ReActPlanner(BasePlanner):
     return """Answer the following questions as best you can. You have access to the following tools:
 Use the following format:
 Question: the input question you must answer
+History: the history of previous chats happened. You should use them to answer user's current question.
 Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
+Action: the action to take, SHOULD be one of [{tool_names}] use the tool name
 Action Inputs: the comma seperated inputs to the action
 Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
+... (this Thought/Action/Action Inputs/Observation can repeat N times)
 Thought: I now know the final answer
 Final Answer: the final answer to the original input question
 
 Begin!
 
 Question: {input}
+History: {history}
 Thought:{agent_scratchpad}"""
   
   def plan(
         self,
         query: str,
+        history: str,
         previous_actions: List[Action],
+        use_history: bool = False,
         **kwargs: Any,
       ) -> List[Union[Action, PlanFinish]]:
 
     agent_scratchpad = ""
     if len(previous_actions) > 0:
       agent_scratchpad = "\n".join([
-        f"Action: {action.task}\nAction Inputs:{action.task_input}\nObservation: {action.task_response}"
+        f"Action: {action.task}\nAction Inputs: {action.task_input}\nObservation: {action.task_response}"
         for action in previous_actions
       ])
     prompt = self._planner_prompt.replace("{input}", query)\
-                                    .replace("{agent_scratchpad}", agent_scratchpad)\
-                                    .replace("{tool_names}", self.get_available_tasks())
+                                  .replace("{history}", history if use_history else "")\
+                                  .replace("{agent_scratchpad}", agent_scratchpad)\
+                                  .replace("{tool_names}", self.get_available_tasks())
     print("prompt ", prompt, "\n")
     response = self._planner_model.generate(query=prompt, kwargs=kwargs)
     print("response ", response, "\n")

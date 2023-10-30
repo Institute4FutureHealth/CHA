@@ -44,7 +44,7 @@ class BaseTask(BaseModel):
     return input.split(",")
 
   def get_dict(self) -> str:
-    prompt = f"{self.name}: {self.description}."
+    prompt = f"tool name:{self.name}, description: {self.description}."
     if len(self.inputs) > 0:
       prompt += f"The input to this tool should be comma separated list of data representing: {self.inputs}"
     if len(self.dependencies) > 0:
