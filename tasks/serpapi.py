@@ -18,8 +18,6 @@ class SerpAPI(BaseTask):
   dependencies: List[str] = []
   inputs: List[str] = ["It should be a search query."]
   outputs: List[str] = []
-  #False if the output should directly passed back to the planner.
-  #True if it should be stored in datapipe
   output_type: bool = False
 
   search_engine: Any = None  #: :meta private:
@@ -33,12 +31,6 @@ class SerpAPI(BaseTask):
   )
   serpapi_api_key: Optional[str] = None
   aiosession: Optional[aiohttp.ClientSession] = None
-
-  class Config:
-    """Configuration for this pydantic object."""
-
-    extra = Extra.forbid
-    arbitrary_types_allowed = True
 
   @model_validator(mode='before')
   def validate_environment(cls, values: Dict) -> Dict:

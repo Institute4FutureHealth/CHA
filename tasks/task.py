@@ -11,7 +11,13 @@ class BaseTask(BaseModel):
   dependencies: List[str] = []
   inputs: List[str] = []
   outputs: List[str] = []
+  #False if the output should directly passed back to the planner.
+  #True if it should be stored in datapipe
   output_type: bool = False
+
+  class Config:
+    """Configuration for this pydantic object."""
+    arbitrary_types_allowed = True
 
   @property
   def name(self):

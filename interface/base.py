@@ -24,7 +24,7 @@ class Interface(BaseModel):
     extra = Extra.forbid
     arbitrary_types_allowed = True
 
-  def prepare_interface(self, respond, available_tasks=[], share=False):
+  def prepare_interface(self, respond, reset, available_tasks=[], share=False):
     with self.gr.Blocks() as demo:
       chatbot = self.gr.Chatbot()
       with self.gr.Row():
@@ -37,6 +37,7 @@ class Interface(BaseModel):
           tasks = self.gr.Dropdown(value=available_tasks, choices=available_tasks, multiselect=True, label="Tasks List", info="The list of available tasks. Select the ones that you want to use.")
       clear = self.gr.ClearButton([msg, chatbot])
 
+      clear.click(reset)
       msg.submit(respond, [msg, chatbot, check_box, tasks], [msg, chatbot])
 
     demo.launch(share=share)
