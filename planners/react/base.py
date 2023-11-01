@@ -28,7 +28,7 @@ Use the following format:
 Question: the input question you must answer
 History: the history of previous chats happened. You should use them to answer user's current question.
 Thought: you should always think about what to do
-Action: the action to take, SHOULD be one of [{tool_names}] use the tool name
+Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
 Action Inputs: the comma seperated inputs to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
@@ -39,8 +39,8 @@ Begin!
 
 Question: {input}
 History: {history}
-Thought:{agent_scratchpad}"""
-  
+Thought: {agent_scratchpad}"""  
+
   def plan(
         self,
         query: str,
@@ -60,12 +60,15 @@ Thought:{agent_scratchpad}"""
                                   .replace("{history}", history if use_history else "")\
                                   .replace("{agent_scratchpad}", agent_scratchpad)\
                                   .replace("{tool_names}", self.get_available_tasks())
+    # if len(previous_actions) > 0:
+      # prompt += "\nThought:"
+
     print("prompt ", prompt, "\n")
-    response = self._planner_model.generate(query=prompt, kwargs=kwargs)
+    response = self._planner_model.generate(query=self.prepare_prompt(prompt), kwargs=kwargs)
     print("response ", response, "\n")
 
-    index = min([response.rfind(text) for text in self._stop])
-    index1 = response.rfind("\nAction:")
+    index = min([response.find(text) for text in self._stop])
+    index1 = response.find("\nAction:")
     if index1 == -1:
        index1 = 0
     response = response[index1:index]
@@ -80,8 +83,9 @@ Thought:{agent_scratchpad}"""
       ) -> List[Union[Action, PlanFinish]]:
     FINAL_ANSWER_ACTION = "Final Answer:"
     includes_answer = FINAL_ANSWER_ACTION in query
+    str_pattern = "(?:" + "|".join(self.get_available_tasks_list()) + ")(?=.*Action\s*\d*\s*Inputs)"    
     regex = (
-        r"Action\s*\d*\s*:[\s]*(.*?)[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
+         r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
     )
     action_match = re.search(regex, query, re.DOTALL)
     if action_match:
@@ -90,6 +94,7 @@ Thought:{agent_scratchpad}"""
                 "Parsing LLM output produced both a final answer "
                 f"and a parse-able action: {query}"
             )
+
         action = action_match.group(1).strip()
         action_input = action_match.group(2)
         tool_input = action_input.strip(" ")
@@ -104,7 +109,7 @@ Thought:{agent_scratchpad}"""
             query.split(FINAL_ANSWER_ACTION)[-1].strip(), query
         )]
 
-    if not re.search(r"Action\s*\d*\s*:[\s]*(.*?)", query, re.DOTALL):
+    if not re.search(r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?", query, re.DOTALL):
         raise ValueError(
             f"Could not parse LLM output: `{query}`",
             "Invalid Format: Missing 'Action:' after 'Thought:'",

@@ -8,6 +8,7 @@ from tasks.initialize_task import initialize_task
 from tasks.task import BaseTask
 from planners.initialize_planner import initialize_planner
 from datapipes.initialize_datapipe import initialize_datapipe
+from response_generators.initialize_response_generator import initialize_response_generator
 
 class Orchestrator():
   
@@ -33,8 +34,8 @@ class Orchestrator():
         planner: str = "zero-shot-react-planner", 
         datapipe: str = "memory",
         promptist: str = "",
-        response_generator: str = "",
-        generator_llm: str = "openai",
+        response_generator: str = "base-generator",
+        response_generator_llm: str = "openai",
         available_tasks: List[str] = [],
         **kwargs
       ):
@@ -42,8 +43,9 @@ class Orchestrator():
     for task in available_tasks:
       tasks[task] = initialize_task(task=task)
     planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, kwargs=kwargs)
+    response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm)
     datapipe = initialize_datapipe(datapipe=datapipe)
-    return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=None, available_tasks=tasks)
+    return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=response_generator, available_tasks=tasks)
 
   def process_meta(self):
     return False 
@@ -57,7 +59,6 @@ class Orchestrator():
         f"The result of the task {task.name} is stored in the datapipe with key: {key}"
         "pass this key to other tasks to get access to the result."
       )
-    print("task result", result)
     return result
 
   def generate_prompt(self, query):
@@ -66,8 +67,8 @@ class Orchestrator():
   def plan(self, query, history, previous_actions, use_history):    
     return self.planner.plan(query, history, previous_actions, use_history)
 
-  def generate_final_answer(self, query):
-    return query
+  def generate_final_answer(self, query, thinker):
+    return self.response_generator.generate(query=query, thinker=thinker)
 
   def initialize_orchestrator(self):
     return self
@@ -97,6 +98,6 @@ class Orchestrator():
       if finished:
         break 
     final_response = self.generate_prompt(final_response)
-    final_response = self.generate_final_answer(final_response)
-    return final_response
+    final_response = self.generate_final_answer(query=query, thinker=final_response)
+    return final_response, previous_actions
       

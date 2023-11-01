@@ -1,19 +1,25 @@
 from orchestrator.orchestrator import Orchestrator
 from interface.base import Interface
+from CHA import CHA
 
+cha = CHA()
+cha.run_interface()
   
+# interface = Interface()
+# available_tasks=["serpapi"]
 
-interface = Interface()
+# previous_actions = []
 
-orchestrator = Orchestrator.initialize(available_tasks=["serpapi"])
-# print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
+# def respond(message, chat_history, check_box, tasks_list):
+#   print("hereee", previous_actions)
+#   query = "".join([f"User: {chat[0]}\nCHA: {chat[1]}\n" for chat in chat_history])\
+#           + " Previous Actions: " + "\n\n".join([f"action: {action.task}\naction_response: {action.task_response}" for action in previous_actions])
+#   # query += f"User: {message}"
+#   orchestrator = Orchestrator.initialize(available_tasks=tasks_list)
+#   # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
+#   response, actions = orchestrator.run(query=message, history=query, use_history=check_box)
+#   previous_actions = actions
+#   chat_history.append((message, response))
+#   return "", chat_history
 
-def respond(message, chat_history):
-  query = "".join([f"User: {chat[0]}\nCHA: {chat[1]}\n" for chat in chat_history])
-  # query += f"User: {message}"
-
-  response = orchestrator.run(query=message, history=query, use_history=True)
-  chat_history.append((message, response))
-  return "", chat_history
-
-interface.prepare_interface(respond=respond)
+# interface.prepare_interface(respond=respond, available_tasks=available_tasks)

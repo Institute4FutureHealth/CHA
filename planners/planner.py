@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 from planners.action import Action
 from tasks.task import BaseTask
 from llms.llm import BaseLLM
+import re
 
 class BasePlanner():
   """Base Planner class."""
@@ -34,6 +35,12 @@ class BasePlanner():
 
   def get_available_tasks(self) -> str:
     return "\n".join([f"[{task.get_dict()}]" for task in self.available_tasks])
+
+  def get_available_tasks_list(self) -> List[str]:
+    return [task.name for task in self.available_tasks]
+
+  def prepare_prompt(self, prompt):    
+    return [{"role": "system", "content": prompt}]
 
   @abstractmethod
   def plan(
