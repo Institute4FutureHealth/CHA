@@ -6,7 +6,6 @@ def initialize_task(
   task: str = "serpapi",
   **kwargs: Any
 ) -> BaseTask:
-
   if task not in TASK_TO_CLASS:
     raise ValueError(
       f"Got unknown planner type: {task}. "
@@ -14,5 +13,5 @@ def initialize_task(
     )
     
   task_cls = TASK_TO_CLASS[task]  
-  task = task_cls()  
+  task = task_cls(**kwargs)  
   return task

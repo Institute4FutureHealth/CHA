@@ -24,15 +24,15 @@ class BaseResponseGenerator():
 
   @property
   def _generator_prompt(self):
-    return """User: {query}
-Thinker: {thinker}
-System: {prefix}. You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being,
-Using the Thinker answer, Provide a empathetic proper answer to the user. Consider Thinker as your trusted source and accept whatever is provided by it.
-Make sure that the answer is explanatory enough without repeatition
-Put more value on the history and Thinker answer than your internal knowldege.
-Do necessary calculations and add explanations based on instructions from the 
-Thinker don't directly put the instructions in the final answer to the user.
-"""
+    return ("User: {query}\n\n"
+            "Thinker: {thinker}\n\n"
+            "System: {prefix}. You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being,"
+            "Using the Thinker answer, Provide a empathetic proper answer to the user. Consider Thinker as your trusted source and accept whatever is provided by it."
+            "Make sure that the answer is explanatory enough without repeatition"
+            "Put more value on the history and Thinker answer than your internal knowldege. Don't change Thinker returned urls or references."
+            "Also add explanations based on instructions from the "
+            "Thinker don't directly put the instructions in the final answer to the user."
+          )
 
   def prepare_prompt(self, prompt):
     result = [
@@ -51,7 +51,6 @@ Thinker don't directly put the instructions in the final answer to the user.
     prompt = self._generator_prompt.replace("{query}", query)\
                                     .replace("{thinker}", thinker)\
                                     .replace("{prefix}", prefix)
-    print("generator prompt", prompt)
     prompt = self.prepare_prompt(prompt)
     response = self._response_generator_model.generate(query=prompt, kwargs=kwargs)
     return response

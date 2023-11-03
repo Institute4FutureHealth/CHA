@@ -5,7 +5,7 @@ from tasks.playwright.utils import (
 )
 
 class CurrentWebPage(BaseBrowser):
-  name: str = "current_webpage"
+  name: str = "current_page"
   chat_name: str = "CurrentPage"
   description: str = (
     "Returns the URL of the current page"     

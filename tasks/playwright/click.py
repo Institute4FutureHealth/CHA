@@ -7,7 +7,7 @@ from tasks.playwright.utils import (
 )
 
 class Click(BaseBrowser):
-  name: str = "click_element"
+  name: str = "click"
   chat_name: str = "Clicker"
   description: str = (
     "Click on an element with the given CSS selector"     

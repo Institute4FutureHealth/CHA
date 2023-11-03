@@ -1,5 +1,5 @@
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from abc import abstractmethod
+import traceback 
 from planners.planner import BasePlanner
 from planners.action import Action, PlanFinish
 from datapipes.datapipe import DataPipe
@@ -17,6 +17,7 @@ class Orchestrator():
   promptist: Any = None 
   response_generator: BaseResponseGenerator = None
   available_tasks: List[Dict[str, BaseTask]]
+  max_retries: int = 16
 
   role: int = 0
 
@@ -39,10 +40,13 @@ class Orchestrator():
         available_tasks: List[str] = [],
         **kwargs
       ):
-    tasks = {}
+    tasks = {}      
     for task in available_tasks:
-      tasks[task] = initialize_task(task=task)
-    planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, kwargs=kwargs)
+      if task in ["click", "current_page", "extract_hyperlinks", "extract_text", "get_elements", "navigate_back", "navigate"]:
+        tasks[task] = initialize_task(task=task, **kwargs)
+      else:
+        tasks[task] = initialize_task(task=task)
+    planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, **kwargs)
     response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm)
     datapipe = initialize_datapipe(datapipe=datapipe)
     return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=response_generator, available_tasks=tasks)
@@ -51,6 +55,7 @@ class Orchestrator():
     return False 
   
   def execute_task(self, action):   
+    print("selected task", action)
     task = self.available_tasks[action.task] 
     result = task.execute(action.task_input)
     if task.output_type:
@@ -81,23 +86,36 @@ class Orchestrator():
         use_history: bool = False,
         **kwargs: Any
       ) -> str: 
+    i = 0    
     previous_actions = []
     prompt = self.generate_prompt(query)
     final_response = ""
     finished = False
-    while True:
-      actions = self.plan(query=prompt, history=history, previous_actions=previous_actions, use_history=use_history)
-      for action in actions:
-        if isinstance(action, PlanFinish):
-          final_response = action.response
-          finished = True
+    
+    while True:  
+      try:    
+        print(f"try {i}")
+        actions = self.plan(query=prompt, history=history, previous_actions=previous_actions, use_history=use_history)
+        for action in actions:
+          if isinstance(action, PlanFinish):
+            final_response = action.response
+            finished = True
+            break 
+          else:          
+            action.task_response = self.execute_task(action)
+            print("task response", action.task_response)
+            previous_actions.append(action)
+            i = 0
+        if finished:
           break 
-        else:          
-          action.task_response = self.execute_task(action)
-          previous_actions.append(action)
-      if finished:
-        break 
+      except ValueError as error:
+        i += 1
+        if i > self.max_retries:
+          final_response = "Problem preparing the answer. Please try again."
+          break
+        previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
+
     final_response = self.generate_prompt(final_response)
-    final_response = self.generate_final_answer(query=query, thinker=final_response)
+    final_response = self.generate_final_answer(query=query, thinker=final_response)     
     return final_response, previous_actions
       

@@ -68,7 +68,7 @@ class OpenAILLM(BaseLLM):
       ) -> str: 
     
     api_key = get_from_dict_or_env(kwargs, "openai_api_key", "OPENAI_API_KEY")
-    model_name = "gpt-3.5-turbo"
+    model_name = "gpt-3.5-turbo-0301"
     if "model_name" in kwargs:
       model_name = kwargs["model_name"]
     if model_name not in self.get_model_names():

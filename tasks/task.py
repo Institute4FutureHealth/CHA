@@ -19,6 +19,9 @@ class BaseTask(BaseModel):
     """Configuration for this pydantic object."""
     arbitrary_types_allowed = True
 
+  def __init__(self, **kwargs):
+    super().__init__()
+
   @property
   def name(self):
     return self.name
@@ -50,12 +53,14 @@ class BaseTask(BaseModel):
     return input.split(",")
 
   def get_dict(self) -> str:
+    inputs = ",".join(self.inputs)
+    dependencies = ",".join(self.dependencies)
     prompt = f"tool name:{self.name}, description: {self.description}."
     if len(self.inputs) > 0:
-      prompt += f"The input to this tool should be comma separated list of data representing: {self.inputs}"
+      prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"
     if len(self.dependencies) > 0:
-      prompt += f"\nThis task is dependent on the following tasks. You need too call these tasks first: {str(self.dependencies)}"
-    prompt += "\n"
+      prompt += f"\nThis task is dependent on the following tasks. make sure these tasks are called first: '{dependencies}'"
+    # prompt += "\n"
     return prompt
 
   def explain(

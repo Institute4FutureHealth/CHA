@@ -24,15 +24,15 @@ class ReActPlanner(BasePlanner):
   @property
   def _planner_prompt(self):
     return """Answer the following questions as best you can. You have access to the following tools:
-Use the following format:
+Use the following format. You should stick to the following format:
 Question: the input question you must answer
-History: the history of previous chats happened. You should use them to answer user's current question.
+History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
 Thought: you should always think about what to do
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
-Action Inputs: the comma seperated inputs to the action
+Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
-Thought: I now know the final answer
+Thought: Your final reasoning or 'I now know the final answer'. when you think you are done provide the 'Final Answer'. You can use the final thoughts directly in the final answer.
 Final Answer: the final answer to the original input question
 
 Begin!
@@ -53,7 +53,7 @@ Thought: {agent_scratchpad}"""
     agent_scratchpad = ""
     if len(previous_actions) > 0:
       agent_scratchpad = "\n".join([
-        f"Action: {action.task}\nAction Inputs: {action.task_input}\nObservation: {action.task_response}"
+        f"Action: {action.task}\nAction Inputs: {action.task_input}\nObservation: {action.task_response}\nThought:"
         for action in previous_actions
       ])
     prompt = self._planner_prompt.replace("{input}", query)\
@@ -63,9 +63,9 @@ Thought: {agent_scratchpad}"""
     # if len(previous_actions) > 0:
       # prompt += "\nThought:"
 
-    print("prompt ", prompt, "\n")
+    # print("prompt ///////", prompt)
     response = self._planner_model.generate(query=self.prepare_prompt(prompt), kwargs=kwargs)
-    print("response ", response, "\n")
+    print("response ///////", response, "\n")
 
     index = min([response.find(text) for text in self._stop])
     index1 = response.find("\nAction:")
@@ -85,24 +85,33 @@ Thought: {agent_scratchpad}"""
     includes_answer = FINAL_ANSWER_ACTION in query
     str_pattern = "(?:" + "|".join(self.get_available_tasks_list()) + ")(?=.*Action\s*\d*\s*Inputs)"    
     regex = (
-         r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
+         r"\s*Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
     )
+
     action_match = re.search(regex, query, re.DOTALL)
+    print("action match", action_match)
+    if action_match and includes_answer:
+      if query.find(FINAL_ANSWER_ACTION) < query.find(action_match.group(0)):
+        # if final answer is before the hallucination, return final answer
+        start_index = query.find(FINAL_ANSWER_ACTION) + len(FINAL_ANSWER_ACTION)
+        end_index = query.find("\n\n", start_index)
+        return PlanFinish(
+            query[start_index:end_index].strip()
+        )
+      else:
+        raise ValueError(
+          f"Parsing the output produced both a final answer and a parse-able action."
+        )
+    
     if action_match:
-        if includes_answer:
-            raise ValueError(
-                "Parsing LLM output produced both a final answer "
-                f"and a parse-able action: {query}"
-            )
+      action = action_match.group(1).strip()
+      action_input = action_match.group(2)
+      tool_input = action_input.strip(" ")
+      # ensure if its a well formed SQL query we don't remove any trailing " chars
+      if tool_input.startswith("SELECT ") is False:
+          tool_input = tool_input.strip('"')
 
-        action = action_match.group(1).strip()
-        action_input = action_match.group(2)
-        tool_input = action_input.strip(" ")
-        # ensure if its a well formed SQL query we don't remove any trailing " chars
-        if tool_input.startswith("SELECT ") is False:
-            tool_input = tool_input.strip('"')
-
-        return [Action(action, tool_input, "", query)]
+      return [Action(action, tool_input, "", query)]
 
     elif includes_answer:
         return [PlanFinish(
@@ -111,18 +120,14 @@ Thought: {agent_scratchpad}"""
 
     if not re.search(r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?", query, re.DOTALL):
         raise ValueError(
-            f"Could not parse LLM output: `{query}`",
-            "Invalid Format: Missing 'Action:' after 'Thought:'",
-            query,
+            "Invalid Format: Missing 'Action:' after 'Thought:' or Missing 'Final Answer' after 'Thought'\n"
+            # f"Or The tool name is wrong. The tool name should be one of: `{self.get_available_tasks_list()}`"
         )
     elif not re.search(
         r"[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)", query, re.DOTALL
     ):
         raise ValueError(
-            f"Could not parse LLM output: `{query}`",
-            "Invalid Format:",
-            " Missing 'Action Input:' after 'Action:'",
-            query
+            "Invalid Format: Missing 'Action Input:' after 'Action:'"            
         )
     else:
-        raise ValueError(f"Could not parse LLM output: `{query}`")
+        raise ValueError(f"Wrong format.")

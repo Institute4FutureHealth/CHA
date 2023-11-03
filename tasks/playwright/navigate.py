@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 
 class Navigate(BaseBrowser):
-  name: str = "navigate_browser"
+  name: str = "navigate"
   chat_name: str = "Navigate"
   description: str = (
     "Navigate a browser to the specified URL"     

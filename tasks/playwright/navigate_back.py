@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 
 class NavigateBack(BaseBrowser):
-  name: str = "previous_webpage"
+  name: str = "navigate_back"
   chat_name: str = "NavigateBack"
   description: str = (
     "Navigate back to the previous page in the browser history"     

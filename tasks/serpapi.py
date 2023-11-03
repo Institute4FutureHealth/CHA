@@ -70,10 +70,10 @@ class SerpAPI(BaseTask):
   def _process_response(res: Dict) -> str:
     """Process response from SerpAPI."""
     try:
-      toret = "link: " + res["organic_results"][0]["link"] + " metadata: " + res["organic_results"][0]["snippet"]
+      toret = "url: " + res["organic_results"][0]["link"] + "\nmetadata: " + res["organic_results"][0]["snippet"]
     except KeyError:
       return (
-        "Coul not get the proper response from the search. Try another search query."
+        "Could not get the proper response from the search. Try another search query."
       )
     return toret
 
