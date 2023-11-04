@@ -34,13 +34,6 @@ class BaseResponseGenerator():
             "Thinker don't directly put the instructions in the final answer to the user."
           )
 
-  def prepare_prompt(self, prompt):
-    result = [
-        {"role": "system", "content": prompt},
-    ]
-    
-    return result
-
   def generate(
         self,
         prefix: str = "",
@@ -51,6 +44,5 @@ class BaseResponseGenerator():
     prompt = self._generator_prompt.replace("{query}", query)\
                                     .replace("{thinker}", thinker)\
                                     .replace("{prefix}", prefix)
-    prompt = self.prepare_prompt(prompt)
     response = self._response_generator_model.generate(query=prompt, kwargs=kwargs)
     return response

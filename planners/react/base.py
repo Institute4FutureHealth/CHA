@@ -8,7 +8,10 @@ import re
 
 class ReActPlanner(BasePlanner):
   """ReActPlanner"""
-
+  class Config:
+    """Configuration for this pydantic object."""
+    arbitrary_types_allowed = True
+    
   @property
   def _planner_type(self):
     raise "zero-shot-react-planner"
@@ -64,7 +67,7 @@ Thought: {agent_scratchpad}"""
       # prompt += "\nThought:"
 
     # print("prompt ///////", prompt)
-    response = self._planner_model.generate(query=self.prepare_prompt(prompt), kwargs=kwargs)
+    response = self._planner_model.generate(query=prompt, kwargs=kwargs)
     print("response ///////", response, "\n")
 
     index = min([response.find(text) for text in self._stop])
