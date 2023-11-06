@@ -59,7 +59,7 @@ class BaseTask(BaseModel):
     if len(self.inputs) > 0:
       prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"
     if len(self.dependencies) > 0:
-      prompt += f"\nThis task is dependent on the following tasks. make sure these tasks are called first: '{dependencies}'"
+      prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
     # prompt += "\n"
     return prompt
 

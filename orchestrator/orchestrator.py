@@ -97,6 +97,7 @@ class Orchestrator(BaseModel):
         if finished:
           break 
       except ValueError as error:
+        print("errrorr ", error)
         i += 1
         if i > self.max_retries:
           final_response = "Problem preparing the answer. Please try again."

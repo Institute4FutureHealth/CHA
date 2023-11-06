@@ -12,7 +12,7 @@ class ExtractText(BaseBrowser):
     "Extract all the text on the current webpage"     
   )
   dependencies: List[str] = ["navigate"]
-  inputs: List[str] = []
+  inputs: List[str] = ["no input"]
   outputs: List[str] = []
   output_type: bool = False
 
@@ -20,11 +20,19 @@ class ExtractText(BaseBrowser):
   def check_acheck_bs_importrgs(cls, values: dict) -> dict:
     """Check that the arguments are valid."""
     try:
-      from bs4 import BeautifulSoup  # noqa: F401
+      from bs4 import BeautifulSoup  # noqa: F401    
     except ImportError:
       raise ImportError(
         "The 'beautifulsoup4' package is required to use this tool."
         " Please install it with 'pip install beautifulsoup4'."
+      )
+    
+    try:
+      import lxml  # noqa: F401    
+    except ImportError:
+      raise ImportError(
+        "The 'lxml' package is required to use this tool."
+        " Please install it with 'pip install lxml'."
       )
     return values
 
@@ -33,13 +41,13 @@ class ExtractText(BaseBrowser):
     input: str,
   ) -> str:    
     from bs4 import BeautifulSoup
-
+  
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")
     print("sync browser", self.sync_browser)
     page = get_current_page(self.sync_browser)
     if page.url == "about:blank":
-      return "you should first navigate to the url then call this task."
+      return f"call {self.dependencies} first."
     html_content = page.content()
 
     # Parse the HTML content with BeautifulSoup

@@ -26,7 +26,8 @@ class ReActPlanner(BasePlanner):
 
   @property
   def _planner_prompt(self):
-    return """Answer the following questions as best you can. You have access to the following tools:
+    return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being. 
+Answer the following questions as best you can. You have access to the following tools:
 Use the following format. You should stick to the following format:
 Question: the input question you must answer
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
