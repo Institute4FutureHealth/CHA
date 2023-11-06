@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
-from typing import Any, List, Optional
-from planners.action import Action
+from typing import Any, List, Optional, Union
+from planners.action import Action, PlanFinish
 from tasks.task import BaseTask
 from llms.llm import BaseLLM
 from pydantic import BaseModel
@@ -43,7 +43,7 @@ class BasePlanner(BaseModel):
         previous_actions: List[Action],
         use_history: bool = False,
         **kwargs: Any,
-      ) -> List[Action]:
+      ) -> List[Union[Action, PlanFinish]]:
       """
       
       """

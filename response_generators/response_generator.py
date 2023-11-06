@@ -1,18 +1,16 @@
 from __future__ import annotations
-from abc import abstractmethod
-from typing import Any, List
-import re
+from typing import Any
+from pydantic import BaseModel
 from llms.llm import BaseLLM
 
-class BaseResponseGenerator():
+class BaseResponseGenerator(BaseModel):
   """Base Response Generator class."""
   llm_model: BaseLLM = None
   prefix: str = ""
 
-  def __init__(self, llm_model, prefix):
-    self.llm_model=llm_model
-    self.prefix = prefix
-
+  class Config:
+    """Configuration for this pydantic object."""
+    arbitrary_types_allowed = True
 
   @property
   def _response_generator_type(self):
@@ -40,7 +38,7 @@ class BaseResponseGenerator():
         query: str = "",
         thinker: str = "",
         **kwargs: Any,
-      ) -> List[str]:
+      ) -> str:
     prompt = self._generator_prompt.replace("{query}", query)\
                                     .replace("{thinker}", thinker)\
                                     .replace("{prefix}", prefix)

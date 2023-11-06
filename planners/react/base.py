@@ -30,7 +30,7 @@ class ReActPlanner(BasePlanner):
 Use the following format. You should stick to the following format:
 Question: the input question you must answer
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
-Thought: you should always think about what to do
+Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
 Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task
 Observation: the result of the action
@@ -125,7 +125,7 @@ Thought: {agent_scratchpad}"""
 
     if not re.search(r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?", query, re.DOTALL):
         raise ValueError(
-            "Invalid Format: Missing 'Action:' after 'Thought:' or Missing 'Final Answer' after 'Thought'\n"
+            "Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'\n"
             # f"Or The tool name is wrong. The tool name should be one of: `{self.get_available_tasks_list()}`"
         )
     elif not re.search(

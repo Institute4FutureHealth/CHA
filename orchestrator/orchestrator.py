@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 import traceback 
 from planners.planner import BasePlanner
@@ -9,24 +10,17 @@ from tasks.task import BaseTask
 from planners.initialize_planner import initialize_planner
 from datapipes.initialize_datapipe import initialize_datapipe
 from response_generators.initialize_response_generator import initialize_response_generator
+from pydantic import BaseModel
 
-class Orchestrator():
-  
+class Orchestrator(BaseModel):
   planner: BasePlanner = None
   datapipe: DataPipe = None
   promptist: Any = None 
   response_generator: BaseResponseGenerator = None
-  available_tasks: List[Dict[str, BaseTask]]
+  available_tasks: Dict[str, BaseTask] = {}
   max_retries: int = 16
 
   role: int = 0
-
-  def __init__(self, planner, datapipe, promptist, response_generator, available_tasks):
-    self.planner = planner
-    self.datapipe = datapipe
-    self.promptist = promptist
-    self.response_generator = response_generator
-    self.available_tasks = available_tasks
 
   @classmethod
   def initialize(
@@ -39,22 +33,19 @@ class Orchestrator():
         response_generator_llm: str = "openai",
         available_tasks: List[str] = [],
         **kwargs
-      ):
+      ) -> Orchestrator:
     tasks = {}      
     for task in available_tasks:
-      if task in ["click", "current_page", "extract_hyperlinks", "extract_text", "get_elements", "navigate_back", "navigate"]:
-        tasks[task] = initialize_task(task=task, **kwargs)
-      else:
-        tasks[task] = initialize_task(task=task)
+      tasks[task] = initialize_task(task=task, **kwargs)
     planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, **kwargs)
     response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm)
     datapipe = initialize_datapipe(datapipe=datapipe)
     return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=response_generator, available_tasks=tasks)
 
-  def process_meta(self):
+  def process_meta(self) -> bool:
     return False 
   
-  def execute_task(self, action):   
+  def execute_task(self, action) -> str:   
     print("selected task", action)
     task = self.available_tasks[action.task] 
     result = task.execute(action.task_input)
@@ -66,17 +57,14 @@ class Orchestrator():
       )
     return result
 
-  def generate_prompt(self, query):
+  def generate_prompt(self, query) -> str:
     return query 
 
-  def plan(self, query, history, previous_actions, use_history):    
+  def plan(self, query, history, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
     return self.planner.plan(query, history, previous_actions, use_history)
 
-  def generate_final_answer(self, query, thinker):
+  def generate_final_answer(self, query, thinker) -> str:
     return self.response_generator.generate(query=query, thinker=thinker)
-
-  def initialize_orchestrator(self):
-    return self
   
   def run(
         self,
