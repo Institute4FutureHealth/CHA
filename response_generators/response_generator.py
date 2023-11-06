@@ -44,5 +44,6 @@ class BaseResponseGenerator():
     prompt = self._generator_prompt.replace("{query}", query)\
                                     .replace("{thinker}", thinker)\
                                     .replace("{prefix}", prefix)
-    response = self._response_generator_model.generate(query=prompt, kwargs=kwargs)
+    kwargs["max_tokens"] = 500                                      
+    response = self._response_generator_model.generate(query=prompt, **kwargs)
     return response

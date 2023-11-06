@@ -67,7 +67,9 @@ Thought: {agent_scratchpad}"""
       # prompt += "\nThought:"
 
     # print("prompt ///////", prompt)
-    response = self._planner_model.generate(query=prompt, kwargs=kwargs)
+    kwargs["max_tokens"] = 150
+    kwargs["stop"] = self._stop
+    response = self._planner_model.generate(query=prompt, **kwargs)
     print("response ///////", response, "\n")
 
     index = min([response.find(text) for text in self._stop])
