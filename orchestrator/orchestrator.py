@@ -77,9 +77,14 @@ class Orchestrator(BaseModel):
     i = 0    
     previous_actions = []
     prompt = self.generate_prompt(query)
+    if "google_translate" in self.available_tasks:
+      prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
+    source_language = prompt[1]
+    prompt = prompt[1]
+    # history = self.available_tasks["google_translate"].execute(history+"$#en").text
     final_response = ""
     finished = False
-    
+    print("translated before plan", prompt, history)
     while True:  
       try:    
         print(f"try {i}")
@@ -105,6 +110,9 @@ class Orchestrator(BaseModel):
         previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
 
     final_response = self.generate_prompt(final_response)
-    final_response = self.generate_final_answer(query=query, thinker=final_response)     
+    final_response = self.generate_final_answer(query=query, thinker=final_response)
+    if "google_translate" in self.available_tasks:
+      final_response =  self.available_tasks["google_translate"].execute(f"{final_response}$#{source_language}")[0]     
+    print("translated back", final_response)
     return final_response, previous_actions
       
