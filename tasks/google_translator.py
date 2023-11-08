@@ -24,13 +24,13 @@ class GoogleTranslate(BaseTask):
   def validate_environment(cls, values: Dict) -> Dict:
     """Validate that api key and python package exists in environment."""    
     try:
-      from vtrans import Translator
+      from googletrans import Translator
 
       values["translator"] = Translator()
     except ImportError:
       raise ValueError(
         "Could not import googletrans python package. "
-        "Please install it with `pip install googletrans==4.0.0-rc1`."
+        "Please install it with `pip install googletrans-py`."
       )
     return values
 
