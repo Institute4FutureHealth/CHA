@@ -19,7 +19,9 @@ class Orchestrator(BaseModel):
   response_generator: BaseResponseGenerator = None
   available_tasks: Dict[str, BaseTask] = {}
   max_retries: int = 16
-
+  max_task_execute_retries: int = 3
+  max_planner_execute_retries: int = 3
+  max_final_answer_execute_retries: int = 3
   role: int = 0
 
   @classmethod
@@ -46,25 +48,46 @@ class Orchestrator(BaseModel):
     return False 
   
   def execute_task(self, action) -> str:   
+    retries = 0
     print("selected task", action)
-    task = self.available_tasks[action.task] 
-    result = task.execute(action.task_input)
-    if task.output_type:
-      key = self.datapipe.store(result)
-      return (
-        f"The result of the task {task.name} is stored in the datapipe with key: {key}"
-        "pass this key to other tasks to get access to the result."
-      )
-    return result, task.return_direct
+    while retries < self.max_task_execute_retries:
+      try:
+        task = self.available_tasks[action.task] 
+        result = task.execute(action.task_input)
+        if task.output_type:
+          key = self.datapipe.store(result)
+          return (
+            f"The result of the task {task.name} is stored in the datapipe with key: {key}"
+            "pass this key to other tasks to get access to the result."
+          )
+        return result, task.return_direct
+      except Exception as e:
+        print(e)
+        retries += 1
+    return f"Error executing task {action.task}", False
 
   def generate_prompt(self, query) -> str:
     return query 
 
   def plan(self, query, history, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
-    return self.planner.plan(query, history, previous_actions, use_history)
+    retries = 0
+    while retries < self.max_planner_execute_retries:
+      try:
+        return self.planner.plan(query, history, previous_actions, use_history)
+      except Exception as e:
+        print(e)
+        retries += 1
+    return [PlanFinish("Error planning, please try to ask your question again", "")]
 
   def generate_final_answer(self, query, thinker) -> str:
-    return self.response_generator.generate(query=query, thinker=thinker)
+    retries = 0
+    while retries < self.max_final_answer_execute_retries:
+      try:
+        return self.response_generator.generate(query=query, thinker=thinker)
+      except Exception as e:
+        print(e)
+        retries += 1
+    return "We currently have problem processing your question. Please try again after a while."
   
   def run(
         self,
