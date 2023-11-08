@@ -10,3 +10,4 @@ class TaskType(str, Enum):
   NAVIGATE_BACK = "navigate_back"
   NAVIGATE = "navigate"
   GOOGLE_TRANSLATE = "google_translate"
+  ASK_USER = "ask_user"

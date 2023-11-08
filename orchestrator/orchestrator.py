@@ -55,7 +55,7 @@ class Orchestrator(BaseModel):
         f"The result of the task {task.name} is stored in the datapipe with key: {key}"
         "pass this key to other tasks to get access to the result."
       )
-    return result
+    return result, task.return_direct
 
   def generate_prompt(self, query) -> str:
     return query 
@@ -79,12 +79,11 @@ class Orchestrator(BaseModel):
     prompt = self.generate_prompt(query)
     if "google_translate" in self.available_tasks:
       prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
-    source_language = prompt[1]
-    prompt = prompt[1]
+      source_language = prompt[1]
+      prompt = prompt[0]
     # history = self.available_tasks["google_translate"].execute(history+"$#en").text
     final_response = ""
     finished = False
-    print("translated before plan", prompt, history)
     while True:  
       try:    
         print(f"try {i}")
@@ -95,9 +94,12 @@ class Orchestrator(BaseModel):
             finished = True
             break 
           else:          
-            action.task_response = self.execute_task(action)
+            action.task_response, return_direct = self.execute_task(action)
             print("task response", action.task_response)
             previous_actions.append(action)
+            if return_direct:
+              final_response = action.task_response
+              finished = True
             i = 0
         if finished:
           break 
@@ -113,6 +115,5 @@ class Orchestrator(BaseModel):
     final_response = self.generate_final_answer(query=query, thinker=final_response)
     if "google_translate" in self.available_tasks:
       final_response =  self.available_tasks["google_translate"].execute(f"{final_response}$#{source_language}")[0]     
-    print("translated back", final_response)
     return final_response, previous_actions
       

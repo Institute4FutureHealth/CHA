@@ -46,8 +46,9 @@ class GoogleTranslate(BaseTask):
   ) -> str:
     """Translate query"""
     inputs = self.parse_input(input)
+    print("inputs translate", inputs)
     dest = inputs[1] if inputs[1] is not None else "en" 
-    result = self.translator.translate(input[0], dest=dest)
+    result = self.translator.translate(inputs[0], dest=dest)
     return result.text, result.src
 
   def explain(
