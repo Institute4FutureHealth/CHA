@@ -10,16 +10,24 @@ class CHA(BaseModel):
   previous_actions: List[Action] = []
   sync_browser: Any = None
 
-  def _generate_history(self, chat_history: List[Tuple[str, str]]=[]):
+  def _generate_history(
+                  self, 
+                  chat_history: List[Tuple[str, str]] = []
+                ) -> str:
+    print("chat history", chat_history)
     history = "".join([f"User: {chat[0]}\nCHA: {chat[1]}\n" for chat in chat_history])
     if len(self.previous_actions) > 0:
       history += "Previous Actions: " + "\n\n".join([f"action: {action.task}\naction_response: {action.task_response}" for action in self.previous_actions if action.task != "Exception"])
     return history
   
-  def _run(self, query: str="", chat_history: List[Tuple[str, str]]=[], tasks_list: List[str]=[], use_history: bool=False):
-    history = "".join([f"User: {chat[0]}\nCHA: {chat[1]}\n" for chat in chat_history])
-    if len(self.previous_actions) > 0:
-      history += "Previous Actions: " + "\n\n".join([f"action: {action.task}\naction_response: {action.task_response}" for action in self.previous_actions if action.task != "Exception"])
+  def _run(
+      self, 
+      query: str = "", 
+      chat_history: List[Tuple[str, str]] = [], 
+      tasks_list: List[str] = [], 
+      use_history: bool = False
+    ) -> str:
+    history = self._generate_history(chat_history=chat_history)
     # query += f"User: {message}"    
     # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
     if self.sync_browser == None:
@@ -41,9 +49,15 @@ class CHA(BaseModel):
 
     return response
 
-  def respond(self, message, chat_history, check_box, tasks_list):
+  def respond(
+          self, 
+          message, 
+          chat_history, 
+          check_box, 
+          tasks_list
+        ):
     print("hereee", self.previous_actions)
-    response = self._run(self, query=message, chat_history=chat_history, tasks_list=tasks_list, use_history=check_box)
+    response = self._run(query=message, chat_history=chat_history, tasks_list=tasks_list, use_history=check_box)
     chat_history.append((message, response))
     return "", chat_history
   
@@ -55,7 +69,12 @@ class CHA(BaseModel):
     interface = Interface()
     interface.prepare_interface(respond=self.respond, reset=self.reset, available_tasks=available_tasks)
 
-  def run(self, query:str = "", chat_history: List[Tuple[str, str]]=[], use_history:bool=False):
-    available_tasks=[key.value for key in TASK_TO_CLASS.keys()]
-    self._run(query, )
+  def run(
+      self, 
+      query: str = "", 
+      chat_history: List[Tuple[str, str]] = [], 
+      available_tasks: List[str] = [], 
+      use_history:bool=False
+    ) -> str:
+    return self._run(query=query, chat_history=chat_history, tasks_list=available_tasks, use_history=use_history)
 
