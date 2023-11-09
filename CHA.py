@@ -7,8 +7,16 @@ from tasks.playwright.utils import create_sync_playwright_browser
 from pydantic import BaseModel
 
 class CHA(BaseModel):
+  name: str = "CHA"
   previous_actions: List[Action] = []
+  orchestrator: Orchestrator = None
   sync_browser: Any = None
+  planner_llm: str = "openai"
+  planner: str = "zero-shot-react-planner"
+  datapipe: str = "memory"
+  promptist: str = ""
+  response_generator: str = "base-generator"
+  response_generator_llm: str = "openai"
 
   def _generate_history(
                   self, 
@@ -25,7 +33,8 @@ class CHA(BaseModel):
       query: str = "", 
       chat_history: List[Tuple[str, str]] = [], 
       tasks_list: List[str] = [], 
-      use_history: bool = False
+      use_history: bool = False,
+      **kwargs
     ) -> str:
     history = self._generate_history(chat_history=chat_history)
     # query += f"User: {message}"    
@@ -33,18 +42,20 @@ class CHA(BaseModel):
     if self.sync_browser == None:
       self.sync_browser = create_sync_playwright_browser()
 
-    orchestrator = Orchestrator.initialize(      
-      planner_llm="openai",
-      planner="zero-shot-react-planner", 
-      datapipe="memory",
-      promptist="",
-      response_generator="base-generator",
-      response_generator_llm="openai",
-      available_tasks=tasks_list, 
-      sync_browser=self.sync_browser
-    )
+    if self.orchestrator == None:
+      self.orchestrator = Orchestrator.initialize(      
+        planner_llm=self.planner_llm,
+        planner=self.planner, 
+        datapipe=self.datapipe,
+        promptist=self.promptist,
+        response_generator=self.response_generator,
+        response_generator_llm=self.response_generator_llm,
+        available_tasks=tasks_list, 
+        sync_browser=self.sync_browser,
+        **kwargs
+      )
 
-    response, actions = orchestrator.run(query=query, history=history, use_history=use_history)
+    response, actions = self.orchestrator.run(query=query, history=history, use_history=use_history)
     self.previous_actions += actions
 
     return response

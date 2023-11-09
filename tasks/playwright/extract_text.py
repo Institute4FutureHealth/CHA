@@ -4,6 +4,7 @@ from tasks.playwright.utils import (
     get_current_page,
 )
 from pydantic import model_validator
+from urllib.parse import urlparse
 
 class ExtractText(BaseBrowser):
   name: str = "extract_text"
@@ -12,7 +13,7 @@ class ExtractText(BaseBrowser):
     "Extract all the text on the current webpage"     
   )
   dependencies: List[str] = ["navigate"]
-  inputs: List[str] = ["no input"]
+  inputs: List[str] = ["url to navigate to"]
   outputs: List[str] = []
   output_type: bool = False
 
@@ -36,24 +37,36 @@ class ExtractText(BaseBrowser):
       )
     return values
 
+  def validate_url(self, url):
+    parsed_url = urlparse(url)
+    if parsed_url.scheme not in ("http", "https"):
+        raise ValueError("URL scheme must be 'http' or 'https'")
+    return url
+
   def execute(
     self,
     input: str,
   ) -> str:    
     from bs4 import BeautifulSoup
-  
+
+    inputs = self.parse_input(input)
+    self.validate_url(inputs[0].strip())
+
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")
-    print("sync browser", self.sync_browser)
+    
     page = get_current_page(self.sync_browser)
-    if page.url == "about:blank":
-      return f"call {self.dependencies} first."
-    html_content = page.content()
+    response = page.goto(inputs[0])
+    status = response.status if response else "unknown"
 
-    # Parse the HTML content with BeautifulSoup
-    soup = BeautifulSoup(html_content, "lxml")
+    if status == 200:
+      html_content = page.content()
+      # Parse the HTML content with BeautifulSoup
+      soup = BeautifulSoup(html_content, "lxml")
 
-    return " ".join(text for text in soup.stripped_strings)
+      return " ".join(text for text in soup.stripped_strings)
+    else:
+      return "Error extracting text. The url is wrong. Try again."
 
   def explain(
         self,

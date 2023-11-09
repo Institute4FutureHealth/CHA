@@ -40,8 +40,8 @@ class Orchestrator(BaseModel):
     for task in available_tasks:
       tasks[task] = initialize_task(task=task, **kwargs)
     planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, **kwargs)
-    response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm)
-    datapipe = initialize_datapipe(datapipe=datapipe)
+    response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm, **kwargs)
+    datapipe = initialize_datapipe(datapipe=datapipe, **kwargs)
     return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=response_generator, available_tasks=tasks)
 
   def process_meta(self) -> bool:
