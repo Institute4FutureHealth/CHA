@@ -1,14 +1,19 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any
 from abc import abstractmethod
+from pydantic import BaseModel
 
-class DataPipe():
+class DataPipe(BaseModel):
+
+  class Config:
+    """Configuration for this pydantic object."""
+    arbitrary_types_allowed = True
 
   @abstractmethod
-  def store(self, data):
+  def store(self, data) -> str:
     """
     """
   
   @abstractmethod
-  def retrieve(self, key):
+  def retrieve(self, key) -> Any:
     """
     """ 

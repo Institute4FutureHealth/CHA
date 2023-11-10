@@ -28,7 +28,7 @@ class Navigate(BaseBrowser):
     input: str,
   ) -> str:
     inputs = self.parse_input(input)
-    self.validate_url(inputs[0])
+    self.validate_url(inputs[0].strip())
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")
     page = get_current_page(self.sync_browser)

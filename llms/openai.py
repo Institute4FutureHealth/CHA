@@ -1,11 +1,11 @@
-import openai 
 import os
 from utils import get_from_dict_or_env
 from llms.llm import BaseLLM
-from typing import Any
+from typing import Any, List, Dict
+from pydantic import model_validator
 
 class OpenAILLM(BaseLLM):
-  models = {
+  models: Dict = {
     "gpt-4": 8192,
     "gpt-4-0314": 8192,
     "gpt-4-0613": 8192,
@@ -31,11 +31,32 @@ class OpenAILLM(BaseLLM):
     "code-cushman-002": 2048,
     "code-cushman-001": 2048,
   }
+  api_key: str = ""
+  llm_model: Any = None
+  max_tokens: int = 150
 
-  def get_model_names(self):
+  @model_validator(mode='before')
+  def validate_environment(cls, values: Dict) -> Dict:
+    """Validate that api key and python package exists in environment."""
+    openai_api_key = get_from_dict_or_env(
+      values, "openai_api_key", "OPENAI_API_KEY"
+    )
+    values["api_key"] = openai_api_key
+    try:
+      import openai 
+
+      values["llm_model"] = openai
+    except ImportError:
+      raise ValueError(
+        "Could not import anthropic python package. "
+        "Please install it with `pip install anthropic`."
+      )
+    return values
+
+  def get_model_names(self) -> List[str]:
     return self.models.keys()
 
-  def is_max_token(self, model_name, query):
+  def is_max_token(self, model_name, query) -> bool:
     model_max_token = self.models[model_name]
     try:
       import tiktoken
@@ -54,21 +75,20 @@ class OpenAILLM(BaseLLM):
     enc = tiktoken.get_encoding(encoder)
     tokenized_text = enc.encode(query)
     return model_max_token < len(tokenized_text)
-
-  def convert_query(self, query):
-    return [{ "role": "system", "content": query }]
   
-  def parse_response(self, response):
+  def parse_response(self, response) -> str:
     return response.choices[0].message.content
+
+  def prepare_prompt(self, prompt) -> Any:    
+    return [{"role": "system", "content": prompt}]
 
   def generate(
         self,
         query: str,
         **kwargs: Any
       ) -> str: 
-    
-    api_key = get_from_dict_or_env(kwargs, "openai_api_key", "OPENAI_API_KEY")
-    model_name = "gpt-3.5-turbo-0301"
+        
+    model_name = "gpt-3.5-turbo-16k"
     if "model_name" in kwargs:
       model_name = kwargs["model_name"]
     if model_name not in self.get_model_names():
@@ -76,6 +96,10 @@ class OpenAILLM(BaseLLM):
         "model_name is not specified or OpenAI does not support provided model_name"
       )
 
-    openai.api_key = api_key
-    response = openai.ChatCompletion.create(model=model_name, messages=query)
+    stop = kwargs["stop"] if "stop" in kwargs else None
+    max_tokens = kwargs["max_tokens"] if "max_tokens" in kwargs else self.max_tokens
+
+    self.llm_model.api_key = self.api_key
+    query = self.prepare_prompt(query)
+    response = self.llm_model.ChatCompletion.create(model=model_name, messages=query, max_tokens=max_tokens, stop=stop)
     return self.parse_response(response)

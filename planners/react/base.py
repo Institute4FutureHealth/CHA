@@ -8,7 +8,10 @@ import re
 
 class ReActPlanner(BasePlanner):
   """ReActPlanner"""
-
+  class Config:
+    """Configuration for this pydantic object."""
+    arbitrary_types_allowed = True
+    
   @property
   def _planner_type(self):
     raise "zero-shot-react-planner"
@@ -23,11 +26,12 @@ class ReActPlanner(BasePlanner):
 
   @property
   def _planner_prompt(self):
-    return """Answer the following questions as best you can. You have access to the following tools:
+    return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being. 
+Answer the following questions as best you can. You have access to the following tools:
 Use the following format. You should stick to the following format:
 Question: the input question you must answer
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
-Thought: you should always think about what to do
+Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
 Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task
 Observation: the result of the action
@@ -64,7 +68,9 @@ Thought: {agent_scratchpad}"""
       # prompt += "\nThought:"
 
     # print("prompt ///////", prompt)
-    response = self._planner_model.generate(query=self.prepare_prompt(prompt), kwargs=kwargs)
+    kwargs["max_tokens"] = 150
+    kwargs["stop"] = self._stop
+    response = self._planner_model.generate(query=prompt, **kwargs)
     print("response ///////", response, "\n")
 
     index = min([response.find(text) for text in self._stop])
@@ -120,7 +126,7 @@ Thought: {agent_scratchpad}"""
 
     if not re.search(r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?", query, re.DOTALL):
         raise ValueError(
-            "Invalid Format: Missing 'Action:' after 'Thought:' or Missing 'Final Answer' after 'Thought'\n"
+            "Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'\n"
             # f"Or The tool name is wrong. The tool name should be one of: `{self.get_available_tasks_list()}`"
         )
     elif not re.search(

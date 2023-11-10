@@ -5,13 +5,14 @@ import uuid
 
 class Memory(DataPipe):
 
-  data: Dict[str, Dict]
-  def store(self, data):
+  data: Optional[Dict[str, Dict]] = []
+
+  def store(self, data) -> str:
     key = uuid.uuid4()
     self.data[key] = data
     return key
   
-  def retrieve(self, key):
+  def retrieve(self, key) -> Any:
     if key not in self.data:
       raise ValueError(
         f"The data with the key {key} does not exist."
