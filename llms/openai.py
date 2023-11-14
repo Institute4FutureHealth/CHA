@@ -43,13 +43,13 @@ class OpenAILLM(BaseLLM):
     )
     values["api_key"] = openai_api_key
     try:
-      import openai 
+      from openai import OpenAI
 
-      values["llm_model"] = openai
+      values["llm_model"] = OpenAI()
     except ImportError:
       raise ValueError(
-        "Could not import anthropic python package. "
-        "Please install it with `pip install anthropic`."
+        "Could not import openai python package. "
+        "Please install it with `pip install openai`."
       )
     return values
 
@@ -88,7 +88,7 @@ class OpenAILLM(BaseLLM):
         **kwargs: Any
       ) -> str: 
         
-    model_name = "gpt-3.5-turbo-16k"
+    model_name = "gpt-4-0613"
     if "model_name" in kwargs:
       model_name = kwargs["model_name"]
     if model_name not in self.get_model_names():
@@ -101,5 +101,5 @@ class OpenAILLM(BaseLLM):
 
     self.llm_model.api_key = self.api_key
     query = self.prepare_prompt(query)
-    response = self.llm_model.ChatCompletion.create(model=model_name, messages=query, max_tokens=max_tokens, stop=stop)
+    response = self.llm_model.chat.completions.create(model=model_name, messages=query, max_tokens=max_tokens, stop=stop)
     return self.parse_response(response)

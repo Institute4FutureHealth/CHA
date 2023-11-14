@@ -4,6 +4,9 @@ from tasks.task_types import TaskType
 from tasks.task import BaseTask
 from tasks.serpapi import SerpAPI
 from tasks.affect import *
+from tasks.google_translator import GoogleTranslate
+from tasks.ask_user import AskUser
+from tasks.test_file import TestFile
 from tasks.playwright import *
 
 
@@ -18,4 +21,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
   TaskType.NAVIGATE: Navigate,
   TaskType.AFFECT_SLEEP_AVG: SleepAVG,
   TaskType.AFFECT_SLEEP_GET: SleepGet,
+  TaskType.GOOGLE_TRANSLATE: GoogleTranslate,
+  TaskType.ASK_USER: AskUser,
+  TaskType.TEST_FILE: TestFile,
 }

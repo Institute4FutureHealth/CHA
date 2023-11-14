@@ -19,7 +19,9 @@ class Orchestrator(BaseModel):
   response_generator: BaseResponseGenerator = None
   available_tasks: Dict[str, BaseTask] = {}
   max_retries: int = 16
-
+  max_task_execute_retries: int = 3
+  max_planner_execute_retries: int = 3
+  max_final_answer_execute_retries: int = 3
   role: int = 0
 
   @classmethod
@@ -38,61 +40,100 @@ class Orchestrator(BaseModel):
     for task in available_tasks:
       tasks[task] = initialize_task(task=task, **kwargs)
     planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner, **kwargs)
-    response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm)
-    datapipe = initialize_datapipe(datapipe=datapipe)
+    response_generator = initialize_response_generator(response_generator=response_generator, llm=response_generator_llm, **kwargs)
+    datapipe = initialize_datapipe(datapipe=datapipe, **kwargs)
     return self(planner=planner, datapipe=datapipe, promptist=None, response_generator=response_generator, available_tasks=tasks)
 
   def process_meta(self) -> bool:
     return False 
   
   def execute_task(self, action) -> str:   
+    retries = 0
     print("selected task", action)
-    task = self.available_tasks[action.task] 
-    result = task.execute(action.task_input)
-    if task.output_type:
-      key = self.datapipe.store(result)
-      return (
-        f"The result of the task {task.name} is stored in the datapipe with key: {key}"
-        "pass this key to other tasks to get access to the result."
-      )
-    return result
+    task_input = action.task_input
+    if "datapipe" in task_input:
+      task_input = self.datapipe.retrieve(action.task_input.split(":")[-1])
+
+    while retries < self.max_task_execute_retries:
+      try:
+        task = self.available_tasks[action.task] 
+        result = task.execute(task_input)
+        if task.output_type:
+          key = self.datapipe.store(result)
+          return (
+            f"The result of the tool ${task.name}$ is stored in the datapipe with key: $datapipe:{key}$"
+            "pass this key to other tools to get access to the result."
+          )
+        return result, task.return_direct
+      except Exception as e:
+        print(e)
+        retries += 1
+    return f"Error executing task {action.task}", False
 
   def generate_prompt(self, query) -> str:
     return query 
 
-  def plan(self, query, history, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
-    return self.planner.plan(query, history, previous_actions, use_history)
+  def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
+    retries = 0
+    while retries < self.max_planner_execute_retries:
+      try:
+        return self.planner.plan(query, history, meta, previous_actions, use_history)
+      except Exception as e:
+        print(e)
+        retries += 1
+    return [PlanFinish("Error planning, please try to ask your question again", "")]
 
   def generate_final_answer(self, query, thinker) -> str:
-    return self.response_generator.generate(query=query, thinker=thinker)
+    retries = 0
+    while retries < self.max_final_answer_execute_retries:
+      try:
+        return self.response_generator.generate(query=query, thinker=thinker)
+      except Exception as e:
+        print(e)
+        retries += 1
+    return "We currently have problem processing your question. Please try again after a while."
   
   def run(
         self,
         query: str = "",
-        meta: Any = {},
+        meta: List[str] = [],
         history: str = "",
         use_history: bool = False,
         **kwargs: Any
       ) -> str: 
     i = 0    
     previous_actions = []
+    meta_infos = ""
+    for meta_data in meta:
+      key = self.datapipe.store(meta_data)
+      meta_infos += (
+        f"The file with the name ${meta_data.split('/')[-1]}$ is stored with the key $datapipe:{key}$." 
+        "Pass this key to the tools when you want to send them over to the tool\n"
+      )
     prompt = self.generate_prompt(query)
+    if "google_translate" in self.available_tasks:
+      prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
+      source_language = prompt[1]
+      prompt = prompt[0]
+    # history = self.available_tasks["google_translate"].execute(history+"$#en").text
     final_response = ""
     finished = False
-    
     while True:  
       try:    
         print(f"try {i}")
-        actions = self.plan(query=prompt, history=history, previous_actions=previous_actions, use_history=use_history)
+        actions = self.plan(query=prompt, history=history, meta=meta_infos, previous_actions=previous_actions, use_history=use_history)
         for action in actions:
           if isinstance(action, PlanFinish):
             final_response = action.response
             finished = True
             break 
           else:          
-            action.task_response = self.execute_task(action)
+            action.task_response, return_direct = self.execute_task(action)
             print("task response", action.task_response)
             previous_actions.append(action)
+            if return_direct:
+              final_response = action.task_response
+              finished = True
             i = 0
         if finished:
           break 
@@ -105,6 +146,8 @@ class Orchestrator(BaseModel):
         previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
 
     final_response = self.generate_prompt(final_response)
-    final_response = self.generate_final_answer(query=query, thinker=final_response)     
+    final_response = self.generate_final_answer(query=query, thinker=final_response)
+    if "google_translate" in self.available_tasks:
+      final_response =  self.available_tasks["google_translate"].execute(f"{final_response}$#{source_language}")[0]     
     return final_response, previous_actions
       

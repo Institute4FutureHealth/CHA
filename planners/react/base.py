@@ -30,6 +30,7 @@ class ReActPlanner(BasePlanner):
 Answer the following questions as best you can. You have access to the following tools:
 Use the following format. You should stick to the following format:
 Question: the input question you must answer
+MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
 Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
@@ -42,14 +43,16 @@ Final Answer: the final answer to the original input question
 Begin!
 
 Question: {input}
+MetaData: {meta}
 History: {history}
 Thought: {agent_scratchpad}"""  
 
   def plan(
         self,
         query: str,
-        history: str,
-        previous_actions: List[Action],
+        history: str = "",
+        meta: str = "",
+        previous_actions: List[Action] = [],
         use_history: bool = False,
         **kwargs: Any,
       ) -> List[Union[Action, PlanFinish]]:
@@ -61,13 +64,14 @@ Thought: {agent_scratchpad}"""
         for action in previous_actions
       ])
     prompt = self._planner_prompt.replace("{input}", query)\
+                                  .replace("{meta}", meta)\
                                   .replace("{history}", history if use_history else "")\
                                   .replace("{agent_scratchpad}", agent_scratchpad)\
                                   .replace("{tool_names}", self.get_available_tasks())
     # if len(previous_actions) > 0:
       # prompt += "\nThought:"
 
-    # print("prompt ///////", prompt)
+    print("prompt ///////", prompt)
     kwargs["max_tokens"] = 150
     kwargs["stop"] = self._stop
     response = self._planner_model.generate(query=prompt, **kwargs)
