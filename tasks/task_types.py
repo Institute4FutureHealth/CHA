@@ -9,4 +9,5 @@ class TaskType(str, Enum):
   GET_ELEMENTS = "get_elements"
   NAVIGATE_BACK = "navigate_back"
   NAVIGATE = "navigate"
-  AFFECT_SLEEP = "sleep_avg"
+  AFFECT_SLEEP_AVG = "sleep_avg"
+  AFFECT_SLEEP_GET = "sleep_get"

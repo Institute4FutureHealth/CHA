@@ -15,7 +15,7 @@ class Affect(BaseTask):
             local_dir: str,
             file_name: str,
             start_date: str,
-            end_date: str,
+            end_date: str = "",
     ) -> pd.DataFrame:
         local_dir = os.path.join(os.getcwd(), local_dir)
         df = pd.read_csv(
@@ -23,9 +23,13 @@ class Affect(BaseTask):
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
-        # Filter the DataFrame to get the rows for the input dates
-        selected_rows = df[(df['date'] >= pd.to_datetime(start_date, format='%Y-%m-%d')) & (
-            df['date'] <= pd.to_datetime(end_date, format='%Y-%m-%d'))]
+        if end_date:
+            # Filter the DataFrame to get the rows for the input dates (multiple dates)
+            selected_rows = df[(df['date'] >= pd.to_datetime(start_date, format='%Y-%m-%d')) & (
+                df['date'] <= pd.to_datetime(end_date, format='%Y-%m-%d'))]
+        else:
+            # Filter the DataFrame to get the rows for the input date (single dates)
+            selected_rows = df[(df['date'] == pd.to_datetime(start_date, format='%Y-%m-%d'))]
 
         # Check if the input date exists in the DataFrame
         if selected_rows.empty:

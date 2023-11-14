@@ -16,5 +16,6 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
   TaskType.GET_ELEMENTS: GetElements,
   TaskType.NAVIGATE_BACK: NavigateBack,
   TaskType.NAVIGATE: Navigate,
-  TaskType.AFFECT_SLEEP: SleepAVG
+  TaskType.AFFECT_SLEEP_AVG: SleepAVG,
+  TaskType.AFFECT_SLEEP_GET: SleepGet,
 }
