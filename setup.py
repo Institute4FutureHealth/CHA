@@ -13,18 +13,18 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
-        # لیست وابستگی‌های اصلی
+        # main requirements
         'requests',
         'numpy',
     ],
     extras_require={
         'all': [
-            # وابستگی‌های مربوط به گروه all
+            # all requirements
             'matplotlib',
             'scipy',
         ],
         'minimum': [
-            # وابستگی‌های مربوط به گروه minimum
+            # minimum requirements for running the codes
             'flask',
         ],
     },
