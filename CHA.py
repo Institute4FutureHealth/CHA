@@ -78,7 +78,11 @@ class CHA(BaseModel):
   def run_with_interface(self):    
     available_tasks=[key.value for key in TASK_TO_CLASS.keys()]    
     interface = Interface()
-    interface.prepare_interface(respond=self.respond, reset=self.reset, available_tasks=available_tasks)
+    interface.prepare_interface(respond=self.respond, reset=self.reset, upload_meta=self.upload_meta, available_tasks=available_tasks)
+
+  def upload_meta(self, history, file):
+    history = history + [((file.name,), None)]
+    return history
 
   def run(
       self, 
