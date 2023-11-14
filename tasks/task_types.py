@@ -11,3 +11,4 @@ class TaskType(str, Enum):
   NAVIGATE = "navigate"
   GOOGLE_TRANSLATE = "google_translate"
   ASK_USER = "ask_user"
+  TEST_FILE = "test_file"

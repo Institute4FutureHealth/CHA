@@ -1,5 +1,5 @@
 from planners.action import Action
-from typing import List, Any, Tuple
+from typing import List, Any, Tuple, Dict
 from orchestrator.orchestrator import Orchestrator
 from interface.base import Interface
 from tasks.types import TASK_TO_CLASS
@@ -17,6 +17,7 @@ class CHA(BaseModel):
   promptist: str = ""
   response_generator: str = "base-generator"
   response_generator_llm: str = "openai"
+  meta: List[str] = []
 
   def _generate_history(
                   self, 
@@ -55,7 +56,7 @@ class CHA(BaseModel):
         **kwargs
       )
 
-    response, actions = self.orchestrator.run(query=query, history=history, use_history=use_history)
+    response, actions = self.orchestrator.run(query=query, history=history, meta=self.meta, use_history=use_history)
     self.previous_actions += actions
 
     return response
@@ -82,6 +83,7 @@ class CHA(BaseModel):
 
   def upload_meta(self, history, file):
     history = history + [((file.name,), None)]
+    self.meta.append(file.name)
     return history
 
   def run(

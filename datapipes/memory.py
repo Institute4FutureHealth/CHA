@@ -5,10 +5,10 @@ import uuid
 
 class Memory(DataPipe):
 
-  data: Optional[Dict[str, Dict]] = []
+  data: Optional[Dict[str, Dict]] = {}
 
   def store(self, data) -> str:
-    key = uuid.uuid4()
+    key = str(uuid.uuid4())
     self.data[key] = data
     return key
   

@@ -50,15 +50,19 @@ class Orchestrator(BaseModel):
   def execute_task(self, action) -> str:   
     retries = 0
     print("selected task", action)
+    task_input = action.task_input
+    if "datapipe" in task_input:
+      task_input = self.datapipe.retrieve(action.task_input.split(":")[-1])
+
     while retries < self.max_task_execute_retries:
       try:
         task = self.available_tasks[action.task] 
-        result = task.execute(action.task_input)
+        result = task.execute(task_input)
         if task.output_type:
           key = self.datapipe.store(result)
           return (
-            f"The result of the task {task.name} is stored in the datapipe with key: {key}"
-            "pass this key to other tasks to get access to the result."
+            f"The result of the tool ${task.name}$ is stored in the datapipe with key: $datapipe:{key}$"
+            "pass this key to other tools to get access to the result."
           )
         return result, task.return_direct
       except Exception as e:
@@ -69,11 +73,11 @@ class Orchestrator(BaseModel):
   def generate_prompt(self, query) -> str:
     return query 
 
-  def plan(self, query, history, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
+  def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
     retries = 0
     while retries < self.max_planner_execute_retries:
       try:
-        return self.planner.plan(query, history, previous_actions, use_history)
+        return self.planner.plan(query, history, meta, previous_actions, use_history)
       except Exception as e:
         print(e)
         retries += 1
@@ -92,13 +96,20 @@ class Orchestrator(BaseModel):
   def run(
         self,
         query: str = "",
-        meta: Any = {},
+        meta: List[str] = [],
         history: str = "",
         use_history: bool = False,
         **kwargs: Any
       ) -> str: 
     i = 0    
     previous_actions = []
+    meta_infos = ""
+    for meta_data in meta:
+      key = self.datapipe.store(meta_data)
+      meta_infos += (
+        f"The file with the name ${meta_data.split('/')[-1]}$ is stored with the key $datapipe:{key}$." 
+        "Pass this key to the tools when you want to send them over to the tool\n"
+      )
     prompt = self.generate_prompt(query)
     if "google_translate" in self.available_tasks:
       prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
@@ -110,7 +121,7 @@ class Orchestrator(BaseModel):
     while True:  
       try:    
         print(f"try {i}")
-        actions = self.plan(query=prompt, history=history, previous_actions=previous_actions, use_history=use_history)
+        actions = self.plan(query=prompt, history=history, meta=meta_infos, previous_actions=previous_actions, use_history=use_history)
         for action in actions:
           if isinstance(action, PlanFinish):
             final_response = action.response

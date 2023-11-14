@@ -40,6 +40,7 @@ class BasePlanner(BaseModel):
         self,
         query: str,
         history: str,
+        meta: str,
         previous_actions: List[Action],
         use_history: bool = False,
         **kwargs: Any,
