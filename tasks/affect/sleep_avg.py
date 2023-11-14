@@ -13,26 +13,39 @@ class SleepAVG(Affect):
     dependencies: List[str] = []
     inputs: List[str] = ["start date of the sleep data in string with the following format: '%Y-%m-%d'",
                          "end date of the sleep data in string with the following format: '%Y-%m-%d'"]
-    outputs: List[str] = ["sleep_duration is XXX"]
+    outputs: List[str] = ["total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
+                          "awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
+                          "light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period.",
+                          "rem_sleep_duration (in minutes) is the total amount of REM sleep registered during the sleep period.",
+                          "deep_sleep_duration (in minutes) is the total amount of deep (N3) sleep registered during the sleep period.",
+                          "sleep_onset_latency (in minutes) is the detected latency from bedtime_start to the beginning of the first five minutes of persistent sleep.",
+                          "midpoint_time_of_sleep (in minutes) is the time from the start of sleep to the midpoint of sleep. The midpoint ignores awake periods.",
+                          "sleep_efficiency is the percentage of the sleep period spent asleep (100% * sleep duration / time in bed).",
+                          "average_heart_rate is the average heart rate registered during the sleep period.",
+                          "minimum_heart_rate is the lowest heart rate (5 minutes sliding average) registered during the sleep period.",
+                          "rmssd is the average Root Mean Square of Successive Differences (RMSSD) registered during the sleep period.",
+                          "average_breathing_rate is the average breathing rate registered during the sleep period.",
+                          "temperature_variation is the skin temperature deviation from the long-term temperature average."]
     #False if the output should directly passed back to the planner.
     #True if it should be stored in datapipe
     output_type: bool = False
     #
     file_name: str = 'sleep.csv'
     local_dir: str = 'data/affect'
-    columns_to_keep: List[str] = ['duration', 'awake', 'light', 'rem', 'deep',
+    columns_to_keep: List[str] = ['total', 'awake', 'light', 'rem', 'deep',
                                   'onset_latency', 'midpoint_time',
                                   'efficiency', 'hr_average',
                                   'hr_lowest', 'rmssd', 'breath_average',
-                                  'temperature_delta', 'bedtime_start_timestamp',
-                                  'bedtime_end_timestamp']
-    columns_revised: List[str] = ['sleep_duration', 'awake_duration', 'light_sleep_duration',
+                                  'temperature_delta']
+    columns_revised: List[str] = ['total_sleep_time', 'awake_duration', 'light_sleep_duration',
                                   'rem_sleep_duration', 'deep_sleep_duration',
                                   'sleep_onset_latency', 'midpoint_time_of_sleep',
                                   'sleep_efficiency', 'average_heart_rate',
                                   'minimum_heart_rate', 'rmssd', 'average_breathing_rate',
-                                  'temperature_variation', 'bedtime_start',
-                                  'bedtime_end']
+                                  'temperature_variation']
+    variables_in_seconds: List[str] = ['total_sleep_time', 'awake_duration', 'light_sleep_duration',
+                                       'rem_sleep_duration', 'deep_sleep_duration',
+                                       'sleep_onset_latency', 'midpoint_time_of_sleep']
 
 
     def execute(
@@ -49,5 +62,7 @@ class SleepAVG(Affect):
             )
         df = df.loc[:, self.columns_to_keep]
         df.columns = self.columns_revised
-        df_avg = df.mean()
+        df_avg = df.mean().to_frame().T
+        df_avg = self._convert_seconds_to_minutes(df_avg, self.variables_in_seconds)
+        df_avg = df_avg.round(2)
         return self._dataframe_to_string_output(df_avg)

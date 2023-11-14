@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import requests
 from tasks.task import BaseTask
+from typing import List
 
 
 class Affect(BaseTask):
@@ -42,7 +43,7 @@ class Affect(BaseTask):
         local_dir = os.path.join(os.getcwd(), local_dir)
         # Create new directory if it is not there
         if not os.path.isdir(local_dir):
-           os.makedirs(local_dir)
+            os.makedirs(local_dir)
 
         # Get the data from the provided link
         response = requests.get(download_url, timeout=120)
@@ -52,6 +53,17 @@ class Affect(BaseTask):
             return f"Downloaded {file_name} to {local_dir}."
         else:
             return f"Failed to download {file_name} from {download_url}."
+
+
+    def _convert_seconds_to_minutes(
+            self,
+            df: pd.DataFrame,
+            column_names: List[str]
+    ) -> pd.DataFrame:
+        for column_name in column_names:
+            if column_name in df.columns:
+                df[column_name] = df[column_name] / 60
+        return df
 
 
     def _dataframe_to_string_output(
