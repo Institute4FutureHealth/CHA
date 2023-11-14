@@ -10,8 +10,15 @@ class DataPipe(BaseModel):
 
   @abstractmethod
   def store(self, data) -> str:
-    """
-    """
+      """
+      Store data in the system.
+
+      :param data: The data to be stored.
+      :type data: Any
+      :return: The name of the stored data.
+      :rtype: str
+
+      """
   
   @abstractmethod
   def retrieve(self, key) -> Any:

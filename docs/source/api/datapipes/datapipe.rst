@@ -10,15 +10,9 @@ This class serves as a basis for creating an interface class used in projects th
 
     
 - ``store`` : To store data in the system, you can use this function.
-    
-    .. py:function:: store(data)
 
-        Store data in the system.
-
-        :param data: The data to be stored.
-        :type data: Any
-        :return: The name of the stored data.
-        :rtype: str
+    .. autofunction:: datapipes.datapipe.DataPipe.store
+        :no-index:
 
 
 |

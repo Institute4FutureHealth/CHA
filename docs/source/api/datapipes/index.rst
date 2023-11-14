@@ -11,7 +11,7 @@ discription
 .. toctree::
     :maxdepth: 1
 
-    datapipes
+    datapipe
     memory
     types
     initialize_datapipe
