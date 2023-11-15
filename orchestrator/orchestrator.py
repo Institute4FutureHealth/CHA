@@ -71,7 +71,7 @@ class Orchestrator(BaseModel):
       orchestrator_logger = CustomDebugFormatter.create_logger('Orchestrator', 'green')
       final_answer_generator_logger = CustomDebugFormatter.create_logger('Response Generator', 'blue')
       promptist_logger = CustomDebugFormatter.create_logger('Promptist', 'blue')
-      error_logger = CustomDebugFormatter.create_logger('Promptist', 'red')
+      error_logger = CustomDebugFormatter.create_logger('Error', 'red')
 
     tasks = {}      
     for task in available_tasks:
@@ -183,9 +183,10 @@ class Orchestrator(BaseModel):
     # history = self.available_tasks["google_translate"].execute(history+"$#en").text
     final_response = ""
     finished = False
+    self.print_log("planner", f"Planing Started...\n")        
     while True:  
       try:    
-        self.print_log("planner", f"Planing Started... Try number {i}\n\n")        
+        self.print_log("planner", f"Continueing Planing... Try number {i}\n\n")        
         actions = self.plan(query=prompt, history=history, meta=meta_infos, previous_actions=previous_actions, use_history=use_history)
         for action in actions:
           if isinstance(action, PlanFinish):
@@ -196,6 +197,7 @@ class Orchestrator(BaseModel):
             action.task_response, return_direct = self.execute_task(action)
             previous_actions.append(action)
             if return_direct:
+              print("inside return direct")
               final_response = action.task_response
               finished = True
             i = 0

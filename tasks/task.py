@@ -37,14 +37,6 @@ class BaseTask(BaseModel):
   def inputs(self):
     return ", ".join([f"{str(i)}-{input}" for i, input in enumerate(self.inputs)])
 
-  @property
-  def output_type(self):
-    return self.output_type
-  
-  @property
-  def return_direct(self):
-    return self.return_direct
-
   @abstractmethod
   def execute(
         self,
