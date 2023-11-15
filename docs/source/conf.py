@@ -76,5 +76,6 @@ from pathlib import Path
 
 sys.path.append(str(Path(".").resolve()))
 #sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath("../../"))
 #sys.path.insert(0, os.path.abspath("../../interface"))
 #sys.path.insert(0, os.path.abspath("/datapipes/memory"))
