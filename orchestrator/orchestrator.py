@@ -71,7 +71,7 @@ class Orchestrator(BaseModel):
       orchestrator_logger = CustomDebugFormatter.create_logger('Orchestrator', 'green')
       final_answer_generator_logger = CustomDebugFormatter.create_logger('Response Generator', 'blue')
       promptist_logger = CustomDebugFormatter.create_logger('Promptist', 'blue')
-      error_logger = CustomDebugFormatter.create_logger('Promptist', 'red')
+      error_logger = CustomDebugFormatter.create_logger('Error', 'red')
 
     tasks = {}      
     for task in available_tasks:
@@ -196,6 +196,7 @@ class Orchestrator(BaseModel):
             action.task_response, return_direct = self.execute_task(action)
             previous_actions.append(action)
             if return_direct:
+              print("inside return direct")
               final_response = action.task_response
               finished = True
             i = 0
