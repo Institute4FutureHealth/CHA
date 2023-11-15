@@ -10,10 +10,12 @@ from tasks.affect.base import Affect
 class SleepGet(Affect):
     name: str = "affect_sleep_get"
     chat_name: str = "AffectSleepGet"
-    description: str = "Get the sleep parameters for a specific date"
+    description: str = ("Get the sleep parameters for a specific date. "
+                        "You must Call $affect_sleep_analysis$ whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis")
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
-                         "Date of the sleep data in string with the following format: '%Y-%m-%d'"]
+                         "start date of the sleep data in string with the following format: '%Y-%m-%d'",
+                         "end date of the sleep data in string with the following format: '%Y-%m-%d'. If there is no end date, the value should be an empty string (i.e., '')"]
     outputs: List[str] = ["total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
                           "awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
                           "light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period.",
@@ -29,17 +31,17 @@ class SleepGet(Affect):
                           "temperature_variation is the skin temperature deviation from the long-term temperature average."]
     #False if the output should directly passed back to the planner.
     #True if it should be stored in datapipe
-    output_type: bool = False
+    output_type: bool = True
     #
     file_name: str = 'sleep.csv'
     device_name: str = 'oura'
     local_dir: str = 'data/affect'
-    columns_to_keep: List[str] = ['total', 'awake', 'light', 'rem', 'deep',
+    columns_to_keep: List[str] = ['date', 'total', 'awake', 'light', 'rem', 'deep',
                                   'onset_latency', 'midpoint_time',
                                   'efficiency', 'hr_average',
                                   'hr_lowest', 'rmssd', 'breath_average',
                                   'temperature_delta']
-    columns_revised: List[str] = ['total_sleep_time', 'awake_duration', 'light_sleep_duration',
+    columns_revised: List[str] = ['date', 'total_sleep_time', 'awake_duration', 'light_sleep_duration',
                                   'rem_sleep_duration', 'deep_sleep_duration',
                                   'sleep_onset_latency', 'midpoint_time_of_sleep',
                                   'sleep_efficiency', 'average_heart_rate',
@@ -62,7 +64,10 @@ class SleepGet(Affect):
             local_dir=full_dir,
             file_name=self.file_name,
             start_date=inputs[1].strip(),
+            end_date=inputs[2].strip(),
             )
+        df = df.loc[:, self.columns_to_keep]
+        df.columns = self.columns_revised
         df = self._convert_seconds_to_minutes(df, self.variables_in_seconds)
         df = df.round(2)
         return self._dataframe_to_string_output(df)

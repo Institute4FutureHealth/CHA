@@ -22,6 +22,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
   TaskType.AFFECT_SLEEP_AVG: SleepAVG,
   TaskType.AFFECT_SLEEP_GET: SleepGet,
   TaskType.AFFECT_SLEEP_TREND: SleepTrend,
+  TaskType.AFFECT_SLEEP_ANALYSIS: SleepAnalysis,
   TaskType.GOOGLE_TRANSLATE: GoogleTranslate,
   TaskType.ASK_USER: AskUser,
   TaskType.TEST_FILE: TestFile,

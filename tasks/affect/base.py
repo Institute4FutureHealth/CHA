@@ -24,7 +24,7 @@ class Affect(BaseTask):
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
-        if end_date:
+        if end_date or end_date == start_date:
             # Filter the DataFrame to get the rows for the input dates (multiple dates)
             selected_rows = df[(df['date'] >= pd.to_datetime(start_date, format='%Y-%m-%d')) & (
                 df['date'] <= pd.to_datetime(end_date, format='%Y-%m-%d'))]
@@ -82,6 +82,27 @@ class Affect(BaseTask):
         result_string = ", ".join(formatted_values)
 
         return result_string
+
+
+    def _string_output_to_dataframe(
+            self,
+            input_string: str
+    ) -> pd.DataFrame:
+        # Split the input string into individual column-value pairs
+        column_value_pairs = [pair.strip() for pair in input_string.split(',')]
+        # Create a dictionary to store column-value pairs
+        data_dict = {}
+        # Iterate through the pairs and extract column and value
+        for pair in column_value_pairs:
+            # Split each pair into column and value
+            column, value = pair.split('=')
+            # Strip any leading or trailing whitespaces
+            column = column.strip()
+            value = value.strip()
+            # Add the column-value pair to the dictionary
+            data_dict[column] = [value]
+        # Create a DataFrame from the dictionary
+        return pd.DataFrame(data_dict)
 
 
     def _calculate_slope(

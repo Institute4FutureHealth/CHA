@@ -115,8 +115,9 @@ class Orchestrator(BaseModel):
     task_input = action.task_input
     if "datapipe" in task_input:
       self.print_log("task", "Tasks data is retrieved from the DataPipe\n")
-      task_input = self.datapipe.retrieve(action.task_input.split(":")[-1])
-
+      task_input = ",".join([(self.datapipe.retrieve(input_param.strip().split(":")[-1]) if "datapipe" in input_param else input_param) for input_param in action.task_input.split(",")])
+      print("task_innput", task_input)
+    
     while retries < self.max_task_execute_retries:
       try:
         task = self.available_tasks[action.task] 
@@ -127,7 +128,7 @@ class Orchestrator(BaseModel):
           return (
             f"The result of the tool ${task.name}$ is stored in the datapipe with key: $datapipe:{key}$"
             "pass this key to other tools to get access to the result."
-          )
+          ), task.return_direct
         self.print_log("task", f"Task is executed successfully\nResult: {result}\n---------------\n")
         return result, task.return_direct
       except Exception as e:
@@ -195,6 +196,7 @@ class Orchestrator(BaseModel):
             break 
           else:          
             action.task_response, return_direct = self.execute_task(action)
+            print("action", action)
             previous_actions.append(action)
             if return_direct:
               print("inside return direct")
@@ -204,7 +206,8 @@ class Orchestrator(BaseModel):
         if finished:
           break 
       except ValueError as error:
-        self.print_log("error", "Planing Error:\n{error}\n\n")
+        self.print_log("error", f"Planing Error:\n{error}\n\n")
+        print(error)
         i += 1
         if i > self.max_retries:
           final_response = "Problem preparing the answer. Please try again."
