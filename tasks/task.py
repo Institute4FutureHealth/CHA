@@ -58,7 +58,7 @@ class BaseTask(BaseModel):
         input: str,
       ) -> List[str]:
     inputs = input.split(",")
-    return [arg.strip() for arg in inputs.split(",")]
+    return [arg.strip() for arg in inputs]
 
   def get_dict(self) -> str:
     inputs = ",".join(self.inputs)
