@@ -9,35 +9,44 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='my-package',
+    name='CHA',
     version='0.1.0',
+    author="Mahyar Abbasian",
+    description="Conversational Health Agents (CHAs) are interactive systems designed to enhance personal healthcare services by engaging in empathetic conversations and processing multimodal data. "
     packages=find_packages(),
+    url="https://github.com/Mahyar12/CHA",
     install_requires=[
-        # main requirements
         'requests',
-        'numpy',
+        'gradio',
+        'pydantic'
     ],
     extras_require={
         'all': [
             # all requirements
-            'matplotlib',
-            'scipy',
+            'anthropic',
+            'aiohttp',
+            'google-search-results',
+            'playwright',
+            'beautifulsoup4',
+            'lxml',
+            'tiktoken',
+            'openai~=1.2'
         ],
         'minimum': [
             # minimum requirements for running the codes
-            'flask',
-        ],
-    },
-    entry_points={
-        'console_scripts': [
-            'my-command = my_package.module1:main_function',
+            'aiohttp',
+            'google-search-results',
+            'playwright',
+            'beautifulsoup4',
+            'lxml',
+            'tiktoken',
+            'openai~=1.2'
         ],
     },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Operating System :: OS Independent',
     ],
+    python_requires=">=3.9, <3.12",
 )
