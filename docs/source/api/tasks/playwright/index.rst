@@ -10,6 +10,7 @@ discription
 .. toctree::
    :maxdepth: 1
 
+   base
    click
    current_page
    extract_hyperlinks

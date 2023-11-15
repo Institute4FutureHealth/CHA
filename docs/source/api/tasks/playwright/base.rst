@@ -10,17 +10,8 @@ The code uses conditional imports to handle situations where the Playwright libr
 
 
 
-    .. py:function:: validate_environment(cls, values: Dict)
-
-        Validate that 'playwright' package exists in the environment.
-
-        :param cls: The class itself.
-        :type: cls: type
-        :param values: The dictionary containing the values for validation.
-        :type values: Dict
-        :return: The original values.
-        :rtype: Dict
-        :rise ImportError: If the 'playwright' package is not installed.
+    .. autofunction:: tasks.playwright.base.BaseBrowser.validate_environment
+        :no-index:
 
 
 

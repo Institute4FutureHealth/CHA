@@ -20,12 +20,6 @@ This class serves as a basis for creating an interface class used in projects th
 
 - ``retrieve`` : To retrieve data based on a specified key, you can use this function:
 
-    .. py:function:: retrieve(key)
-
-        Retrieve data based on a specified key.
-
-        :param key: The key to identify the data.
-        :type key: Any
-        :return: The retrieved data.
-        :rtype: Any
+    .. autofunction:: datapipes.datapipe.DataPipe.retrieve
+        :no-index:
 

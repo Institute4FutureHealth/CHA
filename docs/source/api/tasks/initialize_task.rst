@@ -12,17 +12,8 @@ The selected task class is then instantiated with the provided keyword arguments
 
 - ``initialize_task`` : Initializes a task based on the provided task name.
 
-    .. py:function:: initialize_task(task: str = "serpapi", **kwargs: Any)
-
-        Initialize a task based on the provided task name.
-
-        :param task: The name of the task to initialize.
-        :type task: str
-        :param kwargs: Additional keyword arguments for customizing task initialization.
-        :type kwargs: Any
-        :return: An instance of the initialized task.
-        :rtype: BaseTask
-        :rise ValueError: If the provided task name is unknown.
+    .. autofunction:: tasks.initialize_task.initialize_task
+        :no-index:
 
 
 
