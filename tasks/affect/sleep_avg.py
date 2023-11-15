@@ -8,8 +8,8 @@ from tasks.affect.base import Affect
 
 
 class SleepAVG(Affect):
-    name: str = "sleep_avg"
-    chat_name: str = "SleepAVG"
+    name: str = "affect_sleep_avg"
+    chat_name: str = "AffectSleepAVG"
     description: str = "Return the sleep average between start date and end date"
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",

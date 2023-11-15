@@ -8,8 +8,8 @@ from tasks.affect.base import Affect
 
 
 class SleepTrend(Affect):
-    name: str = "sleep_trend"
-    chat_name: str = "SleepTrend"
+    name: str = "affect_sleep_trend"
+    chat_name: str = "AffectSleepTrend"
     description: str = "Return the sleep trend (i.e., variation or slope) between start date and end date"
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",

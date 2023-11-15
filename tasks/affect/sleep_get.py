@@ -8,8 +8,8 @@ from tasks.affect.base import Affect
 
 
 class SleepGet(Affect):
-    name: str = "sleep_get"
-    chat_name: str = "SleepGet"
+    name: str = "affect_sleep_get"
+    chat_name: str = "AffectSleepGet"
     description: str = "Get the sleep parameters for a specific date"
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
