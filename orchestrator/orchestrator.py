@@ -183,9 +183,10 @@ class Orchestrator(BaseModel):
     # history = self.available_tasks["google_translate"].execute(history+"$#en").text
     final_response = ""
     finished = False
+    self.print_log("planner", f"Planing Started...\n")        
     while True:  
       try:    
-        self.print_log("planner", f"Planing Started... Try number {i}\n\n")        
+        self.print_log("planner", f"Continueing Planing... Try number {i}\n\n")        
         actions = self.plan(query=prompt, history=history, meta=meta_infos, previous_actions=previous_actions, use_history=use_history)
         for action in actions:
           if isinstance(action, PlanFinish):
