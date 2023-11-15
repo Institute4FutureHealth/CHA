@@ -2,8 +2,9 @@
 Affect - Sleep Average
 '''
 
-from tasks.affect.base import Affect
 from typing import List
+import os
+from tasks.affect.base import Affect
 
 
 class SleepGet(Affect):
@@ -11,7 +12,8 @@ class SleepGet(Affect):
     chat_name: str = "SleepGet"
     description: str = "Get the sleep parameters for a specific date"
     dependencies: List[str] = []
-    inputs: List[str] = ["Date of the sleep data in string with the following format: '%Y-%m-%d'"]
+    inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
+                         "Date of the sleep data in string with the following format: '%Y-%m-%d'"]
     outputs: List[str] = ["total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
                           "awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
                           "light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period.",
@@ -30,6 +32,7 @@ class SleepGet(Affect):
     output_type: bool = False
     #
     file_name: str = 'sleep.csv'
+    device_name: str = 'oura'
     local_dir: str = 'data/affect'
     columns_to_keep: List[str] = ['total', 'awake', 'light', 'rem', 'deep',
                                   'onset_latency', 'midpoint_time',
@@ -53,10 +56,12 @@ class SleepGet(Affect):
     ) -> str:
         inputs = self.parse_input(input)
         #checking
+        user_id = inputs[0].strip()
+        full_dir = os.path.join(self.local_dir, user_id, self.device_name)
         df = self._get_data(
-            local_dir=self.local_dir,
+            local_dir=full_dir,
             file_name=self.file_name,
-            start_date=inputs[0].strip(),
+            start_date=inputs[1].strip(),
             )
         df = self._convert_seconds_to_minutes(df, self.variables_in_seconds)
         df = df.round(2)

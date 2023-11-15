@@ -2,8 +2,9 @@
 Affect - Sleep Average
 '''
 
-from tasks.affect.base import Affect
 from typing import List
+import os
+from tasks.affect.base import Affect
 
 
 class SleepAVG(Affect):
@@ -11,7 +12,8 @@ class SleepAVG(Affect):
     chat_name: str = "SleepAVG"
     description: str = "Return the sleep average between start date and end date"
     dependencies: List[str] = []
-    inputs: List[str] = ["start date of the sleep data in string with the following format: '%Y-%m-%d'",
+    inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
+                         "start date of the sleep data in string with the following format: '%Y-%m-%d'",
                          "end date of the sleep data in string with the following format: '%Y-%m-%d'"]
     outputs: List[str] = ["total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
                           "awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
@@ -31,6 +33,7 @@ class SleepAVG(Affect):
     output_type: bool = False
     #
     file_name: str = 'sleep.csv'
+    device_name: str = 'oura'
     local_dir: str = 'data/affect'
     columns_to_keep: List[str] = ['total', 'awake', 'light', 'rem', 'deep',
                                   'onset_latency', 'midpoint_time',
@@ -54,11 +57,13 @@ class SleepAVG(Affect):
     ) -> str:
         inputs = self.parse_input(input)
         #checking
+        user_id = inputs[0].strip()
+        full_dir = os.path.join(self.local_dir, user_id, self.device_name)
         df = self._get_data(
-            local_dir=self.local_dir,
+            local_dir=full_dir,
             file_name=self.file_name,
-            start_date=inputs[0].strip(),
-            end_date=inputs[1].strip(),
+            start_date=inputs[1].strip(),
+            end_date=inputs[2].strip(),
             )
         df = df.loc[:, self.columns_to_keep]
         df.columns = self.columns_revised
