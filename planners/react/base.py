@@ -71,11 +71,9 @@ Thought: {agent_scratchpad}"""
     # if len(previous_actions) > 0:
       # prompt += "\nThought:"
 
-    print("prompt ///////", prompt)
     kwargs["max_tokens"] = 150
     kwargs["stop"] = self._stop
     response = self._planner_model.generate(query=prompt, **kwargs)
-    print("response ///////", response, "\n")
 
     index = min([response.find(text) for text in self._stop])
     index1 = response.find("\nAction:")
@@ -99,7 +97,6 @@ Thought: {agent_scratchpad}"""
     )
 
     action_match = re.search(regex, query, re.DOTALL)
-    print("action match", action_match)
     if action_match and includes_answer:
       if query.find(FINAL_ANSWER_ACTION) < query.find(action_match.group(0)):
         # if final answer is before the hallucination, return final answer

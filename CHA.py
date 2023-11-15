@@ -18,6 +18,7 @@ class CHA(BaseModel):
   response_generator: str = "base-generator"
   response_generator_llm: str = "openai"
   meta: List[str] = []
+  verbose: bool = False
 
   def _generate_history(
                   self, 
@@ -46,13 +47,14 @@ class CHA(BaseModel):
     if self.orchestrator == None:
       self.orchestrator = Orchestrator.initialize(      
         planner_llm=self.planner_llm,
-        planner=self.planner, 
-        datapipe=self.datapipe,
-        promptist=self.promptist,
-        response_generator=self.response_generator,
+        planner_name=self.planner, 
+        datapipe_name=self.datapipe,
+        promptist_name=self.promptist,
+        response_generator_name=self.response_generator,
         response_generator_llm=self.response_generator_llm,
         available_tasks=tasks_list, 
         sync_browser=self.sync_browser,
+        verbose=self.verbose,
         **kwargs
       )
 
