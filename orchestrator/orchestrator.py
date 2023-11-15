@@ -31,6 +31,7 @@ class Orchestrator(BaseModel):
   orchestrator_logger: logging.Logger = None
   final_answer_generator_logger: logging.Logger = None
   promptist_logger: logging.Logger = None
+  error_logger: logging.Logger = None
 
   class Config:
     """Configuration for this pydantic object."""
@@ -48,6 +49,8 @@ class Orchestrator(BaseModel):
         self.final_answer_generator_logger.debug(message)
       if log_name == "promptist":
         self.promptist_logger.debug(message)
+      if log_name == "error":
+        self.error_logger.debug(message)
 
   @classmethod
   def initialize(
@@ -68,6 +71,7 @@ class Orchestrator(BaseModel):
       orchestrator_logger = CustomDebugFormatter.create_logger('Orchestrator', 'green')
       final_answer_generator_logger = CustomDebugFormatter.create_logger('Response Generator', 'blue')
       promptist_logger = CustomDebugFormatter.create_logger('Promptist', 'blue')
+      error_logger = CustomDebugFormatter.create_logger('Promptist', 'red')
 
     tasks = {}      
     for task in available_tasks:
@@ -99,6 +103,7 @@ class Orchestrator(BaseModel):
               orchestrator_logger=orchestrator_logger,
               final_answer_generator_logger=final_answer_generator_logger,
               promptist_logger=promptist_logger,
+              error_logger=error_logger
             )
 
   def process_meta(self) -> bool:
@@ -106,7 +111,7 @@ class Orchestrator(BaseModel):
   
   def execute_task(self, action) -> str:   
     retries = 0
-    self.print_log("task", f"\n\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")    
+    self.print_log("task", f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")    
     task_input = action.task_input
     if "datapipe" in task_input:
       self.print_log("task", "Tasks data is retrieved from the DataPipe\n")
@@ -123,10 +128,10 @@ class Orchestrator(BaseModel):
             f"The result of the tool ${task.name}$ is stored in the datapipe with key: $datapipe:{key}$"
             "pass this key to other tools to get access to the result."
           )
-        self.print_log("task", f"Task is executed successfully\nResult: {result}\n\n")
+        self.print_log("task", f"Task is executed successfully\nResult: {result}\n---------------\n")
         return result, task.return_direct
       except Exception as e:
-        self.print_log("task", f"Error running task:\n{e}\n\n")
+        self.print_log("error", f"Error running task:\n{e}\n---------------\n")
         retries += 1
     return f"Error executing task {action.task}", False
 
@@ -197,19 +202,19 @@ class Orchestrator(BaseModel):
         if finished:
           break 
       except ValueError as error:
-        self.print_log("planner", "Planing Error:\n{error}\n\n")
+        self.print_log("error", "Planing Error:\n{error}\n\n")
         i += 1
         if i > self.max_retries:
           final_response = "Problem preparing the answer. Please try again."
           break
         previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
-    self.print_log("planner", f"Planner final response: {final_response}\n\nPlaning Ended...\n\n")        
+    self.print_log("planner", f"Planner final response: {final_response}\nPlaning Ended...\n\n")        
 
     final_response = self.generate_prompt(final_response)
 
-    self.print_log("response_generator", "Final Answer Generation Started...\n\n")
+    self.print_log("response_generator", "Final Answer Generation Started...\n")
     final_response = self.generate_final_answer(query=query, thinker=final_response)
-    self.print_log("response_generator", f"{final_response}\n\nFinal Answer Generation Ended.\n\n")
+    self.print_log("response_generator", f"Response: {final_response}\n\nFinal Answer Generation Ended.\n")
 
     if "google_translate" in self.available_tasks:
       final_response =  self.available_tasks["google_translate"].execute(f"{final_response}$#{source_language}")[0]     
