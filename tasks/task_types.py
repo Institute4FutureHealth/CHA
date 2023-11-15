@@ -11,6 +11,7 @@ class TaskType(str, Enum):
   NAVIGATE = "navigate"
   AFFECT_SLEEP_AVG = "sleep_avg"
   AFFECT_SLEEP_GET = "sleep_get"
+  AFFECT_SLEEP_TREND = "sleep_trend"
   GOOGLE_TRANSLATE = "google_translate"
   ASK_USER = "ask_user"
   TEST_FILE = "test_file"

@@ -4,9 +4,10 @@ Affect - Base
 
 import os
 import pandas as pd
+from scipy.stats import linregress
 import requests
-from tasks.task import BaseTask
 from typing import List
+from tasks.task import BaseTask
 
 
 class Affect(BaseTask):
@@ -81,3 +82,24 @@ class Affect(BaseTask):
         result_string = ", ".join(formatted_values)
 
         return result_string
+
+
+    def _calculate_slope(
+            self,
+            df: pd.DataFrame
+    ) -> pd.DataFrame:
+        # Create a new DataFrame to store the slopes
+        df_out = pd.DataFrame()
+        # Iterate over columns
+        columns_list = [col for col in df.columns if 'date' not in col.lower()]
+        for column in columns_list:
+            # Get the x values (dates) and y values (column values)
+            # Convert date to numeric days
+            x = pd.to_numeric((
+                df['date'] - df['date'].min()) / pd.to_timedelta(1, unit='D'))
+            y = df[column]
+            # Calculate linear regression parameters
+            slope, intercept, r_value, p_value, std_err = linregress(x, y)
+            # Add the slope to the result DataFrame
+            df_out[column] = [slope]
+        return df_out
