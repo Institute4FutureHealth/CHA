@@ -1,5 +1,5 @@
 from tasks.playwright.base import BaseBrowser
-from typing import List
+from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -23,11 +23,10 @@ class Navigate(BaseBrowser):
         raise ValueError("URL scheme must be 'http' or 'https'")
     return url
 
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
-    inputs = self.parse_input(input)
     self.validate_url(inputs[0].strip())
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")

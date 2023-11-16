@@ -74,7 +74,6 @@ Thought: {agent_scratchpad}"""
     kwargs["max_tokens"] = 150
     kwargs["stop"] = self._stop
     response = self._planner_model.generate(query=prompt, **kwargs)
-    print("heree///", response)
     index = min([response.find(text) for text in self._stop])
     index1 = response.find("\nAction:")
     if index1 == -1:

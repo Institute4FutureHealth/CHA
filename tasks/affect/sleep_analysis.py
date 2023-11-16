@@ -2,7 +2,7 @@
 Affect - Sleep Analysis
 '''
 
-from typing import List
+from typing import List, Any
 import os
 from tasks.affect.base import Affect
 
@@ -51,12 +51,12 @@ class SleepAnalysis(Affect):
                                        'sleep_onset_latency', 'midpoint_time_of_sleep']
 
 
-    def execute(
+    def _execute(
         self,
-        input: str,
+        inputs: List[Any],
     ) -> str:
-        inputs = self.parse_input(input)
         #checking
+        print("task inside ", inputs)
         df = self._string_output_to_dataframe(inputs[0].strip())
         analysis_type = inputs[1].strip()
         if analysis_type == 'average':

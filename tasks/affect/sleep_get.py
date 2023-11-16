@@ -2,7 +2,7 @@
 Affect - Sleep Average
 '''
 
-from typing import List
+from typing import List, Any
 import os
 from tasks.affect.base import Affect
 
@@ -52,11 +52,10 @@ class SleepGet(Affect):
                                        'sleep_onset_latency', 'midpoint_time_of_sleep']
 
 
-    def execute(
+    def _execute(
         self,
-        input: str,
+        inputs: List[Any],
     ) -> str:
-        inputs = self.parse_input(input)
         #checking
         user_id = inputs[0].strip()
         full_dir = os.path.join(self.local_dir, user_id, self.device_name)

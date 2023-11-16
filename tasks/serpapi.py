@@ -78,12 +78,11 @@ class SerpAPI(BaseTask):
     return toret
 
 
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
     """Run query through SerpAPI and parse result."""
-    inputs = self.parse_input(input)
     return self._process_response(self.results(inputs[0]))
 
   def explain(

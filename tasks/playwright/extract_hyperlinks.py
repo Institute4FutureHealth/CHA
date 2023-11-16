@@ -47,11 +47,10 @@ class ExtractHyperlinks(BaseBrowser):
     # Return the list of links as a JSON string
     return json.dumps(links)
 
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
-    inputs = self.parse_input(input)
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")
     page = get_current_page(self.sync_browser)

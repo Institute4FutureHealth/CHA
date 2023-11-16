@@ -94,6 +94,7 @@ class Affect(BaseTask):
         data_dict = {}
         # Iterate through the pairs and extract column and value
         for pair in column_value_pairs:
+            print("pair", pair)
             # Split each pair into column and value
             column, value = pair.split('=')
             # Strip any leading or trailing whitespaces

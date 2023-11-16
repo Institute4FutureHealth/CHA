@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List, Any
+from datapipes.datapipe import DataPipe
 from pydantic import BaseModel
 
 class BaseTask(BaseModel):
@@ -11,6 +12,7 @@ class BaseTask(BaseModel):
   dependencies: List[str] = []
   inputs: List[str] = []
   outputs: List[str] = []
+  datapipe: DataPipe = None
   #False if the output should directly passed back to the planner.
   #True if it should be stored in datapipe
   output_type: bool = False
@@ -21,9 +23,6 @@ class BaseTask(BaseModel):
   class Config:
     """Configuration for this pydantic object."""
     arbitrary_types_allowed = True
-
-  def __init__(self, **kwargs):
-    super().__init__()
 
   @property
   def name(self):
@@ -38,19 +37,39 @@ class BaseTask(BaseModel):
     return ", ".join([f"{str(i)}-{input}" for i, input in enumerate(self.inputs)])
 
   @abstractmethod
-  def execute(
+  def _execute(
         self,
-        input: str,
+        inputs: List[Any],
       ) -> str:
     """
     """
 
-  def parse_input(
+  def _parse_input(
         self,
-        input: str,
+        input_args: str,
       ) -> List[str]:
-    inputs = input.split(",")
-    return [arg.strip() for arg in inputs]
+    inputs = input_args.split(",")
+    return [self.datapipe.retrieve(arg.strip().split(":")[-1]) if "datapipe" in arg else arg.strip() for arg in inputs]
+
+  def _post_execute(
+          self,
+          result
+        ):
+    if self.output_type:
+      key = self.datapipe.store(result)      
+      return (
+        f"The result of the tool ${self.name}$ is stored in the datapipe with key: $datapipe:{key}$"
+        " pass this key to other tools to get access to the result."
+      )
+    return result
+
+  def execute(
+        self,
+        input_args: str
+      ) -> str:
+    inputs = self._parse_input(input_args)
+    result = self._execute(inputs)
+    return self._post_execute(result)
 
   def get_dict(self) -> str:
     inputs = ",".join(self.inputs)

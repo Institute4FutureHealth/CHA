@@ -73,8 +73,13 @@ class Orchestrator(BaseModel):
       promptist_logger = CustomDebugFormatter.create_logger('Promptist', 'blue')
       error_logger = CustomDebugFormatter.create_logger('Error', 'red')
 
+    datapipe = initialize_datapipe(datapipe=datapipe_name, **kwargs)
+    if verbose:
+      orchestrator_logger.debug(f"Datapipe {datapipe_name} is successfully initialized.\n")
+
     tasks = {}      
     for task in available_tasks:
+      kwargs["datapipe"] = datapipe
       tasks[task] = initialize_task(task=task, **kwargs)
       if verbose:
         orchestrator_logger.debug(f"Task '{task}' is successfully initialized.")
@@ -85,11 +90,7 @@ class Orchestrator(BaseModel):
     
     response_generator = initialize_response_generator(response_generator=response_generator_name, llm=response_generator_llm, **kwargs)
     if verbose:
-      orchestrator_logger.debug(f"Response Generator {response_generator_name} is successfully initialized.")
-    
-    datapipe = initialize_datapipe(datapipe=datapipe_name, **kwargs)
-    if verbose:
-      orchestrator_logger.debug(f"Datapipe {datapipe_name} is successfully initialized.\n")
+      orchestrator_logger.debug(f"Response Generator {response_generator_name} is successfully initialized.")      
 
     return self(
               planner=planner, 
@@ -112,27 +113,17 @@ class Orchestrator(BaseModel):
   def execute_task(self, action) -> str:   
     retries = 0
     self.print_log("task", f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")    
-    task_input = action.task_input
-    if "datapipe" in task_input:
-      self.print_log("task", "Tasks data is retrieved from the DataPipe\n")
-      task_input = ",".join([(self.datapipe.retrieve(input_param.strip().split(":")[-1]) if "datapipe" in input_param else input_param) for input_param in action.task_input.split(",")])
-      print("task_innput", task_input)
+    task_input = action.task_input    
     
     while retries < self.max_task_execute_retries:
       try:
         task = self.available_tasks[action.task] 
-        result = task.execute(task_input)
-        if task.output_type:
-          key = self.datapipe.store(result)
-          self.print_log("task", f"Task result is stored in the DataPipe\n\n")
-          return (
-            f"The result of the tool ${task.name}$ is stored in the datapipe with key: $datapipe:{key}$"
-            "pass this key to other tools to get access to the result."
-          ), task.return_direct
+        result = task.execute(task_input)        
         self.print_log("task", f"Task is executed successfully\nResult: {result}\n---------------\n")
         return result, task.return_direct
       except Exception as e:
         self.print_log("error", f"Error running task:\n{e}\n---------------\n")
+        logging.exception()
         retries += 1
     return f"Error executing task {action.task}", False
 

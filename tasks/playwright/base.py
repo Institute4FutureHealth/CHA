@@ -22,7 +22,7 @@ class BaseBrowser(BaseTask):
 	sync_browser: Optional[Any] = None
 
 	def __init__(self, **kwargs):
-		super().__init__()
+		super().__init__(**kwargs)
 		if "sync_browser" in kwargs:
 			self.sync_browser = kwargs["sync_browser"]
 		if self.sync_browser is None:

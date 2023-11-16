@@ -1,6 +1,6 @@
 from __future__ import annotations
 from tasks.playwright.base import BaseBrowser
-from typing import TYPE_CHECKING, List, Sequence, Optional
+from typing import TYPE_CHECKING, List, Sequence, Optional, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -42,11 +42,10 @@ class GetElements(BaseBrowser):
         results.append(result)
     return results
 
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
-    inputs = self.parse_input(input)
     if self.sync_browser is None:
       raise ValueError(f"Synchronous browser not provided to {self.name}")
     page = get_current_page(self.sync_browser)

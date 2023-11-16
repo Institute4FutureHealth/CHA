@@ -16,18 +16,11 @@ class AskUser(BaseTask):
 
   translator: Any = None  #: :meta private:
 
-  def parse_input(
-        self,
-        input: str,
-      ) -> List[str]:
-    return input.split("$#")
-
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
     """Translate query"""
-    inputs = self.parse_input(input)    
     return inputs[0]
 
   def explain(

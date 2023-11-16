@@ -22,13 +22,11 @@ class Click(BaseBrowser):
       return selector
     return f"{selector} >> visible=1"
 
-  def execute(
+  def _execute(
     self,
-    input: str,
+    inputs: List[Any],
   ) -> str:
-    inputs = self.parse_input(input)
-    selector = inputs[0
-                      ]
+    selector = inputs[0]
     if self.sync_browser is None:
         raise ValueError(f"Synchronous browser not provided to {self.name}")
     page = get_current_page(self.sync_browser)
