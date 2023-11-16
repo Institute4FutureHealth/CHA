@@ -46,7 +46,7 @@ class Interface(BaseModel):
         extra = Extra.forbid
         arbitrary_types_allowed = True
 
-    def prepare_interface(self, respond, reset, available_tasks=[], share=False):
+    def prepare_interface(self, respond, reset, upload_meta, available_tasks=[], share=False):
         """
         Prepare the Gradio interface for the chatbot.
 
@@ -58,6 +58,7 @@ class Interface(BaseModel):
             self (object): The instance of the class.
             respond (function): The function to handle user input and generate responses.
             reset (function): The function to reset the chatbot state.
+            upload_meta (Any): meta data.
             available_tasks (list, optional): A list of available tasks. Defaults to an empty list.
             share (bool, optional): Flag indicating whether to enable sharing the interface. Defaults to False.
         Return:
@@ -74,13 +75,12 @@ class Interface(BaseModel):
         """
 
         with self.gr.Blocks() as demo:
-            chatbot = self.gr.Chatbot()
+            chatbot = self.gr.Chatbot(bubble_full_width=False)
             with self.gr.Row():
-                with self.gr.Column(scale=10):
-                    msg = self.gr.Textbox(label="Question", info="Put your query here and press enter.")
-                with self.gr.Column(scale=1):
-                    check_box = self.gr.Checkbox(value=True, label="Use History",
-                                                 info="If checked, the chat history will be sent over along with the next query.")
+                msg = self.gr.Textbox(scale=9, label="Question", info="Put your query here and press enter.")
+                btn = self.gr.UploadButton("📁", scale=1, file_types=["image", "video", "audio", "text"])
+                check_box = self.gr.Checkbox(scale=1, value=True, label="Use History",
+                                             info="If checked, the chat history will be sent over along with the next query.")
 
             with self.gr.Row():
                 tasks = self.gr.Dropdown(value=available_tasks, choices=available_tasks, multiselect=True,
@@ -90,6 +90,7 @@ class Interface(BaseModel):
 
             clear.click(reset)
             msg.submit(respond, [msg, chatbot, check_box, tasks], [msg, chatbot])
+            file_msg = btn.upload(upload_meta, [chatbot, btn], [chatbot], queue=False)
 
         demo.launch(share=share)
         self.interface = demo

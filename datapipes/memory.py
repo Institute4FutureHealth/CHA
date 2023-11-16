@@ -3,9 +3,9 @@ from abc import abstractmethod
 from datapipes.datapipe import DataPipe
 import uuid
 
-class Memory(DataPipe):
 
-    data: Optional[Dict[str, Dict]] = []
+class Memory(DataPipe):
+    data: Optional[Dict[str, Dict]] = {}
 
     def store(self, data) -> str:
         """
@@ -29,7 +29,8 @@ class Memory(DataPipe):
                 react = ReAct(llm=OpenAI())
 
         """
-        key = uuid.uuid4()
+
+        key = str(uuid.uuid4())
         self.data[key] = data
         return key
 

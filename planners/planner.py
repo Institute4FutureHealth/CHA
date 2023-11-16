@@ -73,6 +73,7 @@ class BasePlanner(BaseModel):
             self,
             query: str,
             history: str,
+            meta: str,
             previous_actions: List[Action],
             use_history: bool = False,
             **kwargs: Any,
@@ -83,6 +84,7 @@ class BasePlanner(BaseModel):
         Args:
             query (str): Input query.
             history (str): History information.
+            meta (str): meta information.
             previous_actions (List[Action]): List of previous actions.
             use_history (bool): Flag indicating whether to use history.
             **kwargs (Any): Additional keyword arguments.

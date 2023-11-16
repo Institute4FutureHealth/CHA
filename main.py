@@ -1,9 +1,7 @@
-from orchestrator.orchestrator import Orchestrator
-from interface.base import Interface
 from CHA import CHA
 
-cha = CHA()
-cha.run_interface()
+cha = CHA(verbose=True)
+cha.run_with_interface()
   
 # interface = Interface()
 # available_tasks=["serpapi"]

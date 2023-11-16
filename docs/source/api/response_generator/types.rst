@@ -15,12 +15,8 @@ It inherits from the Enum class in Python's enum module. The purpose of this enu
 a type of response generator, and it has only one allowed value, which is a string with the value "base-generator."
 
 
-.. code:: python
-
-    from enum import Enum 
-
-    class ResponseGeneratorType(str, Enum):
-    BASE_GENERATOR = "base-generator"
+.. literalinclude:: ../../../../response_generators/response_generator_types.py
+    :language: python
 
 
 
@@ -37,17 +33,8 @@ response generator classes (BaseResponseGenerator).
 
 
 
-.. code:: python
-
-    from typing import Dict, Type, Union
-
-    from response_generators.response_generator_types import ResponseGeneratorType
-    from response_generators.response_generator import BaseResponseGenerator
-
-
-    RESPONSE_GENERATOR_TO_CLASS: Dict[ResponseGeneratorType, Type[BaseResponseGenerator]] = {
-    ResponseGeneratorType.BASE_GENERATOR: BaseResponseGenerator
-    }
+.. literalinclude:: ../../../../response_generators/types.py
+    :language: python
 
 
 

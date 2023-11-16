@@ -24,6 +24,8 @@ extensions = [
     "sphinx_copybutton",
     #"sphinx_panels",
     #"IPython.sphinxext.ipython_console_highlighting",
+    "sphinxcontrib.video",
+    "sphinxcontrib.youtube",
 ]
 
 templates_path = ['_templates']

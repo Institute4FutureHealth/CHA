@@ -14,6 +14,9 @@ class BaseTask(BaseModel):
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
     output_type: bool = False
+    # False if planner should continue. True if after this task the planning should be
+    # on pause or stop. examples are when you have a task that asks user to provide more information
+    return_direct: bool = False
 
     class Config:
         """Configuration for this pydantic object."""
@@ -37,6 +40,10 @@ class BaseTask(BaseModel):
     @property
     def output_type(self):
         return self.output_type
+
+    @property
+    def return_direct(self):
+        return self.return_direct
 
     @abstractmethod
     def execute(
@@ -85,7 +92,8 @@ class BaseTask(BaseModel):
 
         """
 
-        return input.split(",")
+        inputs = input.split(",")
+        return [arg.strip() for arg in inputs.split(",")]
 
     def get_dict(self) -> str:
         """
