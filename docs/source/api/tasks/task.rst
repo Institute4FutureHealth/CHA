@@ -1,42 +1,6 @@
 Task
 ====
 
-........start sample autodoc for module........
------------------------------------------------
-
-    .. automodule:: tasks.task
-        :members:
-        :undoc-members:
-        :show-inheritance:
-        :no-index:
-
-........end sample autodoc for module........
------------------------------------------------
-
-
-
-........start sample autodoc for class........
------------------------------------------------
-
-    .. autoclass:: tasks.task.BaseTask
-        :members:
-        :undoc-members:
-        :show-inheritance:
-        :no-index:
-
-........end sample autodoc for class........
------------------------------------------------
-
-
-
-
-
-
-
-
-|
-
-
 This class defines a base class named BaseTask. This class serves as a foundation for defining common properties 
 and behaviors among various tasks in the system.
 

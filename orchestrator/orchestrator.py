@@ -1,6 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-import traceback
+from typing import Any, Dict, List, Union
 from planners.planner import BasePlanner
 from planners.action import Action, PlanFinish
 from datapipes.datapipe import DataPipe
@@ -12,6 +11,12 @@ from datapipes.initialize_datapipe import initialize_datapipe
 from response_generators.initialize_response_generator import initialize_response_generator
 from pydantic import BaseModel
 from CustomDebugFormatter import CustomDebugFormatter
+
+from datapipes.datapipe_types import DatapipeType
+from planners.planner_types import PlannerType
+from response_generators.response_generator_types import ResponseGeneratorType
+from tasks.task_types import TaskType
+from llms.llm_types import LLMType
 import logging
 
 
@@ -56,28 +61,28 @@ class Orchestrator(BaseModel):
     @classmethod
     def initialize(
             self,
-            planner_llm: str = "openai",
-            planner_name: str = "zero-shot-react-planner",
-            datapipe_name: str = "memory",
+            planner_llm: str = LLMType.OPENAI,
+            planner_name: str = PlannerType.ZERO_SHOT_REACT_PLANNER,
+            datapipe_name: str = DatapipeType.MEMORY,
             promptist_name: str = "",
-            response_generator_name: str = "base-generator",
-            response_generator_llm: str = "openai",
+            response_generator_llm: str = LLMType.OPENAI,
+            response_generator_name: str = ResponseGeneratorType.BASE_GENERATOR,
             available_tasks: List[str] = [],
             verbose: bool = False,
             **kwargs
     ) -> Orchestrator:
         """
-        Initialize the Orchestrator with specified components and tasks.
+        Initialize the Orchestrator with selected components and available tasks.
 
         Args:
-            planner_llm (str): Language model for the planner.
-            planner_name (str): Name of the planner.
-            datapipe_name (str): Name of the data pipe.
-            promptist_name (str): Name of the promptist.
-            response_generator_name (str): Name of the response generator.
-            response_generator_llm (str): Language model for the response generator.
-            available_tasks (List[str]): List of available task names.
-            verbose (bool): False
+            planner_llm (str): LLMType to be used as LLM for planner.
+            planner_name (str): PlannerType to be used as task planner.
+            datapipe_name (str): DatapipeType to be used as data pipe.
+            promptist_name (str): Not implemented yet!
+            response_generator_llm (str): LLMType to be used as LLM for response generator.
+            response_generator_name (str): ResponseGeneratorType to be used as response generator.
+            available_tasks (List[str]): List of available task using TaskType.
+            verbose (bool): Specifies if the debugging logs be printed or not.
             **kwargs (Any): Additional keyword arguments.
         Return:
             Orchestrator: Initialized Orchestrator instance.
@@ -86,9 +91,29 @@ class Orchestrator(BaseModel):
 
         Example:
             .. code-block:: python
+                from datapipes.datapipe_types import DatapipeType
+                from planners.planner_types import PlannerType
+                from response_generators.response_generator_types import ResponseGeneratorType
+                from tasks.task_types import TaskType
+                from llms.llm_types import LLMType
+                from orchestrator.orchestrator import Orchestrator
 
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
+                #If you want to use playwright task  
+                from tasks.playwright.utils import create_sync_playwright_browser
+                sync_browser = create_sync_playwright_browser()  
+                #
+                orchestrator = Orchestrator.initialize(      
+                  planner_llm=LLMType.OPENAI,
+                  planner_name=PlannerType.ZERO_SHOT_REACT_PLANNER, 
+                  datapipe_name=DatapipeType.MEMORY,
+                  promptist_name="",
+                  response_generator_llm=LLMType.OPENAI,
+                  response_generator_name=ResponseGeneratorType.BASE_GENERATOR,
+                  available_tasks=[TaskType.SERPAPI, TaskType.EXTRACT_TEXT], 
+                  sync_browser=sync_browser,
+                  verbose=self.verbose,
+                  **kwargs
+                )
 
         """
 
@@ -154,22 +179,14 @@ class Orchestrator(BaseModel):
 
         return False
 
-    def execute_task(self, action) -> str:
+    def execute_task(self, action: Action) -> str:
         """
-        Execute the specified task and store the result in the datapipe.
+        Execute the specified task based on the planner selected **Action**.
 
         Args:
-            action (object): Task action to be executed.
+            action (Action): Action to be executed.
         Return:
             str: Result of the task execution.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

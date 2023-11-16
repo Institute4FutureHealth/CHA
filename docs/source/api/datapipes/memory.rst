@@ -4,7 +4,7 @@ Memory
 
 
 
-This class inherits from DataPipe and provides methods to store and retrieve data using unique keys.
+This class inherits from DataPipe and uses simple on memory python dictionary.
 
 
 

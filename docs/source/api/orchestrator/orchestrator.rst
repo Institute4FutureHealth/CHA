@@ -3,18 +3,16 @@ Orchestrator
 
 
 
-
-
-This code defines a class called "Orchestrator" that inherits from the "BaseModel" class of the pydantic library. 
-The Orchestrator class represents an orchestrator that coordinates the execution of tasks based on input queries.
+The Orchestrator class is the main execution heart of the CHA. All the components of the Orchestrator are initialized and executed here. \
+The Orchestrator will start a new answering cycle by calling the `run` method. From there, the planning is started, then tasks will be executed \
+one by one till the **Task Planner** decides that no more information is needed. Finally the **Task Planner** final answer \
+will be routed to the **Final Response Generator** to generate an empathic final response that is returned to the user.
 
 
 
 
 - ``initialize`` : This class method initializes the Orchestrator by setting up the planner, datapipe, promptist, response generator, and available tasks. 
-  It takes several parameters such as the names of the planner, datapipe, promptist, response generator, and a list of available tasks. It initializes the tasks, planner, response generator, and datapipe using their corresponding initialization methods. 
-  Finally, it returns an instance of the Orchestrator class.
-
+  
     .. autofunction:: orchestrator.orchestrator.Orchestrator.initialize
         :no-index:
 

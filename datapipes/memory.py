@@ -9,10 +9,11 @@ class Memory(DataPipe):
 
     def store(self, data) -> str:
         """
-        Store data using a generated key and return the key.
+        Stores data using a randomly generated key and returns the key.
 
-        This method stores the provided data in the chatbot's data dictionary using a generated key.
-        The generated key is a UUID (Universally Unique Identifier). The stored data can later be accessed using this key.
+        This method stores the provided data in the memory data dictionary using a generated key.
+        The generated key is created using UUID (Universally Unique Identifier) ensuring having unique keys for multiple data stores. \
+        The stored data can later be accessed using this key.
 
         Args:
             self (object): The instance of the class.
@@ -25,8 +26,9 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
+                from datapipes.datapipe_types import DatapipeType
+                memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
+                key = memory.store("this is sample string to be stored")
 
         """
 
@@ -36,9 +38,9 @@ class Memory(DataPipe):
 
     def retrieve(self, key) -> Any:
         """
-        Retrieve data associated with the given key.
+        Retrieves stored data using the given key.
 
-        This method retrieves the data associated with the provided key from the chatbot's data dictionary.
+        This method retrieves the data associated with the provided key from the memory data dictionary.
         If the key does not exist in the dictionary, it raises a `ValueError` with an appropriate error message.
 
         Args:
@@ -54,8 +56,9 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
+                from datapipes.datapipe_types import DatapipeType
+                memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
+                memory.retrieve("UUID key returned from store")
 
         """
 
