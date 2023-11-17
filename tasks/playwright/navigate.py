@@ -28,14 +28,6 @@ class Navigate(BaseBrowser):
         Raise:
             ValueError: If the URL scheme is not 'http' or 'https'.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         parsed_url = urlparse(url)
@@ -54,14 +46,6 @@ class Navigate(BaseBrowser):
             input (str): The input string containing the URL to navigate to.
         Return:
             str: A message indicating whether the navigation was successful, including the URL and status code if successful, or an error message if unsuccessful.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -82,14 +66,6 @@ class Navigate(BaseBrowser):
 
         Return:
             str: A brief explanation of the task, in this case, "This task extracts all of the hyperlinks."
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

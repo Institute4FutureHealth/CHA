@@ -17,6 +17,7 @@ class OpenAILLM(BaseLLM):
         "gpt-3.5-turbo-0301": 4096,
         "gpt-3.5-turbo-0613": 4096,
         "gpt-3.5-turbo-16k": 16385,
+        "gpt-3.5-turbo-1106": 16385,
         "gpt-3.5-turbo-16k-0613": 16385,
         "text-ada-001": 2049,
         "ada": 2049,
@@ -52,14 +53,6 @@ class OpenAILLM(BaseLLM):
         Raise:
             ValueError: If the anthropic python package cannot be imported.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         openai_api_key = get_from_dict_or_env(
@@ -84,14 +77,6 @@ class OpenAILLM(BaseLLM):
         Return:
             List[str]: A list of available model names.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return self.models.keys()
@@ -108,14 +93,6 @@ class OpenAILLM(BaseLLM):
             query (str): The query to check.
         Return:
             bool: True if the token count exceeds the maximum, False otherwise.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -148,13 +125,6 @@ class OpenAILLM(BaseLLM):
             str: The generated completion text.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return response.choices[0].message.content
@@ -169,21 +139,14 @@ class OpenAILLM(BaseLLM):
             Any: The prepared prompt.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return [{"role": "system", "content": prompt}]
 
     def generate(
-            self,
-            query: str,
-            **kwargs: Any
+        self,
+        query: str,
+        **kwargs: Any
     ) -> str:
         """
         Generate a response based on the provided query.
@@ -197,16 +160,8 @@ class OpenAILLM(BaseLLM):
             ValueError: If the model name is not specified or is not supported.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        model_name = "gpt-4-0613"
+        model_name = "gpt-3.5-turbo-1106"
         if "model_name" in kwargs:
             model_name = kwargs["model_name"]
         if model_name not in self.get_model_names():

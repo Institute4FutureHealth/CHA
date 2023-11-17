@@ -34,13 +34,6 @@ class GoogleTranslate(BaseTask):
             ImportError: If the 'playwright' package is not installed.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         try:
@@ -66,14 +59,6 @@ class GoogleTranslate(BaseTask):
         Return:
             List[str]: List of parsed strings.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return input.split("$#")
@@ -92,14 +77,6 @@ class GoogleTranslate(BaseTask):
         Raise:
             NotImplementedError: Subclasses must implement the execute method.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         inputs = self.parse_input(input)
@@ -116,14 +93,6 @@ class GoogleTranslate(BaseTask):
 
         Return:
             str: Sample explanation for the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

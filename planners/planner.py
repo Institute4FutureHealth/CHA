@@ -27,23 +27,15 @@ class BasePlanner(BaseModel):
     @property
     def _planner_prompt(self):
         return """
-    Sample prompt
-    """
+        Sample prompt
+        """
 
     def get_available_tasks(self) -> str:
         """
-        Get a formatted string representation of available tasks.
+        Get a string formatted representation of available tasks.
 
         Return:
             str: Formatted string of available tasks.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -51,18 +43,10 @@ class BasePlanner(BaseModel):
 
     def get_available_tasks_list(self) -> List[str]:
         """
-        Get a list of names of available tasks.
+        Returns a list of names of available tasks.
 
         Return:
             List[str]: List of task names.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -91,14 +75,6 @@ class BasePlanner(BaseModel):
         Return:
             List[Union[Action, PlanFinish]]: List of planned actions or finishing signals.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
     @abstractmethod
@@ -106,22 +82,14 @@ class BasePlanner(BaseModel):
             self,
             query: str,
             **kwargs: Any,
-    ) -> List[Action]:
+    ) -> List[Union[Action, PlanFinish]]:
         """
-        Abstract method for parsing the input query into actions.
+        Abstract method for parsing the planner output into actions or a final answer.
 
         Args:
             query (str): Input query.
             **kwargs (Any): Additional keyword arguments.
         Return:
-            List[Action]: List of parsed actions.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
+            Union[Action, PlanFinish]: List of parsed actions or finished plan.
 
         """

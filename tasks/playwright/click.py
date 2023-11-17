@@ -27,14 +27,6 @@ class Click(BaseBrowser):
         Return:
             str: The effective CSS selector.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         if not self.visible_only:
@@ -52,14 +44,6 @@ class Click(BaseBrowser):
             input (str): The input string containing the CSS selector.
         Return:
             str: A message indicating the success or failure of the click operation.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -91,14 +75,6 @@ class Click(BaseBrowser):
 
         Return:
             str: A brief explanation of the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

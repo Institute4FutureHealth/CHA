@@ -37,63 +37,39 @@ class BaseTask(BaseModel):
     def inputs(self):
         return ", ".join([f"{str(i)}-{input}" for i, input in enumerate(self.inputs)])
 
-    @property
-    def output_type(self):
-        return self.output_type
-
-    @property
-    def return_direct(self):
-        return self.return_direct
-
     @abstractmethod
     def execute(
-            self,
-            input: str,
-    ) -> str:
+        self,
+        input: str,
+      ) -> str:
         """
-        Abstract method representing the execution of the task.
+            Abstract method representing the execution of the task.
 
-        Args:
-            input (str): Input data for the task.
-        Return:
-            str: Result of the task execution.
-        Raise:
-            NotImplementedError: Subclasses must implement the execute method.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
+            Args:
+                input (str): Input data for the task.
+            Return:
+                str: Result of the task execution.
+            Raise:
+                NotImplementedError: Subclasses must implement the execute method.
 
         """
 
     def parse_input(
-            self,
-            input: str,
-    ) -> List[str]:
+        self,
+        input: str,
+      ) -> List[str]:
         """
-        Parse the input string into a list of strings.
+            Parse the input string into a list of strings.
 
-        Args:
-            input (str): Input string to be parsed.
-        Return:
-            List[str]: List of parsed strings.
+            Args:
+                input (str): Input string to be parsed.
+            Return:
+                List[str]: List of parsed strings.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
-        """
-
+        """  
         inputs = input.split(",")
-        return [arg.strip() for arg in inputs.split(",")]
+        return [arg.strip() for arg in inputs]
 
     def get_dict(self) -> str:
         """
@@ -102,13 +78,6 @@ class BaseTask(BaseModel):
         Return:
             str: String representation of the task dictionary.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -132,15 +101,8 @@ class BaseTask(BaseModel):
             str: Sample explanation for the task.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return """
-      Sample Explanation
-    """
+        Sample Explanation
+        """

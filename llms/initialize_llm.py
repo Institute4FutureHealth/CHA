@@ -1,10 +1,10 @@
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 from llms.llm import BaseLLM
 from llms.types import LLM_TO_CLASS
-
+from llms.llm_types import LLMType
 
 def initialize_llm(
-        llm: str = "openai",
+        llm: str = LLMType.OPENAI,
         **kwargs: Any
 ) -> BaseLLM:
     """
@@ -23,8 +23,8 @@ def initialize_llm(
     Example:
         .. code-block:: python
 
-            from langchain import ReActChain, OpenAI
-            react = ReAct(llm=OpenAI())
+            from llms.llm_types import LLMType
+            llm = initialize_llm(llm=LLMType.OPENAI)
 
     """
 
@@ -35,5 +35,5 @@ def initialize_llm(
         )
 
     llm_cls = LLM_TO_CLASS[llm]
-    llm = llm_cls()
+    llm = llm_cls(**kwargs)
     return llm

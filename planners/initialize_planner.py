@@ -4,16 +4,18 @@ from llms.llm import BaseLLM
 from planners.planner import BasePlanner
 from planners.types import PLANNER_TO_CLASS
 from llms.types import LLM_TO_CLASS
+from llms.llm_types import LLMType
+from planners.planner_types import PlannerType
 
 
 def initialize_planner(
         tasks: List[BaseTask],
-        llm: str = "openai",
-        planner: str = "zero-shot-react-planner",
+        llm: str = LLMType.OPENAI,
+        planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER,
         **kwargs: Any
 ) -> BasePlanner:
     """
-    Initialize a planner with specified tasks, language model, and planner type.
+    Initialize a planner with specified tasks, language model type, and planner type.
 
     Args:
         tasks (List[BaseTask]): List of tasks to be associated with the planner.
@@ -30,8 +32,10 @@ def initialize_planner(
     Example:
         .. code-block:: python
 
-            from langchain import ReActChain, OpenAI
-            react = ReAct(llm=OpenAI())
+            from planners.planner_types import PlannerType
+            from llms.llm_types import LLMType
+            from tasks.task_types import TaskType
+            planner = initialize_planner(tasks=[TaskType.SERPAPI], llm=LLMType.OPENAI, planner=PlannerType.ZERO_SHOT_REACT_PLANNER)
 
     """
 

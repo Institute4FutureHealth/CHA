@@ -30,14 +30,6 @@ class ExtractHyperlinks(BaseBrowser):
         Raise:
             ImportError: If 'beautifulsoup4' package is not installed.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         try:
@@ -61,13 +53,6 @@ class ExtractHyperlinks(BaseBrowser):
         Return:
             str: JSON string containing the extracted hyperlinks.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -101,14 +86,6 @@ class ExtractHyperlinks(BaseBrowser):
         Raise:
             ValueError: If the synchronous browser is not provided.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         inputs = self.parse_input(input)
@@ -127,13 +104,6 @@ class ExtractHyperlinks(BaseBrowser):
         Return:
             str: An explanation of the task.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

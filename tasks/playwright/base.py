@@ -42,14 +42,6 @@ class BaseBrowser(BaseTask):
         Raise:
             ImportError: If the 'playwright' package is not installed.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         try:

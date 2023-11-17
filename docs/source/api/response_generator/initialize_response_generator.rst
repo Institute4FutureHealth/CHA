@@ -1,11 +1,11 @@
-Initialize response generators
+Initialize Response Generators
 ==============================
 
 
 
 
 
-Initialize and return an instance of a response generator.
+Initializes and returns an instance of a Response Generator.
 
 
 

@@ -39,13 +39,6 @@ class GetElements(BaseBrowser):
             List[dict]: A list of dictionaries containing the retrieved elements and their attributes.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         elements = page.query_selector_all(selector)
@@ -78,13 +71,6 @@ class GetElements(BaseBrowser):
             ValueError: If the synchronous browser is not provided.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         inputs = self.parse_input(input)
@@ -103,14 +89,6 @@ class GetElements(BaseBrowser):
 
         Return:
             str: A brief explanation of the GetElements task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

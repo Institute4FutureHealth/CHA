@@ -16,6 +16,7 @@ setup(
     packages=find_packages(),
     url="https://github.com/Mahyar12/CHA",
     install_requires=[
+        'httpcore==1.0.2',
         'requests',
         'gradio',
         'pydantic'

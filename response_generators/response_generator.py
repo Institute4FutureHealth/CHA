@@ -41,12 +41,12 @@ class BaseResponseGenerator(BaseModel):
             **kwargs: Any,
     ) -> str:
         """
-        Generate a response based on the input prefix, query, and thinker.
+        Generate a response based on the input prefix, query, and thinker (task planner).
 
         Args:
             prefix (str): Prefix to be added to the response.
             query (str): User's input query.
-            thinker (str): Thinker's generated answer.
+            thinker (str): Thinker's (Task Planner) generated answer.
             **kwargs (Any): Additional keyword arguments.
         Return:
             str: Generated response.
@@ -56,9 +56,10 @@ class BaseResponseGenerator(BaseModel):
         Example:
             .. code-block:: python
 
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
+                from llms.llm_types import LLMType
+                from response_generators.response_generator_types import ResponseGeneratorType
+                response_generator = initialize_planner(llm=LLMType.OPENAI, response_generator=ResponseGeneratorType.BASE_GENERATOR)
+                response_generator.generate(query="How can I improve my sleep?", thinker="Based on data found on the internet there are several ways to improve your sleep ...")
         """
 
         prompt = self._generator_prompt.replace("{query}", query) \

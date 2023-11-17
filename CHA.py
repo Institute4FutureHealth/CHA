@@ -6,17 +6,23 @@ from tasks.types import TASK_TO_CLASS
 from tasks.playwright.utils import create_sync_playwright_browser
 from pydantic import BaseModel
 
+from datapipes.datapipe_types import DatapipeType
+from planners.planner_types import PlannerType
+from response_generators.response_generator_types import ResponseGeneratorType
+from tasks.task_types import TaskType
+from llms.llm_types import LLMType
+
 class CHA(BaseModel):
   name: str = "CHA"
   previous_actions: List[Action] = []
   orchestrator: Orchestrator = None
   sync_browser: Any = None
-  planner_llm: str = "openai"
-  planner: str = "zero-shot-react-planner"
-  datapipe: str = "memory"
+  planner_llm: str = LLMType.OPENAI
+  planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER
+  datapipe: str = DatapipeType.MEMORY
   promptist: str = ""
-  response_generator: str = "base-generator"
-  response_generator_llm: str = "openai"
+  response_generator_llm: str = LLMType.OPENAI
+  response_generator: str = ResponseGeneratorType.BASE_GENERATOR
   meta: List[str] = []
   verbose: bool = False
 

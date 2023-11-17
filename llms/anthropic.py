@@ -66,13 +66,6 @@ class AntropicLLM(BaseLLM):
             List[str]: A list of available model names.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return self.models.keys()
@@ -87,13 +80,6 @@ class AntropicLLM(BaseLLM):
         Return:
             bool: True if the token count exceeds the maximum, False otherwise.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -111,13 +97,6 @@ class AntropicLLM(BaseLLM):
             str: The generated completion text.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return response.completion
@@ -131,13 +110,6 @@ class AntropicLLM(BaseLLM):
         Return:
             Any: The prepared prompt.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -158,14 +130,6 @@ class AntropicLLM(BaseLLM):
             str: The generated response.
         Raise:
             ValueError: If the model name is not specified or is not supported.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

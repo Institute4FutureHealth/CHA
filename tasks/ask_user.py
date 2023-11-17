@@ -29,14 +29,6 @@ class AskUser(BaseTask):
         Return:
             List[str]: List of parsed strings.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return input.split("$#")

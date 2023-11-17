@@ -91,6 +91,7 @@ class Orchestrator(BaseModel):
 
         Example:
             .. code-block:: python
+            
                 from datapipes.datapipe_types import DatapipeType
                 from planners.planner_types import PlannerType
                 from response_generators.response_generator_types import ResponseGeneratorType
@@ -103,47 +104,56 @@ class Orchestrator(BaseModel):
                 sync_browser = create_sync_playwright_browser()  
                 #
                 orchestrator = Orchestrator.initialize(      
-                  planner_llm=LLMType.OPENAI,
-                  planner_name=PlannerType.ZERO_SHOT_REACT_PLANNER, 
-                  datapipe_name=DatapipeType.MEMORY,
-                  promptist_name="",
-                  response_generator_llm=LLMType.OPENAI,
-                  response_generator_name=ResponseGeneratorType.BASE_GENERATOR,
-                  available_tasks=[TaskType.SERPAPI, TaskType.EXTRACT_TEXT], 
-                  sync_browser=sync_browser,
-                  verbose=self.verbose,
-                  **kwargs
+                    planner_llm=LLMType.OPENAI,
+                    planner_name=PlannerType.ZERO_SHOT_REACT_PLANNER, 
+                    datapipe_name=DatapipeType.MEMORY,
+                    promptist_name="",
+                    response_generator_llm=LLMType.OPENAI,
+                    response_generator_name=ResponseGeneratorType.BASE_GENERATOR,
+                    available_tasks=[TaskType.SERPAPI, TaskType.EXTRACT_TEXT], 
+                    sync_browser=sync_browser,
+                    verbose=self.verbose,
+                    **kwargs
                 )
 
         """
 
-
         if verbose:
-            planner_logger = CustomDebugFormatter.create_logger('Planner', 'cyan')
-            tasks_logger = CustomDebugFormatter.create_logger('Task', 'purple')
-            orchestrator_logger = CustomDebugFormatter.create_logger('Orchestrator', 'green')
-            final_answer_generator_logger = CustomDebugFormatter.create_logger('Response Generator', 'blue')
-            promptist_logger = CustomDebugFormatter.create_logger('Promptist', 'blue')
-            error_logger = CustomDebugFormatter.create_logger('Promptist', 'red')
+            planner_logger = CustomDebugFormatter.create_logger(
+                'Planner', 'cyan')
+            tasks_logger = CustomDebugFormatter.create_logger(
+                'Task', 'purple')
+            orchestrator_logger = CustomDebugFormatter.create_logger(
+                'Orchestrator', 'green')
+            final_answer_generator_logger = CustomDebugFormatter.create_logger(
+                'Response Generator', 'blue')
+            promptist_logger = CustomDebugFormatter.create_logger(
+                'Promptist', 'blue')
+            error_logger = CustomDebugFormatter.create_logger(
+                'Error', 'red')
 
         tasks = {}
         for task in available_tasks:
             tasks[task] = initialize_task(task=task, **kwargs)
             if verbose:
-                orchestrator_logger.debug(f"Task '{task}' is successfully initialized.")
+                orchestrator_logger.debug(
+                    f"Task '{task}' is successfully initialized.")
 
-        planner = initialize_planner(tasks=list(tasks.values()), llm=planner_llm, planner=planner_name, **kwargs)
+        planner = initialize_planner(tasks=list(
+            tasks.values()), llm=planner_llm, planner=planner_name, **kwargs)
         if verbose:
-            orchestrator_logger.debug(f"Planner {planner_name} is successfully initialized.")
+            orchestrator_logger.debug(
+                f"Planner {planner_name} is successfully initialized.")
 
         response_generator = initialize_response_generator(response_generator=response_generator_name,
-                                                           llm=response_generator_llm, **kwargs)
+                                                            llm=response_generator_llm, **kwargs)
         if verbose:
             orchestrator_logger.debug(f"Response Generator {response_generator_name} is successfully initialized.")
 
         datapipe = initialize_datapipe(datapipe=datapipe_name, **kwargs)
         if verbose:
-            orchestrator_logger.debug(f"Datapipe {datapipe_name} is successfully initialized.\n")
+            orchestrator_logger.debug(
+                f"Datapipe {datapipe_name} is successfully initialized.\n")
 
         return self(
             planner=planner,
@@ -167,21 +177,13 @@ class Orchestrator(BaseModel):
         Return:
             bool: False
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return False
 
     def execute_task(self, action: Action) -> str:
         """
-        Execute the specified task based on the planner selected **Action**.
+        Execute the specified task based on the planner's selected **Action**.
 
         Args:
             action (Action): Action to be executed.
@@ -191,12 +193,12 @@ class Orchestrator(BaseModel):
         """
 
         retries = 0
-        self.print_log("task",
-                       f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")
+        self.print_log("task", f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")
         task_input = action.task_input
         if "datapipe" in task_input:
             self.print_log("task", "Tasks data is retrieved from the DataPipe\n")
-            task_input = self.datapipe.retrieve(action.task_input.split(":")[-1])
+            task_input = self.datapipe.retrieve(
+                action.task_input.split(":")[-1])
 
         while retries < self.max_task_execute_retries:
             try:
@@ -218,20 +220,13 @@ class Orchestrator(BaseModel):
 
     def generate_prompt(self, query) -> str:
         """
-        Generate a prompt for the orchestrator.
+        Generate a prompt from the query to make it more understandable for both planner and response generator. \
+        Not implemented yet.
 
         Args:
             query (str): Input query.
         Return:
             str: Generated prompt.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -239,7 +234,7 @@ class Orchestrator(BaseModel):
 
     def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:
         """
-        Plan actions based on the query, history, and previous actions using the planner.
+        Plan actions based on the query, history, and previous actions using the selected planner type.
 
         Args:
             query (str): Input query.
@@ -279,14 +274,6 @@ class Orchestrator(BaseModel):
         Return:
             str: Final generated answer.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         retries = 0
@@ -299,15 +286,15 @@ class Orchestrator(BaseModel):
         return "We currently have problem processing your question. Please try again after a while."
 
     def run(
-            self,
-            query: str = "",
-            meta: List[str] = [],
-            history: str = "",
-            use_history: bool = False,
-            **kwargs: Any
+        self,
+        query: str = "",
+        meta: List[str] = [],
+        history: str = "",
+        use_history: bool = False,
+        **kwargs: Any
     ) -> str:
         """
-        Run the orchestrator to process a query.
+        Run the Orchestrator to process a query.
 
         Args:
             query (str): Input query.
@@ -319,15 +306,7 @@ class Orchestrator(BaseModel):
             Tuple[str, List[Action]]:Final response and list of previous actions.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
         i = 0
         previous_actions = []
         meta_infos = ""
@@ -339,26 +318,30 @@ class Orchestrator(BaseModel):
             )
         prompt = self.generate_prompt(query)
         if "google_translate" in self.available_tasks:
-            prompt = self.available_tasks["google_translate"].execute(prompt + "$#en")
+            prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
             source_language = prompt[1]
             prompt = prompt[0]
         # history = self.available_tasks["google_translate"].execute(history+"$#en").text
         final_response = ""
         finished = False
+        self.print_log("planner", f"Planing Started...\n")
         while True:
             try:
-                self.print_log("planner", f"Planing Started... Try number {i}\n\n")
-                actions = self.plan(query=prompt, history=history, meta=meta_infos, previous_actions=previous_actions,
-                                    use_history=use_history)
+                self.print_log(
+                    "planner", f"Continueing Planing... Try number {i}\n\n")
+                actions = self.plan(query=prompt, history=history, meta=meta_infos,
+                                    previous_actions=previous_actions, use_history=use_history)
                 for action in actions:
                     if isinstance(action, PlanFinish):
                         final_response = action.response
                         finished = True
                         break
                     else:
-                        action.task_response, return_direct = self.execute_task(action)
+                        action.task_response, return_direct = self.execute_task(
+                            action)
                         previous_actions.append(action)
                         if return_direct:
+                            print("inside return direct")
                             final_response = action.task_response
                             finished = True
                         i = 0
@@ -370,15 +353,18 @@ class Orchestrator(BaseModel):
                 if i > self.max_retries:
                     final_response = "Problem preparing the answer. Please try again."
                     break
-                previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
+                previous_actions.append(
+                    Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
         self.print_log("planner", f"Planner final response: {final_response}\nPlaning Ended...\n\n")
 
         final_response = self.generate_prompt(final_response)
 
-        self.print_log("response_generator", "Final Answer Generation Started...\n")
+        self.print_log("response_generator",
+                       "Final Answer Generation Started...\n")
         final_response = self.generate_final_answer(query=query, thinker=final_response)
         self.print_log("response_generator", f"Response: {final_response}\n\nFinal Answer Generation Ended.\n")
 
         if "google_translate" in self.available_tasks:
-            final_response = self.available_tasks["google_translate"].execute(f"{final_response}$#{source_language}")[0]
+            final_response = self.available_tasks["google_translate"].execute(
+                f"{final_response}$#{source_language}")[0]
         return final_response, previous_actions

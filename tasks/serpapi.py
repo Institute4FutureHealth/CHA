@@ -45,14 +45,6 @@ class SerpAPI(BaseTask):
         Raise:
             ValueError: If the SerpAPI python package is not installed.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         serpapi_api_key = get_from_dict_or_env(
@@ -80,13 +72,6 @@ class SerpAPI(BaseTask):
             Dict[str, str]: The parameters for the SerpAPI.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         _params = {
@@ -106,13 +91,6 @@ class SerpAPI(BaseTask):
             Dict: The raw result from the SerpAPI.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         params = self.get_params(query)
@@ -129,14 +107,6 @@ class SerpAPI(BaseTask):
             res (Dict): The raw response from the SerpAPI.
         Return:
             str: Processed information from the SerpAPI response.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -161,13 +131,6 @@ class SerpAPI(BaseTask):
             str: The parsed result from the SerpAPI.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         inputs = self.parse_input(input)
@@ -181,14 +144,6 @@ class SerpAPI(BaseTask):
 
         Return:
             str: Explanation of the SerpAPI task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

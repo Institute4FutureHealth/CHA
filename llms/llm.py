@@ -16,7 +16,7 @@ class BaseLLM(BaseModel):
     ) -> str:
         """
         This is an abstract method that should be implemented by subclasses.
-        It generates a response based on the provided query and any additional keyword arguments.
+        It should call the selected LLM and generate a response based on the provided query and any additional keyword arguments.
         The specific implementation may vary depending on the subclass.
 
         Args:
@@ -26,12 +26,5 @@ class BaseLLM(BaseModel):
         Return:
             str: The generated response.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """

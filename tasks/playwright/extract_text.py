@@ -30,14 +30,6 @@ class ExtractText(BaseBrowser):
         Raise:
             ImportError: If 'beautifulsoup4' or 'lxml' packages are not installed.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         try:
@@ -69,13 +61,6 @@ class ExtractText(BaseBrowser):
             ValueError: If the URL scheme is not 'http' or 'https'.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         parsed_url = urlparse(url)
@@ -96,14 +81,6 @@ class ExtractText(BaseBrowser):
             str: The extracted text from the current webpage.
         Raise:
             ValueError: If the synchronous browser is not provided.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -137,13 +114,6 @@ class ExtractText(BaseBrowser):
         Return:
             str: A brief explanation of the ExtractText task.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
