@@ -5,6 +5,19 @@ from pydantic import BaseModel
 
 
 class BaseTask(BaseModel):
+    """
+    A brief description of MyClass.
+
+    Attributes:
+        name: The name of the task. It should be unique underscore_case to be defined in TaskType. sample_task_name
+        chat_name: This is the name that later will be used if needed to mention the tasks inside the chat with the user. It should be Camel Case. SampleTaskChatName
+        description: The description of the what specifically the task is doing. Try to define it as specific as possible to help the Task Planner decide better.
+        dependencies: You can put the name of the TaskTypes that this task is dependent on. For example, in stress detection scenario, the stress analysis is dependent on the fetch hrv data task. [TaskType.SERPAPI, TASKTYPE.EXTRACT_TEXT]
+        inputs: This is the list of descriptions for the inputs that should be provided by the planner. For example if your task has two inputs: ["the first input description", "the second input description"]
+        outputs: This is the list of the description of the outputs that the task returns. This helps the planner to understand the returned results better and use it as needed. For example, if the task returns a list of sleep hours for different sleep states, the description helps planner learn which number is related to what state. 
+        output_type: This indicates if the task result should be stored in the DataPipe or be returned directly to the planner. This process will be done in the parse_input and post_execute methods. If needed you can overwrite them.
+        return_direct: This indicates if this task should completely interrupt the planning process or not. This is needed in cases like when you want to ask a question from user and no further planning is needed until the user gives the proper answer (look at ask_user task)
+    """
     name: str
     chat_name: str
     description: str
@@ -46,7 +59,7 @@ class BaseTask(BaseModel):
             Abstract method representing the execution of the task.
 
             Args:
-                input (str): Input data for the task.
+                input Input data for the task.
             Return:
                 str: Result of the task execution.
             Raise:
@@ -62,7 +75,7 @@ class BaseTask(BaseModel):
             Parse the input string into a list of strings.
 
             Args:
-                input (str): Input string to be parsed.
+                input Input string to be parsed.
             Return:
                 List[str]: List of parsed strings.
 

@@ -21,6 +21,9 @@ We illustrate the framework's proficiency in handling complex healthcare tasks v
 showcasing the agent's cognitive and operational capabilities.
 
 
+.. figure:: ../figs/CHA.png
+    :alt: Alt Text
+    :align: center
 
 User Guide
 ----------
