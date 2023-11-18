@@ -71,7 +71,11 @@ html_theme_options = {
     
 }
 
-
+autodoc_default_options = {
+    'private-members': True, 
+    'members': True,
+    'exclude-members': 'Config, model_config, model_fields'
+}
 
 # -- Path setup --------------------------------------------------------------
 

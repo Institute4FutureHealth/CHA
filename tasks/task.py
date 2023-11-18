@@ -6,7 +6,13 @@ from pydantic import BaseModel
 
 class BaseTask(BaseModel):
     """
-    A brief description of MyClass.
+    **Description:** 
+
+        This class is the base implementation for the Tasks. For every new task that you want to create, you should \
+        inherit from this class and override the attributes and methods based on your task's need. This class defines a base class named BaseTask. This class serves as a foundation for defining common properties 
+        and behaviors among various tasks in the system.
+
+
 
     Attributes:
         name: The name of the task. It should be unique underscore_case to be defined in TaskType. sample_task_name
@@ -58,12 +64,12 @@ class BaseTask(BaseModel):
         """
             Abstract method representing the execution of the task.
 
-            Args:
-                input Input data for the task.
-            Return:
-                str: Result of the task execution.
-            Raise:
-                NotImplementedError: Subclasses must implement the execute method.
+        Args:
+            input Input data for the task.
+        Return:
+            str: Result of the task execution.
+        Raise:
+            NotImplementedError: Subclasses must implement the execute method.
 
         """
 
@@ -74,10 +80,10 @@ class BaseTask(BaseModel):
         """
             Parse the input string into a list of strings.
 
-            Args:
-                input Input string to be parsed.
-            Return:
-                List[str]: List of parsed strings.
+        Args:
+            input Input string to be parsed.
+        Return:
+            List[str]: List of parsed strings.
 
 
         """  
@@ -86,7 +92,7 @@ class BaseTask(BaseModel):
 
     def get_dict(self) -> str:
         """
-        Generate a dictionary-like representation of the task.
+            Generate a dictionary-like representation of the task.
 
         Return:
             str: String representation of the task dictionary.
@@ -108,7 +114,7 @@ class BaseTask(BaseModel):
             self,
     ) -> str:
         """
-        Provide a sample explanation for the task.
+            Provide a sample explanation for the task.
 
         Return:
             str: Sample explanation for the task.

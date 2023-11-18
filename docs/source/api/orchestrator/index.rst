@@ -1,7 +1,6 @@
 Orchestrator
 ============
 
-
 The **Orchestrator** is responsible for problem solving and decision making to provide an appropriate response based on the user query. \
 It incorporates the concept of the Perceptual Cycle Model, allowing it to perceive, transform, and analyze the world (i.e., input query and metadata) \
 to generate appropriate responses. To this end, the input data are aggregated, transformed into structured data, and then analyzed to plan and execute actions. \

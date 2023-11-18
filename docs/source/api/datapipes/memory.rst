@@ -1,26 +1,9 @@
+.. _memory:
+
 Memory
 ======
 
-
-
-
-This class inherits from DataPipe and uses simple on memory python dictionary.
-
-
-
-- ``store`` : To store data in the system, you can use this function.
-    
-    .. autofunction:: datapipes.memory.Memory.store
-        :no-index:
-
-
-|
-
-
-- ``retrieve`` : To retrieve data based on a specified key, you can use this function.
-
-    .. autofunction:: datapipes.memory.Memory.retrieve
-        :no-index:
+.. autoclass:: datapipes.memory.Memory
 
 
 

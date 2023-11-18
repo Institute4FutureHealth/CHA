@@ -21,6 +21,14 @@ import logging
 
 
 class Orchestrator(BaseModel):
+    """
+    **Description:**
+
+        The Orchestrator class is the main execution heart of the CHA. All the components of the Orchestrator are initialized and executed here. \
+        The Orchestrator will start a new answering cycle by calling the `run` method. From there, the planning is started, then tasks will be executed \
+        one by one till the **Task Planner** decides that no more information is needed. Finally the **Task Planner** final answer \
+        will be routed to the **Final Response Generator** to generate an empathic final response that is returned to the user.
+    """
     planner: BasePlanner = None
     datapipe: DataPipe = None
     promptist: Any = None
@@ -72,7 +80,7 @@ class Orchestrator(BaseModel):
             **kwargs
     ) -> Orchestrator:
         """
-        Initialize the Orchestrator with selected components and available tasks.
+            This class method initializes the Orchestrator by setting up the planner, datapipe, promptist, response generator, and available tasks. 
 
         Args:
             planner_llm (str): LLMType to be used as LLM for planner.
@@ -91,7 +99,7 @@ class Orchestrator(BaseModel):
 
         Example:
             .. code-block:: python
-            
+
                 from datapipes.datapipe_types import DatapipeType
                 from planners.planner_types import PlannerType
                 from response_generators.response_generator_types import ResponseGeneratorType
@@ -172,7 +180,7 @@ class Orchestrator(BaseModel):
 
     def process_meta(self) -> bool:
         """
-        Placeholder method returning False.
+            This method processes the meta information and returns a boolean value. Currently, it always returns False.
 
         Return:
             bool: False
@@ -183,7 +191,8 @@ class Orchestrator(BaseModel):
 
     def execute_task(self, action: Action) -> str:
         """
-        Execute the specified task based on the planner's selected **Action**.
+            Execute the specified task based on the planner's selected **Action**. This method executes a specific task based on the provided action. It takes an action as input and retrieves the corresponding task from the available tasks dictionary. 
+            It then executes the task with the given task input. If the task has an output_type, it stores the result in the datapipe and returns a message indicating the storage key. Otherwise, it returns the result directly.
 
         Args:
             action (Action): Action to be executed.
@@ -220,8 +229,8 @@ class Orchestrator(BaseModel):
 
     def generate_prompt(self, query) -> str:
         """
-        Generate a prompt from the query to make it more understandable for both planner and response generator. \
-        Not implemented yet.
+            Generate a prompt from the query to make it more understandable for both planner and response generator. \
+            Not implemented yet.
 
         Args:
             query (str): Input query.
@@ -234,7 +243,8 @@ class Orchestrator(BaseModel):
 
     def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:
         """
-        Plan actions based on the query, history, and previous actions using the selected planner type.
+            Plan actions based on the query, history, and previous actions using the selected planner type. This method generates a plan of actions based on the provided query, history, previous actions, and use_history flag. \
+            It calls the plan method of the planner and returns a list of actions or plan finishes.
 
         Args:
             query (str): Input query.
@@ -266,7 +276,8 @@ class Orchestrator(BaseModel):
 
     def generate_final_answer(self, query, thinker) -> str:
         """
-        Generate the final answer using the response generator.
+            Generate the final answer using the response generator. \
+            This method generates the final answer based on the provided query and thinker. It calls the generate method of the response generator and returns the generated answer.
 
         Args:
             query (str): Input query.
@@ -294,7 +305,10 @@ class Orchestrator(BaseModel):
         **kwargs: Any
     ) -> str:
         """
-        Run the Orchestrator to process a query.
+            This method runs the orchestrator by taking a query, meta information, history, and other optional keyword arguments as input. 
+            It initializes variables for tracking the execution, generates a prompt based on the query, and sets up a loop for executing actions. 
+            Within the loop, it plans actions, executes tasks, and updates the previous actions list. If a PlanFinish action is encountered, the loop breaks, and the final response is set. 
+            If any errors occur during execution, the loop retries a limited number of times before setting a final error response. Finally, it generates the final response using the prompt and thinker, and returns the final response along with the previous actions.
 
         Args:
             query (str): Input query.

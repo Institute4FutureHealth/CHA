@@ -6,6 +6,11 @@ from pydantic import model_validator
 
 
 class OpenAILLM(BaseLLM):
+    """
+    **Description:** 
+
+        An implementation of the OpenAI APIs. `OpenAI API <https://platform.openai.com/docs/libraries>`_
+    """
     models: Dict = {
         "gpt-4": 8192,
         "gpt-4-0314": 8192,
@@ -40,10 +45,10 @@ class OpenAILLM(BaseLLM):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
-        This method is defined as a validation model for the class and checks the required environment values for using OpenAILLM.
-        If the "openai_api_key" key exists in the input, its value is assigned to the "api_key" variable. Additionally, it checks the existence of the openai library, and if it's not found, it raises an error.
+            This method is defined as a validation model for the class and checks the required environment values for using OpenAILLM.
+            If the "openai_api_key" key exists in the input, its value is assigned to the "api_key" variable. Additionally, it checks the existence of the openai library, and if it's not found, it raises an error.
 
         Args:
             cls (type): The class itself.
@@ -72,7 +77,7 @@ class OpenAILLM(BaseLLM):
 
     def get_model_names(self) -> List[str]:
         """
-        Get a list of available model names.
+            Get a list of available model names.
 
         Return:
             List[str]: A list of available model names.
@@ -83,10 +88,10 @@ class OpenAILLM(BaseLLM):
 
     def is_max_token(self, model_name, query) -> bool:
         """
-        Check if the token count of the query exceeds the maximum token count for the specified model.
+            Check if the token count of the query exceeds the maximum token count for the specified model.
 
-        It calculates the number of tokens from tokenizing the input query and compares it with the maximum allowed tokens for the model.
-        If the number of tokens is greater than the maximum, it returns True.
+            It calculates the number of tokens from tokenizing the input query and compares it with the maximum allowed tokens for the model.
+            If the number of tokens is greater than the maximum, it returns True.
 
         Args:
             model_name (str): The name of the model.
@@ -115,9 +120,9 @@ class OpenAILLM(BaseLLM):
         tokenized_text = enc.encode(query)
         return model_max_token < len(tokenized_text)
 
-    def parse_response(self, response) -> str:
+    def _parse_response(self, response) -> str:
         """
-        Parse the response object and return the generated completion text.
+            Parse the response object and return the generated completion text.
 
         Args:
             response (object): The response object.
@@ -129,9 +134,9 @@ class OpenAILLM(BaseLLM):
 
         return response.choices[0].message.content
 
-    def prepare_prompt(self, prompt) -> Any:
+    def _prepare_prompt(self, prompt) -> Any:
         """
-        Prepare the prompt by combining the human and AI prompts with the input prompt.
+            Prepare the prompt by combining the human and AI prompts with the input prompt.
 
         Args:
             prompt (str): The input prompt.
@@ -149,7 +154,7 @@ class OpenAILLM(BaseLLM):
         **kwargs: Any
     ) -> str:
         """
-        Generate a response based on the provided query.
+            Generate a response based on the provided query.
 
         Args:
             query (str): The query to generate a response for.
@@ -173,7 +178,7 @@ class OpenAILLM(BaseLLM):
         max_tokens = kwargs["max_tokens"] if "max_tokens" in kwargs else self.max_tokens
 
         self.llm_model.api_key = self.api_key
-        query = self.prepare_prompt(query)
+        query = self._prepare_prompt(query)
         response = self.llm_model.chat.completions.create(model=model_name, messages=query, max_tokens=max_tokens,
                                                           stop=stop)
-        return self.parse_response(response)
+        return self._parse_response(response)

@@ -5,15 +5,20 @@ import uuid
 
 
 class Memory(DataPipe):
+    """
+    **Description:** 
+    
+        This class inherits from DataPipe and uses simple on memory python dictionary.
+    """
     data: Optional[Dict[str, Dict]] = {}
 
     def store(self, data) -> str:
         """
-        Stores data using a randomly generated key and returns the key.
+            Stores data using a randomly generated key and returns the key.
 
-        This method stores the provided data in the memory data dictionary using a generated key.
-        The generated key is created using UUID (Universally Unique Identifier) ensuring having unique keys for multiple data stores. \
-        The stored data can later be accessed using this key.
+            This method stores the provided data in the memory data dictionary using a generated key.
+            The generated key is created using UUID (Universally Unique Identifier) ensuring having unique keys for multiple data stores.
+            The stored data can later be accessed using this key.
 
         Args:
             self (object): The instance of the class.
@@ -38,10 +43,10 @@ class Memory(DataPipe):
 
     def retrieve(self, key) -> Any:
         """
-        Retrieves stored data using the given key.
+            Retrieves stored data using the given key.
 
-        This method retrieves the data associated with the provided key from the memory data dictionary.
-        If the key does not exist in the dictionary, it raises a `ValueError` with an appropriate error message.
+            This method retrieves the data associated with the provided key from the memory data dictionary.
+            If the key does not exist in the dictionary, it raises a `ValueError` with an appropriate error message.
 
         Args:
             self (object): The instance of the class.

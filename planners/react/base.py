@@ -8,7 +8,17 @@ import re
 
 
 class ReActPlanner(BasePlanner):
-    """ReActPlanner"""
+    """
+    **Description:**    
+        
+        This class implements ReAct planner, which inherits from the BasePlanner base class. 
+        ReAct employs reasoning and action techniques to ascertain the essential actions to be undertaken. `Paper <https://arxiv.org/abs/2210.03629>`_
+
+        This code defines a base class called "BasePlanner" that inherits from the "BaseModel" class of the pydantic library. 
+        The BasePlanner class serves as a base for implementing specific planners.
+
+
+    """
 
     class Config:
         """Configuration for this pydantic object."""
@@ -60,7 +70,7 @@ Thought: {agent_scratchpad}"""
             **kwargs: Any,
     ) -> List[Union[Action, PlanFinish]]:
         """
-        Generate a plan using ReAct
+            Generate a plan using ReAct
 
         Args:
             query (str): Input query.
@@ -108,19 +118,22 @@ Thought: {agent_scratchpad}"""
         **kwargs: Any,
     ) -> List[Union[Action, PlanFinish]]:
         """
-        Parse the output query into a list of actions or a final answer. It parses the output based on \
-        the following format:
-            Thought: though\n 
-            Action: action \n
-            Action Input: inputs\n
+            Parse the output query into a list of actions or a final answer. It parses the output based on \
+            the following format:
+                
+                Thought: though\n
+                Action: action\n
+                Action Input: inputs
+                
+                or
 
-            or
-            Thought: though\n 
-            Final Answer: final answer\n
+                
+                Thought: though\n 
+                Final Answer: final answer\n
+                
 
-
-        Args:
-            query (str): Output query.
+        Args:\n
+            query (str): The planner output query to extract actions.
             **kwargs (Any): Additional keyword arguments.
         Return:
             List[Union[Action, PlanFinish]]: List of parsed actions or a finishing signal.

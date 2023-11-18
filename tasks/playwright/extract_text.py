@@ -8,6 +8,11 @@ from urllib.parse import urlparse
 
 
 class ExtractText(BaseBrowser):
+    """
+    **Description:** 
+
+        This task extracts all the text from the current webpage.
+    """
     name: str = "extract_text"
     chat_name: str = "ExtractText"
     description: str = (
@@ -21,7 +26,7 @@ class ExtractText(BaseBrowser):
     @model_validator(mode="before")
     def check_acheck_bs_importrgs(cls, values: dict) -> dict:
         """
-        Check that the arguments are valid.
+            Check that the arguments are valid.
 
         Args:
             values (Dict): The current attribute values.
@@ -51,7 +56,7 @@ class ExtractText(BaseBrowser):
 
     def validate_url(self, url):
         """
-        This method validates a given URL by checking if its scheme is either 'http' or 'https'.
+            This method validates a given URL by checking if its scheme is either 'http' or 'https'.
 
         Args:
             url (str): The URL to be validated.
@@ -73,7 +78,7 @@ class ExtractText(BaseBrowser):
             input: str,
     ) -> str:
         """
-        Execute the ExtractText task.
+            Execute the ExtractText task.
 
         Args:
             input (str): The input parameter for the task.
@@ -109,7 +114,7 @@ class ExtractText(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the ExtractText task.
+            Explain the ExtractText task.
 
         Return:
             str: A brief explanation of the ExtractText task.

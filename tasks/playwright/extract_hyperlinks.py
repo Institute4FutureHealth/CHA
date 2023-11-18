@@ -8,6 +8,11 @@ import json
 
 
 class ExtractHyperlinks(BaseBrowser):
+    """
+    **Description:** 
+
+        This task extracts all hyperlinks from the current webpage.
+    """
     name: str = "extract_hyperlinks"
     chat_name: str = "ExtractHyperLinks"
     description: str = (
@@ -21,7 +26,7 @@ class ExtractHyperlinks(BaseBrowser):
     @model_validator(mode='before')
     def check_bs_import(cls, values: dict) -> dict:
         """
-        Check that the arguments are valid.
+            Check that the arguments are valid.
 
         Args:
             values (Dict): The current attribute values.
@@ -44,7 +49,7 @@ class ExtractHyperlinks(BaseBrowser):
     @staticmethod
     def scrape_page(page: Any, html_content: str, absolute_urls: bool) -> str:
         """
-        Scrape hyperlinks from the current webpage.
+            Scrape hyperlinks from the current webpage.
 
         Args:
             page (Any): The current webpage.
@@ -77,7 +82,7 @@ class ExtractHyperlinks(BaseBrowser):
             input: str,
     ) -> str:
         """
-        Execute the ExtractHyperlinks task.
+            Execute the ExtractHyperlinks task.
 
         Args:
             input (str): The input parameter for the task.
@@ -99,7 +104,7 @@ class ExtractHyperlinks(BaseBrowser):
             self,
     ) -> str:
         """
-        Provide a brief explanation of the ExtractHyperlinks task.
+            Provide a brief explanation of the ExtractHyperlinks task.
 
         Return:
             str: An explanation of the task.

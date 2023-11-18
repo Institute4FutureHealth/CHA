@@ -8,6 +8,13 @@ from tasks.playwright.utils import (
 
 
 class Click(BaseBrowser):
+    """
+    **Description:** 
+
+        This code defines a class named Click that inherits from the BaseBrowser class. 
+        The Click class represents a task related to browser interactions, specifically clicking on an element 
+        identified by a CSS selector using the Playwright library.
+    """
     name: str = "click"
     chat_name: str = "Clicker"
     description: str = (
@@ -20,7 +27,7 @@ class Click(BaseBrowser):
 
     def _selector_effective(self, selector: str) -> str:
         """
-        Get the effective CSS selector considering visibility.
+            Get the effective CSS selector considering visibility.
 
         Args:
             selector (str): The original CSS selector.
@@ -38,7 +45,7 @@ class Click(BaseBrowser):
             input: str,
     ) -> str:
         """
-        Execute the click task by clicking on an element with the provided CSS selector.
+            Execute the click task by clicking on an element with the provided CSS selector.
 
         Aegs:
             input (str): The input string containing the CSS selector.
@@ -71,7 +78,7 @@ class Click(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the purpose of the click task.
+            Explain the purpose of the click task.
 
         Return:
             str: A brief explanation of the task.

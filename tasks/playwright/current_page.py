@@ -6,6 +6,13 @@ from tasks.playwright.utils import (
 
 
 class CurrentWebPage(BaseBrowser):
+    """
+    **Description:** 
+
+        This code defines a class named CurrentWebPage that inherits from the BaseBrowser class. 
+        The CurrentWebPage class represents a task related to browser interactions, specifically retrieving the URL of the current web page.
+
+    """
     name: str = "current_page"
     chat_name: str = "CurrentPage"
     description: str = (
@@ -21,7 +28,8 @@ class CurrentWebPage(BaseBrowser):
             input: str,
     ) -> str:
         """
-        Execute the current_page task by retrieving the URL of the current web page.
+            This method executes the task by retrieving the current page from the synchronous browser using 
+            the get_current_page function and returning its URL.
 
         Args:
             input (str): The input string (not used in this task).
@@ -42,7 +50,7 @@ class CurrentWebPage(BaseBrowser):
             self,
     ) -> str:
         """
-        Provide a brief explanation of the current_page task.
+            Provides a brief explanation of the current_page task.
 
         Return:
             str: An explanation of the task.

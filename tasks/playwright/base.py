@@ -20,6 +20,13 @@ else:
 
 
 class BaseBrowser(BaseTask):
+    """
+    **Description:**    
+        
+        This code defines a base class named BaseBrowser that inherits from BaseTask. 
+        This class is intended for tasks related to browser interactions using the Playwright library. 
+        The code uses conditional imports to handle situations where the Playwright library is not available.
+    """
     sync_browser: Optional[Any] = None
 
     def __init__(self, **kwargs):
@@ -32,7 +39,7 @@ class BaseBrowser(BaseTask):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
         Args:
             cls (object): The class itself.

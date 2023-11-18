@@ -7,6 +7,11 @@ from urllib.parse import urlparse
 
 
 class Navigate(BaseBrowser):
+    """
+    **Description:**
+
+        This class represents a browser navigation task to a specified URL using Playwright.
+    """
     name: str = "navigate"
     chat_name: str = "Navigate"
     description: str = (
@@ -19,7 +24,7 @@ class Navigate(BaseBrowser):
 
     def validate_url(self, url):
         """
-        This method validates a given URL by checking if its scheme is either 'http' or 'https'.
+            This method validates a given URL by checking if its scheme is either 'http' or 'https'.
 
         Args:
             url (str): The URL to be validated.
@@ -40,7 +45,7 @@ class Navigate(BaseBrowser):
             input: str,
     ) -> str:
         """
-        This method executes the navigation action in the browser using Playwright.
+            This method executes the navigation action in the browser using Playwright.
 
         Args:
             input (str): The input string containing the URL to navigate to.
@@ -62,7 +67,7 @@ class Navigate(BaseBrowser):
             self,
     ) -> str:
         """
-        This method provides an explanation of the task.
+            This method provides an explanation of the task.
 
         Return:
             str: A brief explanation of the task, in this case, "This task extracts all of the hyperlinks."

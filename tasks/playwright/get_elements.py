@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 
 
 class GetElements(BaseBrowser):
+    """
+    **Description:** 
+
+        The GetElements class is a subclass of BaseBrowser responsible for retrieving elements 
+        on the current web page that match a given CSS selector.
+    """
     name: str = "get_elements"
     chat_name: str = "GetElements"
     description: str = (
@@ -29,7 +35,7 @@ class GetElements(BaseBrowser):
             page: SyncPage, selector: str, attributes: Sequence[str]
     ) -> List[dict]:
         """
-        Get elements matching the given CSS selector.
+            Get elements matching the given CSS selector.
 
         Args:
             page (SyncPage): The current page.
@@ -61,7 +67,7 @@ class GetElements(BaseBrowser):
             input: str,
     ) -> str:
         """
-        Execute the GetElements task.
+            Execute the GetElements task.
 
         Args:
             input (str): Input string containing CSS selector and attributes.
@@ -85,7 +91,7 @@ class GetElements(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the GetElements task.
+            Explain the GetElements task.
 
         Return:
             str: A brief explanation of the GetElements task.

@@ -5,7 +5,12 @@ from llms.llm import BaseLLM
 
 
 class BaseResponseGenerator(BaseModel):
-    """Base Response Generator class."""
+    """
+    **Description:** 
+
+        Base class for a response generator, providing a foundation for generating responses using a language model.
+        
+    """
     llm_model: BaseLLM = None
     prefix: str = ""
 
