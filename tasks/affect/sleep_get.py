@@ -70,4 +70,5 @@ class SleepGet(Affect):
         df.columns = self.columns_revised
         df = self._convert_seconds_to_minutes(df, self.variables_in_seconds)
         df = df.round(2)
-        return self._dataframe_to_string_output(df)
+        json_out = df.to_json(orient='records')
+        return json_out

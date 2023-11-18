@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from typing import List, Optional
+import re
 from pydantic import BaseModel
 
 class BaseTask(BaseModel):
@@ -49,7 +50,9 @@ class BaseTask(BaseModel):
         self,
         input: str,
       ) -> List[str]:
-    inputs = input.split(",")
+    # inputs = input.split(",")
+    dpipe_pattern = re.compile(r',(?![^\[]*])') #ignore ',' if in '[]'
+    inputs = dpipe_pattern.split(input)
     return [arg.strip() for arg in inputs]
 
   def get_dict(self) -> str:

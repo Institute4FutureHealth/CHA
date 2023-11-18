@@ -3,8 +3,9 @@ Affect - Sleep Analysis
 '''
 
 from typing import List
-import os
+import pandas as pd
 from tasks.affect.base import Affect
+from io import StringIO
 
 
 class SleepAnalysis(Affect):
@@ -13,7 +14,7 @@ class SleepAnalysis(Affect):
     description: str = ("Analyze the sleep data. You must Call this whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis."
                         "For example, if the user asks for trends (or variations) in data, you must call this task")
     dependencies: List[str] = ["affect_sleep_get"]
-    inputs: List[str] = ["It is an string but in Pandas dataframe format. It is the output of the $affect_sleep_get$",
+    inputs: List[str] = ["It is an string but in json format. It is the output of the $affect_sleep_get$",
                          "analysis_type. It can be one of [$average$, $trend$]."]
     outputs: List[str] = ["The analysis result for total_sleep_time. Look for analysis_type to find the type of analysis. total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
                           "The analysis result for awake_duration. Look for analysis_type to find the type of analysis. awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
@@ -57,14 +58,15 @@ class SleepAnalysis(Affect):
     ) -> str:
         inputs = self.parse_input(input)
         #checking
-        df = self._string_output_to_dataframe(inputs[0].strip())
+        df = pd.read_json(StringIO(inputs[0].strip()), orient='records')
         analysis_type = inputs[1].strip()
         if analysis_type == 'average':
             # df = df.drop('date', axis=1)  # No average for date!
-            df_out = df.mean().to_frame().T
+            df = df.mean().to_frame().T
         elif analysis_type == 'trend':
-            df_out = self._calculate_slope(df)
+            df = self._calculate_slope(df)
         else:
             raise ValueError('The input analysis type has not been defined!')
-        df_out = df_out.round(2)
-        return self._dataframe_to_string_output(df_out)
+        df = df.round(2)
+        json_out = df.to_json(orient='records')
+        return json_out
