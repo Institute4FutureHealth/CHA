@@ -1,5 +1,5 @@
 '''
-Affect - Sleep Analysis
+Affect - Sleep analysis
 '''
 
 from typing import List
@@ -32,24 +32,6 @@ class SleepAnalysis(Affect):
     #False if the output should directly passed back to the planner.
     #True if it should be stored in datapipe
     output_type: bool = False
-    #
-    file_name: str = 'sleep.csv'
-    device_name: str = 'oura'
-    local_dir: str = 'data/affect'
-    columns_to_keep: List[str] = ['total', 'awake', 'light', 'rem', 'deep',
-                                  'onset_latency', 'midpoint_time',
-                                  'efficiency', 'hr_average',
-                                  'hr_lowest', 'rmssd', 'breath_average',
-                                  'temperature_delta']
-    columns_revised: List[str] = ['total_sleep_time', 'awake_duration', 'light_sleep_duration',
-                                  'rem_sleep_duration', 'deep_sleep_duration',
-                                  'sleep_onset_latency', 'midpoint_time_of_sleep',
-                                  'sleep_efficiency', 'average_heart_rate',
-                                  'minimum_heart_rate', 'rmssd', 'average_breathing_rate',
-                                  'temperature_variation']
-    variables_in_seconds: List[str] = ['total_sleep_time', 'awake_duration', 'light_sleep_duration',
-                                       'rem_sleep_duration', 'deep_sleep_duration',
-                                       'sleep_onset_latency', 'midpoint_time_of_sleep']
 
 
     def execute(
@@ -61,7 +43,7 @@ class SleepAnalysis(Affect):
         df = pd.read_json(StringIO(inputs[0].strip()), orient='records')
         analysis_type = inputs[1].strip()
         if analysis_type == 'average':
-            # df = df.drop('date', axis=1)  # No average for date!
+            df = df.drop('date', axis=1)  # No average for date!
             df = df.mean().to_frame().T
         elif analysis_type == 'trend':
             df = self._calculate_slope(df)

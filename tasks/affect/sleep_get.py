@@ -1,5 +1,5 @@
 '''
-Affect - Sleep Average
+Affect - Get sleep data
 '''
 
 from typing import List
@@ -10,8 +10,10 @@ from tasks.affect.base import Affect
 class SleepGet(Affect):
     name: str = "affect_sleep_get"
     chat_name: str = "AffectSleepGet"
-    description: str = ("Get the sleep parameters for a specific date. "
-                        "You must Call $affect_sleep_analysis$ whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis")
+    description: str = ("Get the sleep parameters for a specific date or "
+                        "a period (if two dates are provided). "
+                        "You must Call $affect_sleep_analysis$ whenever sleep "
+                        "analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis")
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
                          "start date of the sleep data in string with the following format: '%Y-%m-%d'",
@@ -65,8 +67,8 @@ class SleepGet(Affect):
             file_name=self.file_name,
             start_date=inputs[1].strip(),
             end_date=inputs[2].strip(),
+            usecols=self.columns_to_keep
             )
-        df = df.loc[:, self.columns_to_keep]
         df.columns = self.columns_revised
         df = self._convert_seconds_to_minutes(df, self.variables_in_seconds)
         df = df.round(2)
