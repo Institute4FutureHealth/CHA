@@ -1,7 +1,3 @@
-'''
-Affect - Sleep Average
-'''
-
 from typing import List, Any
 import os
 from tasks.affect.base import Affect
@@ -10,8 +6,10 @@ from tasks.affect.base import Affect
 class SleepGet(Affect):
     name: str = "affect_sleep_get"
     chat_name: str = "AffectSleepGet"
-    description: str = ("Get the sleep parameters for a specific date. "
-                        "You must Call $affect_sleep_analysis$ whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis")
+    description: str = ("Get the sleep parameters for a specific date or "
+                        "a period (if two dates are provided). "
+                        "You must Call $affect_sleep_analysis$ whenever sleep "
+                        "analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis")
     dependencies: List[str] = []
     inputs: List[str] = ["user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
                          "start date of the sleep data in string with the following format: '%Y-%m-%d'",
@@ -56,7 +54,6 @@ class SleepGet(Affect):
         self,
         inputs: List[Any],
     ) -> str:
-        #checking
         user_id = inputs[0].strip()
         full_dir = os.path.join(self.local_dir, user_id, self.device_name)
         df = self._get_data(
@@ -64,9 +61,10 @@ class SleepGet(Affect):
             file_name=self.file_name,
             start_date=inputs[1].strip(),
             end_date=inputs[2].strip(),
+            usecols=self.columns_to_keep
             )
-        df = df.loc[:, self.columns_to_keep]
         df.columns = self.columns_revised
         df = self._convert_seconds_to_minutes(df, self.variables_in_seconds)
         df = df.round(2)
-        return self._dataframe_to_string_output(df)
+        json_out = df.to_json(orient='records')
+        return json_out

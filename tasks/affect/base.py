@@ -17,10 +17,16 @@ class Affect(BaseTask):
             file_name: str,
             start_date: str,
             end_date: str = "",
+            usecols: str = None,
     ) -> pd.DataFrame:
         local_dir = os.path.join(os.getcwd(), local_dir)
-        df = pd.read_csv(
-            os.path.join(local_dir, file_name))
+        if usecols is None:
+            df = pd.read_csv(
+                os.path.join(local_dir, file_name))
+        else:
+            df = pd.read_csv(os.path.join(local_dir, file_name),
+                             usecols=usecols)
+            
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 

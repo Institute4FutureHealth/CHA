@@ -7,6 +7,7 @@ from tasks.affect import *
 from tasks.google_translator import GoogleTranslate
 from tasks.ask_user import AskUser
 from tasks.test_file import TestFile
+from tasks.read_from_datapipe import ReadDataPipe
 from tasks.playwright import *
 
 
@@ -20,10 +21,13 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
   TaskType.NAVIGATE_BACK: NavigateBack,
   TaskType.NAVIGATE: Navigate,
   TaskType.AFFECT_SLEEP_AVG: SleepAVG,
-  TaskType.AFFECT_SLEEP_GET: SleepGet,
   TaskType.AFFECT_SLEEP_TREND: SleepTrend,
+  TaskType.AFFECT_SLEEP_GET: SleepGet,
+  TaskType.AFFECT_ACTIVITY_GET: ActivityGet,
   TaskType.AFFECT_SLEEP_ANALYSIS: SleepAnalysis,
+  TaskType.AFFECT_ACTIVITY_ANALYSIS: ActivityAnalysis,
   TaskType.GOOGLE_TRANSLATE: GoogleTranslate,
   TaskType.ASK_USER: AskUser,
   TaskType.TEST_FILE: TestFile,
+  TaskType.READ_FROM_DATAPIPE: ReadDataPipe
 }

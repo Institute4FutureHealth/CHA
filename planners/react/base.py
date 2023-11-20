@@ -27,7 +27,7 @@ class ReActPlanner(BasePlanner):
   @property
   def _planner_prompt(self):
     return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being. 
-Answer the following questions as best you can. You have access to the following tools:
+Answer the following questions as best you can. Make sure you call all the needed tools before reach to the Final Answer. You have access to the following tools:
 Use the following format. You should stick to the following format:
 Question: the input question you must answer
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.

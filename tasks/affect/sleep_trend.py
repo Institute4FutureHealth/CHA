@@ -55,7 +55,6 @@ class SleepTrend(Affect):
         self,
         inputs: List[Any],
     ) -> str:
-        #checking
         user_id = inputs[0].strip()
         full_dir = os.path.join(self.local_dir, user_id, self.device_name)
         df = self._get_data(
