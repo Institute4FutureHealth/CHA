@@ -62,10 +62,11 @@ class BaseTask(BaseModel):
 		inputs: List[Any],
 	) -> str:
 		"""
-			Abstract method representing the execution of the task.
+			Abstract method representing the execution of the task. You should implement this method based on your need.
+			This method is called by the **execute** method that provides the parsed inputs to this method.
 
 		Args:
-			input Input data for the task.
+			inputs (List[Any]): Input data for the task.
 		Return:
 			str: Result of the task execution.
 		Raise:
@@ -78,22 +79,36 @@ class BaseTask(BaseModel):
 		input_args: str,
 	) -> List[str]:
 		"""
-            Parses the input string into a list of strings.
+			Parses the input string into a list of strings. If the input is in format `datapipe:key`, the parser will retrieve the data from datapipe 
+			before sending it over to the **_execute** method.
 
-        Args:
-            Input string to be parsed.
-        Return:
-            List[str]: List of parsed strings.
+		Args:
+			input_args (str): Input string provided by planner. It should be parsed and return a list of str variables.
+		Return:
+				List[str]: List of parsed strings. These strings can be converted into desired types inside **_execute** method.
 
 
-        """ 
+		""" 
 		inputs = input_args.split(",")
 		return [json.loads(self.datapipe.retrieve(re.search(r"datapipe:[0-9a-f\-]{36}", arg).group().strip().split(":")[-1])) if "datapipe" in arg else arg.strip() for arg in inputs]
 
 	def _post_execute(
 		self,
-		result
+		result: str = ""
 	):
+		"""
+			This method is called inside **execute** method after calling **_execute**. The result of **_execute** will be passed to this method 
+			in case the **output_type** attribute is True, the result will be stored inside the datapipe and the datapipe key is returned to the plenner 
+			instead of the raw result. This is good practice for times that you have intermediate data (like sleep data over a month) and it needs to be 
+			passed over to other tasks and the raw result is not immidiately needed. This will save a huge amount of tokens and makes sure that the planner will 
+			not pass wrong raw data to the tasks.
+		
+		Args:
+			result (str): string containig the task result.
+		Return:
+			List[str]: List of parsed strings.
+
+		"""
 		if self.output_type:
 			key = self.datapipe.store(json.dumps({'data': result, 'description': ",".join(self.outputs)}))      
 			return (
@@ -106,6 +121,18 @@ class BaseTask(BaseModel):
 		self,
 		input_args: str
 	) -> str:
+		"""
+			This method is called by the **Orchestrator** which provides the planner provided inputs. 
+			This method first calls **_parse_input** to parse the inputs and retrieve needed data from the **DataPipe** 
+			Then **_execute** is called and the parsed inputs are given to this method. Finally the final result of execution is passed to 
+			**_post_execute** and ith will either be stored inside **DataPipe** or directly returned to the planner to continue planning.
+
+		Args:
+			input_args (str): Input string provided by planner.
+		Return:
+				str: The final result of the task execution.
+
+		"""
 		inputs = self._parse_input(input_args)
 		result = self._execute(inputs)
 		return self._post_execute(result)

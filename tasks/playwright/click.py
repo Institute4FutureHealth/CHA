@@ -14,6 +14,7 @@ class Click(BaseBrowser):
         This code defines a class named Click that inherits from the BaseBrowser class. 
         The Click class represents a task related to browser interactions, specifically clicking on an element 
         identified by a CSS selector using the Playwright library.
+        
     """
     name: str = "click"
     chat_name: str = "Clicker"
