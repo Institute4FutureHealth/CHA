@@ -60,7 +60,7 @@ class BaseTask(BaseModel):
     if self.output_type:
       key = self.datapipe.store(json.dumps({'data': result, 'description': ",".join(self.outputs)}))      
       return (
-        f"The result of the tool {self.name} is stored in the datapipe with key: datapipe:{key}"
+        f"The result of the tool {self.name} is stored in the datapipe with key: $datapipe:{key}$"
         " pass this key to other tools to access to the result or call read_from_datapipe to get the raw data."
       )
     return result

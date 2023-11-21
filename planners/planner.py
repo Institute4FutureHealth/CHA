@@ -34,6 +34,19 @@ class BasePlanner(BaseModel):
 
   def get_available_tasks_list(self) -> List[str]:
     return [task.name for task in self.available_tasks]  
+  
+  def self_reflect(self, user_query, final_answer):
+    print("self reflect", (
+      "Based on the user_query, is the final_answer good or accurate Yes/No?\n"
+      f"user_query: {user_query}\n"
+      f"final_answer: {final_answer}"
+    ))
+    answer = self._planner_model.generate((
+      "Based on the user_query, is the final_answer good or accurate Yes/No and explain why?\n"
+      f"user_query: {user_query}\n"
+      f"final_answer: {final_answer}"
+    ))
+    return answer
 
   @abstractmethod
   def plan(

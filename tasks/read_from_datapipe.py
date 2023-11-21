@@ -9,7 +9,7 @@ class ReadDataPipe(BaseTask):
       "Get the stored information from datapipe to be used to answer user query accurately. This should be called when the final answer is in datapipe."
   )
   dependencies: List[str] = []
-  inputs: List[str] = ["the datapipe key"]
+  inputs: List[str] = ["the datapipe key in the format $datapipe:key$"]
   outputs: List[str] = []
   output_type: bool = False
 

@@ -38,7 +38,7 @@ Action Inputs: the comma seperated inputs to the action should be based on the i
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
 Thought: Your final reasoning or 'I now know the final answer'. when you think you are done provide the 'Final Answer'. You can use the final thoughts directly in the final answer. never add extra information that is not present in the tools outputs.
-Final Answer: the final answer to the original input question
+Final Answer: the final answer to the original input question. It should be based on the tools result. NEVER generate extra restuls by yourself
 
 Begin!
 
@@ -73,13 +73,18 @@ Thought: {agent_scratchpad}"""
     kwargs["max_tokens"] = 150
     kwargs["stop"] = self._stop
     response = self._planner_model.generate(query=prompt, **kwargs)
-    print("response ////", response)
     index = min([response.find(text) for text in self._stop])
     index1 = response.find("\nAction:")
     if index1 == -1:
        index1 = 0
     response = response[index1:index]
     actions = self.parse(response)
+    if isinstance(actions[0], PlanFinish):
+      answer = self.self_reflect(query, actions[0].response)
+      print("self reflect\n", answer)
+      if "No" in answer:
+         return [Action("Exception", "Plan not complete", answer, "")]
+
     return actions    
 
 
@@ -101,9 +106,9 @@ Thought: {agent_scratchpad}"""
         # if final answer is before the hallucination, return final answer
         start_index = query.find(FINAL_ANSWER_ACTION) + len(FINAL_ANSWER_ACTION)
         end_index = query.find("\n\n", start_index)
-        return PlanFinish(
+        return [PlanFinish(
             query[start_index:end_index].strip()
-        )
+        )]
       else:
         raise ValueError(
           f"Parsing the output produced both a final answer and a parse-able action."
