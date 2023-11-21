@@ -101,7 +101,11 @@ class BaseTask(BaseModel):
 			in case the **output_type** attribute is True, the result will be stored inside the datapipe and the datapipe key is returned to the plenner 
 			instead of the raw result. This is good practice for times that you have intermediate data (like sleep data over a month) and it needs to be 
 			passed over to other tasks and the raw result is not immidiately needed. This will save a huge amount of tokens and makes sure that the planner will 
-			not pass wrong raw data to the tasks.
+			not pass wrong raw data to the tasks. 
+			
+			It is important to note that to make the **DataPipe's** stored data standard and unified, we store the data in the json string format that currently 
+			contains 'data' and 'description' keys. The 'data' will be the returned data after execution and the 'description' is created using the **outputs** attribute of the 
+			task. Whenever the raw data is returned to the planner, these **outputs** descriptions will help the planner understand and learn how to interpret the 'data' to generate the final answer or continue planning. 
 		
 		Args:
 			result (str): string containig the task result.
