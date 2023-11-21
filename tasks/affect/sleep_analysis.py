@@ -7,11 +7,11 @@ from io import StringIO
 class SleepAnalysis(Affect):
     name: str = "affect_sleep_analysis"
     chat_name: str = "AffectSleepAnalysis"
-    description: str = ("Analyze the sleep data. You must Call this whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis."
+    description: str = ("Analyzes the sleep data and returns trend or average based on request. You must Call this whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T analyze the data yourself."
                         "For example, if the user asks for trends (or variations) in data, you must call this task")
     dependencies: List[str] = ["affect_sleep_get"]
-    inputs: List[str] = ["It is an string but in json format. It is the output of the $affect_sleep_get$",
-                         "analysis_type. It can be one of [$average$, $trend$]."]
+    inputs: List[str] = ["datapipe key to the data",
+                         "analysis_type. It can be one of [average, trend]."]
     outputs: List[str] = ["The analysis result for total_sleep_time. Look for analysis_type to find the type of analysis. total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
                           "The analysis result for awake_duration. Look for analysis_type to find the type of analysis. awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
                           "The analysis result for light_sleep_duration. Look for analysis_type to find the type of analysis. light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period.",
@@ -34,7 +34,7 @@ class SleepAnalysis(Affect):
         self,
         inputs: List[Any],
     ) -> str:
-        df = pd.read_json(StringIO(inputs[0].strip()), orient='records')
+        df = pd.read_json(StringIO(inputs[0]['data'].strip()), orient='records')
         analysis_type = inputs[1].strip()
         if analysis_type == 'average':
             df = df.drop('date', axis=1)  # No average for date!

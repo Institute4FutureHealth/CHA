@@ -38,7 +38,7 @@ class ActivityGet(Affect):
                                   'medimum_acitivity_time', 'high_acitivity_time']
 
 
-    def execute(
+    def _execute(
         self,
         inputs: List[Any],
     ) -> str:

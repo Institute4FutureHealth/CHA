@@ -27,11 +27,11 @@ class ActivityAnalysis(Affect):
     output_type: bool = False
 
 
-    def execute(
+    def _execute(
         self,
         inputs: List[Any],
     ) -> str:
-        df = pd.read_json(StringIO(inputs[0].strip()), orient='records')
+        df = pd.read_json(StringIO(inputs[0]['data'].strip()), orient='records')
         analysis_type = inputs[1].strip()
         if analysis_type == 'average':
             df = df.drop('date', axis=1)  # No average for date!

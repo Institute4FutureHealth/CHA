@@ -34,10 +34,10 @@ MetaData: this contains the name of data files of different types like image, au
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
 Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
-Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task
+Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task. The examples for a two input tasks are: input1,input2 or if datapipe is needed datapipe:key,input2
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
-Thought: Your final reasoning or 'I now know the final answer'. when you think you are done provide the 'Final Answer'. You can use the final thoughts directly in the final answer.
+Thought: Your final reasoning or 'I now know the final answer'. when you think you are done provide the 'Final Answer'. You can use the final thoughts directly in the final answer. never add extra information that is not present in the tools outputs.
 Final Answer: the final answer to the original input question
 
 Begin!
@@ -70,10 +70,10 @@ Thought: {agent_scratchpad}"""
                                   .replace("{tool_names}", self.get_available_tasks())
     # if len(previous_actions) > 0:
       # prompt += "\nThought:"
-
     kwargs["max_tokens"] = 150
     kwargs["stop"] = self._stop
     response = self._planner_model.generate(query=prompt, **kwargs)
+    print("response ////", response)
     index = min([response.find(text) for text in self._stop])
     index1 = response.find("\nAction:")
     if index1 == -1:

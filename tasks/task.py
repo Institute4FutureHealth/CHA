@@ -3,6 +3,8 @@ from abc import abstractmethod
 from typing import List, Any
 from datapipes.datapipe import DataPipe
 from pydantic import BaseModel
+import json
+import re
 
 class BaseTask(BaseModel):
 
@@ -49,17 +51,17 @@ class BaseTask(BaseModel):
         input_args: str,
       ) -> List[str]:
     inputs = input_args.split(",")
-    return [self.datapipe.retrieve(arg.strip().split(":")[-1]) if "datapipe" in arg else arg.strip() for arg in inputs]
+    return [json.loads(self.datapipe.retrieve(re.search(r"datapipe:[0-9a-f\-]{36}", arg).group().strip().split(":")[-1])) if "datapipe" in arg else arg.strip() for arg in inputs]
 
   def _post_execute(
           self,
           result
         ):
     if self.output_type:
-      key = self.datapipe.store(result)      
+      key = self.datapipe.store(json.dumps({'data': result, 'description': ",".join(self.outputs)}))      
       return (
-        f"The result of the tool ${self.name}$ is stored in the datapipe with key: $datapipe:{key}$"
-        " pass this key to other tools to get access to the result."
+        f"The result of the tool {self.name} is stored in the datapipe with key: datapipe:{key}"
+        " pass this key to other tools to access to the result or call read_from_datapipe to get the raw data."
       )
     return result
 
@@ -72,8 +74,8 @@ class BaseTask(BaseModel):
     return self._post_execute(result)
 
   def get_dict(self) -> str:
-    inputs = ",".join(self.inputs)
-    dependencies = ",".join(self.dependencies)
+    inputs = ",".join(f"input{i+1}-{word}" for i, word in enumerate(self.inputs))
+    dependencies = ",".join(f"{i+1}-{word}" for i, word in enumerate(self.dependencies))
     prompt = f"tool name:{self.name}, description: {self.description}."
     if len(self.inputs) > 0:
       prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"

@@ -22,7 +22,7 @@ class Orchestrator(BaseModel):
   available_tasks: Dict[str, BaseTask] = {}
   max_retries: int = 16
   max_task_execute_retries: int = 3
-  max_planner_execute_retries: int = 3
+  max_planner_execute_retries: int = 16
   max_final_answer_execute_retries: int = 3
   role: int = 0
   verbose: bool = False
@@ -114,7 +114,7 @@ class Orchestrator(BaseModel):
     retries = 0
     self.print_log("task", f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")    
     task_input = action.task_input    
-    
+    error_message = ""
     while retries < self.max_task_execute_retries:
       try:
         task = self.available_tasks[action.task] 
@@ -123,22 +123,36 @@ class Orchestrator(BaseModel):
         return result, task.return_direct
       except Exception as e:
         self.print_log("error", f"Error running task:\n{e}\n---------------\n")
-        logging.exception()
+        logging.exception(e)
+        error_message = e
         retries += 1
-    return f"Error executing task {action.task}", False
+    return f"Error executing task {action.task}: {error_message}", False
 
-  def generate_prompt(self, query) -> str:
+  def planner_generate_prompt(self, query) -> str:
     return query 
+  
+  def response_generator_generate_prompt(
+      self, 
+      final_response: str = "", 
+      history:str = "", 
+      meta: List[str] = [], 
+      previous_actions: List[Action] = [], 
+      use_history: bool = False
+  ) -> str:
+    prompt = (
+      "MetaData: {meta}\n\n"
+      "Plan: \n{plan}\n\n"
+    )
+    # if use_history:
+    #   prompt = prompt.replace("{history}", history)
+
+    prompt = prompt.replace("{meta}", ", ".join(meta))\
+          .replace("{plan}", "".join([f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n" if action.task in self.available_tasks else "" for action in previous_actions])) #+ f"\n{final_response}")
+    return prompt
+   
 
   def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]:    
-    retries = 0
-    while retries < self.max_planner_execute_retries:
-      try:
-        return self.planner.plan(query, history, meta, previous_actions, use_history)
-      except Exception as e:
-        print(e)
-        retries += 1
-    return [PlanFinish("Error planning, please try to ask your question again", "")]
+    return self.planner.plan(query, history, meta, previous_actions, use_history)
 
   def generate_final_answer(self, query, thinker) -> str:
     retries = 0
@@ -167,7 +181,7 @@ class Orchestrator(BaseModel):
         f"The file with the name ${meta_data.split('/')[-1]}$ is stored with the key $datapipe:{key}$." 
         "Pass this key to the tools when you want to send them over to the tool\n"
       )
-    prompt = self.generate_prompt(query)
+    prompt = self.planner_generate_prompt(query)
     if "google_translate" in self.available_tasks:
       prompt = self.available_tasks["google_translate"].execute(prompt+"$#en")
       source_language = prompt[1]
@@ -198,7 +212,6 @@ class Orchestrator(BaseModel):
           break 
       except ValueError as error:
         self.print_log("error", f"Planing Error:\n{error}\n\n")
-        print(error)
         i += 1
         if i > self.max_retries:
           final_response = "Problem preparing the answer. Please try again."
@@ -206,9 +219,9 @@ class Orchestrator(BaseModel):
         previous_actions.append(Action("Exception", "Invalid or incomplete response", "".join(error.args), ""))
     self.print_log("planner", f"Planner final response: {final_response}\nPlaning Ended...\n\n")        
 
-    final_response = self.generate_prompt(final_response)
+    final_response = self.response_generator_generate_prompt(final_response=final_response, history=history, meta=meta_infos, previous_actions=previous_actions, use_history=use_history)
 
-    self.print_log("response_generator", "Final Answer Generation Started...\n")
+    self.print_log("response_generator", f"Final Answer Generation Started...\n\nInput Prompt: \n{final_response}")
     final_response = self.generate_final_answer(query=query, thinker=final_response)
     self.print_log("response_generator", f"Response: {final_response}\n\nFinal Answer Generation Ended.\n")
 
