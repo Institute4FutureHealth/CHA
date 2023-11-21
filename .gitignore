@@ -1,5 +1,6 @@
 **/**/__pycache__
 **/**/.vscode
+**/**/.DS_Store
 
 venv
 data
@@ -7,4 +8,5 @@ node_modules
 
 *.json
 CHA.egg-info/
-**/**/.DS_Store
+build
+dist
