@@ -4,6 +4,12 @@ from tasks.affect.base import Affect
 
 
 class SleepGet(Affect):
+    """
+    **Description:** 
+
+        This tasks gets sleep affect data for specific patient.
+    """
+
     name: str = "affect_sleep_get"
     chat_name: str = "AffectSleepGet"
     description: str = ("Get the sleep parameters for a specific date or "

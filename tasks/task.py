@@ -14,8 +14,6 @@ class BaseTask(BaseModel):
 		inherit from this class and override the attributes and methods based on your task's need. This class defines a base class named BaseTask. This class serves as a foundation for defining common properties 
 		and behaviors among various tasks in the system.
 
-
-
 	Attributes:
 		name: The name of the task. It should be unique underscore_case to be defined in TaskType. sample_task_name
 		chat_name: This is the name that later will be used if needed to mention the tasks inside the chat with the user. It should be Camel Case. SampleTaskChatName

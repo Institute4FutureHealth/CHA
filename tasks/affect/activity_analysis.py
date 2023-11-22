@@ -9,6 +9,12 @@ from io import StringIO
 
 
 class ActivityAnalysis(Affect):
+    """
+    **Description:** 
+
+        This tasks performs average, sum, or trend analysis on the provided raw activity affect data for specific patient.
+    """
+
     name: str = "affect_activity_analysis"
     chat_name: str = "AffectActivityAnalysis"
     description: str = ("Analyze the physical activity data. You must Call this whenever physical activity analysis (e.g., 'average', 'sum', or 'trend') is needed. DON'T rely on your analysis."

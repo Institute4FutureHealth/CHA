@@ -16,6 +16,7 @@ class SerpAPI(BaseTask):
         This code defines a class named SerpAPI, which is a specific implementation of the abstract BaseTask class. 
         The SerpAPI class represents a task that utilizes the SerpAPI (Google Search API) to perform internet searches 
         and retrieve relevant information.
+
     """
     name: str = "serpapi"
     chat_name: str = "InternetSearchSerp"

@@ -11,6 +11,11 @@ from tasks.task import BaseTask
 
 
 class Affect(BaseTask):
+    """
+    **Description:** 
+
+        This class is the base affect class for common methods and analysis.
+    """
     def _get_data(
             self,
             local_dir: str,

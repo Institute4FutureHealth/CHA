@@ -5,6 +5,12 @@ from io import StringIO
 
 
 class SleepAnalysis(Affect):
+    """
+    **Description:** 
+
+        This tasks performs average, sum, or trend analysis on the provided raw sleep affect data for specific patient.
+    """
+    
     name: str = "affect_sleep_analysis"
     chat_name: str = "AffectSleepAnalysis"
     description: str = ("Analyzes the sleep data and returns trend or average based on request. You must Call this whenever sleep analysis (e.g., 'average' or 'trend') is needed. DON'T analyze the data yourself."

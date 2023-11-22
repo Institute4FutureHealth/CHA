@@ -8,6 +8,13 @@ from pydantic import model_validator
 
 
 class GoogleTranslate(BaseTask):
+    """
+    **Description:** 
+
+        This task uses google translate to autmatically convert from the user language to english or vise versa.
+
+    """
+
     name: str = "google_translator"
     chat_name: str = "GoogleTranslator"
     description: str = (

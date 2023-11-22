@@ -18,5 +18,9 @@ those who want to use your services (e.g., how to register to your service, if a
    task
    initialize_task
    types
+   affect/index
+   ask_user
+   google_translator
    serpapi
+   read_from_datapipe
    playwright/index

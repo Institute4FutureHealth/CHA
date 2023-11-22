@@ -8,6 +8,12 @@ from tasks.affect.base import Affect
 
 
 class ActivityGet(Affect):
+    """
+    **Description:** 
+
+        This tasks gets activity affect data for specific patient.
+    """
+
     name: str = "affect_activity_get"
     chat_name: str = "AffectActivityGet"
     description: str = ("Get the physical activity parameters for a specific date or "
