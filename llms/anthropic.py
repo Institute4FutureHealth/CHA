@@ -6,6 +6,14 @@ from pydantic import model_validator
 
 
 class AntropicLLM(BaseLLM):
+    """
+    **description:**
+
+        This code implements Anthropic LLM API. 
+        This class uses the Anthropic service to connect to a language model for generating text based on user queries.
+        `Anthropic API <https://docs.anthropic.com/claude/reference/getting-started-with-the-api>`_
+        
+    """
     models: Dict = {
         "claude-2": 100000,
     }
@@ -17,11 +25,11 @@ class AntropicLLM(BaseLLM):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
-        This method validates the environment by checking the existence of the API key and required Python packages.
-        It retrieves the API key from either the "anthropic_api_key" key in the "values" dictionary or from the "ANTHROPIC_API_KEY" environment variable.
-        It also imports the required packages and assigns the appropriate values to the class attributes.
+            This method validates the environment by checking the existence of the API key and required Python packages.
+            It retrieves the API key from either the "anthropic_api_key" key in the "values" dictionary or from the "ANTHROPIC_API_KEY" environment variable.
+            It also imports the required packages and assigns the appropriate values to the class attributes.
 
         Args:
             cls (object): The class itself.
@@ -60,18 +68,11 @@ class AntropicLLM(BaseLLM):
 
     def get_model_names(self) -> List[str]:
         """
-        Get a list of available model names.
+            Get a list of available model names.
 
         Return:
             List[str]: A list of available model names.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -79,7 +80,7 @@ class AntropicLLM(BaseLLM):
 
     def is_max_token(self, model_name, query) -> bool:
         """
-        Check if the token count of the query exceeds the maximum token count for the specified model.
+            Check if the token count of the query exceeds the maximum token count for the specified model.
 
         Args:
             model_name (str): The name of the model.
@@ -88,22 +89,15 @@ class AntropicLLM(BaseLLM):
             bool: True if the token count exceeds the maximum, False otherwise.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         model_max_token = self.models[model_name]
         token_count = self.llm_model(api_key=self.api_key).count_tokens(query)
         return model_max_token < token_count
 
-    def parse_response(self, response) -> str:
+    def _parse_response(self, response) -> str:
         """
-        Parse the response object and return the generated completion text.
+            Parse the response object and return the generated completion text.
 
         Args:
             response (object): The response object.
@@ -111,33 +105,19 @@ class AntropicLLM(BaseLLM):
             str: The generated completion text.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return response.completion
 
-    def prepare_prompt(self, prompt) -> Any:
+    def _prepare_prompt(self, prompt) -> Any:
         """
-        Prepare the prompt by combining the human and AI prompts with the input prompt.
+            Prepare the prompt by combining the human and AI prompts with the input prompt.
 
         Args:
             prompt (str): The input prompt.
         Return:
             Any: The prepared prompt.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -149,7 +129,7 @@ class AntropicLLM(BaseLLM):
             **kwargs: Any
     ) -> str:
         """
-        Generate a response based on the provided query.
+            Generate a response based on the provided query. This calls anthropic API to generate the text.
 
         Args:
             query (str): The query to generate a response for.
@@ -158,14 +138,6 @@ class AntropicLLM(BaseLLM):
             str: The generated response.
         Raise:
             ValueError: If the model name is not specified or is not supported.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -178,10 +150,10 @@ class AntropicLLM(BaseLLM):
             )
 
         max_token = kwargs["max_token"] if "max_token" in kwargs else 32000
-        query = self.prepare_prompt(query)
+        query = self._prepare_prompt(query)
         response = self.llm_model(api_key=self.api_key).completions.create(
             model=model_name,
             max_tokens_to_sample=max_token,
             prompt=query,
         )
-        return self.parse_response(response)
+        return self._parse_response(response)

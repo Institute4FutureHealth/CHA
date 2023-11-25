@@ -8,6 +8,14 @@ from tasks.playwright.utils import (
 
 
 class Click(BaseBrowser):
+    """
+    **Description:** 
+
+        This code defines a class named Click that inherits from the BaseBrowser class. 
+        The Click class represents a task related to browser interactions, specifically clicking on an element 
+        identified by a CSS selector using the Playwright library.
+        
+    """
     name: str = "click"
     chat_name: str = "Clicker"
     description: str = (
@@ -20,20 +28,12 @@ class Click(BaseBrowser):
 
     def _selector_effective(self, selector: str) -> str:
         """
-        Get the effective CSS selector considering visibility.
+            Get the effective CSS selector considering visibility.
 
         Args:
             selector (str): The original CSS selector.
         Return:
             str: The effective CSS selector.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -41,31 +41,20 @@ class Click(BaseBrowser):
             return selector
         return f"{selector} >> visible=1"
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Execute the click task by clicking on an element with the provided CSS selector.
+            Execute the click task by clicking on an element with the provided CSS selector.
 
         Aegs:
             input (str): The input string containing the CSS selector.
         Return:
             str: A message indicating the success or failure of the click operation.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
-        selector = inputs[0
-        ]
+        selector = inputs[0]
         if self.sync_browser is None:
             raise ValueError(f"Synchronous browser not provided to {self.name}")
         page = get_current_page(self.sync_browser)
@@ -87,18 +76,10 @@ class Click(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the purpose of the click task.
+            Explain the purpose of the click task.
 
         Return:
             str: A brief explanation of the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

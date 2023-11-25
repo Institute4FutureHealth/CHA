@@ -39,7 +39,7 @@ exclude_patterns = []
 #html_theme = 'furo' #'alabaster'
 html_theme = "pydata_sphinx_theme"
 html_static_path = ['_static']
-
+html_logo = "_static/logo.png"
 
 html_theme_options = {
     
@@ -55,7 +55,11 @@ html_theme_options = {
     "secondary_sidebar_items": ["page-toc"],
 
     
-    
+    "logo": {
+        "text": "open CHA",
+        "image_light": "_static/logo-dark.png",
+        "image_dark": "_static/logo.png",
+    },
     # "navbar_start": ["navbar-logo"],
     # "navbar_end": ["theme-switcher", "navbar-icon-links"],
     # "navbar_persistent": ["search-button"],
@@ -67,7 +71,11 @@ html_theme_options = {
     
 }
 
-
+autodoc_default_options = {
+    'private-members': True, 
+    'members': True,
+    'exclude-members': 'Config, model_config, model_fields'
+}
 
 # -- Path setup --------------------------------------------------------------
 

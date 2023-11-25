@@ -10,6 +10,14 @@ import aiohttp
 
 
 class SerpAPI(BaseTask):
+    """
+    **Description:** 
+
+        This code defines a class named SerpAPI, which is a specific implementation of the abstract BaseTask class. 
+        The SerpAPI class represents a task that utilizes the SerpAPI (Google Search API) to perform internet searches 
+        and retrieve relevant information.
+
+    """
     name: str = "serpapi"
     chat_name: str = "InternetSearchSerp"
     description: str = (
@@ -36,7 +44,7 @@ class SerpAPI(BaseTask):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
         Args:
             values (Dict): The dictionary of attribute values.
@@ -44,14 +52,6 @@ class SerpAPI(BaseTask):
             Dict: The updated dictionary of attribute values.
         Raise:
             ValueError: If the SerpAPI python package is not installed.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -72,20 +72,13 @@ class SerpAPI(BaseTask):
 
     def get_params(self, query: str) -> Dict[str, str]:
         """
-        Get parameters for SerpAPI.
+            Get parameters for SerpAPI.
 
         Args:
             query (str): The search query.
         Return:
             Dict[str, str]: The parameters for the SerpAPI.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -98,20 +91,13 @@ class SerpAPI(BaseTask):
 
     def results(self, query: str) -> Dict:
         """
-        Run query through SerpAPI and return the raw result.
+            Run query through SerpAPI and return the raw result.
 
         Args:
             query (str): The search query.
         Return:
             Dict: The raw result from the SerpAPI.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -123,20 +109,12 @@ class SerpAPI(BaseTask):
     @staticmethod
     def _process_response(res: Dict) -> str:
         """
-        Process response from SerpAPI.
+            Process response from SerpAPI.
 
         Args:
             res (Dict): The raw response from the SerpAPI.
         Return:
             str: Processed information from the SerpAPI response.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -148,12 +126,13 @@ class SerpAPI(BaseTask):
             )
         return toret
 
-    def execute(
-            self,
-            input: str,
+
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Run query through SerpAPI and parse result.
+            Run query through SerpAPI and parse result.
 
         Args:
             input (str): The input, which should be a search query.
@@ -161,34 +140,17 @@ class SerpAPI(BaseTask):
             str: The parsed result from the SerpAPI.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
         return self._process_response(self.results(inputs[0]))
 
     def explain(
             self,
     ) -> str:
         """
-        Provide an explanation of the task.
+            Provide an explanation of the task.
 
         Return:
             str: Explanation of the SerpAPI task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

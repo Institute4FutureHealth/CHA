@@ -1,5 +1,5 @@
 from tasks.playwright.base import BaseBrowser
-from typing import List
+from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -7,6 +7,11 @@ from urllib.parse import urlparse
 
 
 class NavigateBack(BaseBrowser):
+    """
+    **Description:** 
+
+        This class represents a browser navigation task using Playwright.
+    """
     name: str = "navigate_back"
     chat_name: str = "NavigateBack"
     description: str = (
@@ -19,7 +24,7 @@ class NavigateBack(BaseBrowser):
 
     def validate_url(self, url):
         """
-        This method validates a given URL by checking if its scheme is either 'http' or 'https'.
+            This method validates a given URL by checking if its scheme is either 'http' or 'https'.
 
         Args:
             url (str): The URL to be validated.
@@ -28,14 +33,6 @@ class NavigateBack(BaseBrowser):
         Raise:
             ValueError: If the URL scheme is not 'http' or 'https'.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         parsed_url = urlparse(url)
@@ -43,29 +40,19 @@ class NavigateBack(BaseBrowser):
             raise ValueError("URL scheme must be 'http' or 'https'")
         return url
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        This method executes the navigation back action in the browser using Playwright.
+            This method executes the navigation back action in the browser using Playwright.
 
         Args:
             input (str): The input string containing the URL to navigate to.
         Return:
             str: A message indicating whether the navigation was successful, including the URL and status code if successful, or an error message if unsuccessful.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
         if self.sync_browser is None:
             raise ValueError(f"Synchronous browser not provided to {self.name}")
         page = get_current_page(self.sync_browser)
@@ -83,18 +70,11 @@ class NavigateBack(BaseBrowser):
             self,
     ) -> str:
         """
-        This method provides an explanation of the task.
+            This method provides an explanation of the task.
 
         Return:
             str: A brief explanation of the task, in this case, "This task extracts all of the hyperlinks."
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

@@ -1,5 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 from tasks.task import BaseTask
+from datapipes.datapipe import DataPipe
 from tasks.types import TASK_TO_CLASS
 
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from tasks.playwright.base import BaseBrowser
-from typing import TYPE_CHECKING, List, Sequence, Optional
+from typing import TYPE_CHECKING, List, Sequence, Optional, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 
 
 class GetElements(BaseBrowser):
+    """
+    **Description:** 
+
+        The GetElements class is a subclass of BaseBrowser responsible for retrieving elements 
+        on the current web page that match a given CSS selector.
+    """
     name: str = "get_elements"
     chat_name: str = "GetElements"
     description: str = (
@@ -29,7 +35,7 @@ class GetElements(BaseBrowser):
             page: SyncPage, selector: str, attributes: Sequence[str]
     ) -> List[dict]:
         """
-        Get elements matching the given CSS selector.
+            Get elements matching the given CSS selector.
 
         Args:
             page (SyncPage): The current page.
@@ -38,13 +44,6 @@ class GetElements(BaseBrowser):
         Return:
             List[dict]: A list of dictionaries containing the retrieved elements and their attributes.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -63,12 +62,12 @@ class GetElements(BaseBrowser):
                 results.append(result)
         return results
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Execute the GetElements task.
+            Execute the GetElements task.
 
         Args:
             input (str): Input string containing CSS selector and attributes.
@@ -78,16 +77,7 @@ class GetElements(BaseBrowser):
             ValueError: If the synchronous browser is not provided.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
         if self.sync_browser is None:
             raise ValueError(f"Synchronous browser not provided to {self.name}")
         page = get_current_page(self.sync_browser)
@@ -99,18 +89,10 @@ class GetElements(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the GetElements task.
+            Explain the GetElements task.
 
         Return:
             str: A brief explanation of the GetElements task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

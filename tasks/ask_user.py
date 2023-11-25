@@ -3,6 +3,13 @@ from typing import Any, List, Dict
 
 
 class AskUser(BaseTask):
+    """
+    **Description:** 
+
+        This task is asking question back to the user and stops planning. When needed, the planner will decide to ask question from user 
+        and use the user's answer to proceed to the planning.
+
+    """
     name: str = "ask_user"
     chat_name: str = "AskUser"
     description: str = (
@@ -17,40 +24,15 @@ class AskUser(BaseTask):
 
     translator: Any = None  #: :meta private:
 
-    def parse_input(
-            self,
-            input: str,
-    ) -> List[str]:
-        """
-        Parse the input string into a list of strings.
-
-        Args:
-            input (str): Input string to be parsed.
-        Return:
-            List[str]: List of parsed strings.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
-        """
-
-        return input.split("$#")
-
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """Translate query"""
-        inputs = self.parse_input(input)
         return inputs[0]
 
     def explain(
-            self,
+        self,
     ) -> str:
         return (
             "This task simply asks user to provide more information or continue interaction."

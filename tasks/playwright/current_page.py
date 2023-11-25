@@ -1,11 +1,18 @@
 from tasks.playwright.base import BaseBrowser
-from typing import List
+from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
 
 
 class CurrentWebPage(BaseBrowser):
+    """
+    **Description:** 
+
+        This code defines a class named CurrentWebPage that inherits from the BaseBrowser class. 
+        The CurrentWebPage class represents a task related to browser interactions, specifically retrieving the URL of the current web page.
+
+    """
     name: str = "current_page"
     chat_name: str = "CurrentPage"
     description: str = (
@@ -16,31 +23,22 @@ class CurrentWebPage(BaseBrowser):
     outputs: List[str] = []
     output_type: bool = False
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Execute the current_page task by retrieving the URL of the current web page.
+                This method executes the task by retrieving the current page from the synchronous browser using 
+                the get_current_page function and returning its URL.
 
-        Args:
-            input (str): The input string (not used in this task).
-        Return:
-            str: The URL of the current web page.
-        Raise:
-            ValueError: If the synchronous browser is not provided.
+            Args:
+                input (str): The input string (not used in this task).
+            Return:
+                str: The URL of the current web page.
+            Raise:
+                ValueError: If the synchronous browser is not provided.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
-        """
-
-        inputs = self.parse_input(input)
+            """
         if self.sync_browser is None:
             raise ValueError(f"Synchronous browser not provided to {self.name}")
         page = get_current_page(self.sync_browser)
@@ -50,18 +48,10 @@ class CurrentWebPage(BaseBrowser):
             self,
     ) -> str:
         """
-        Provide a brief explanation of the current_page task.
+            Provides a brief explanation of the current_page task.
 
         Return:
             str: An explanation of the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

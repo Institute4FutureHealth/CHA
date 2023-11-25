@@ -16,14 +16,6 @@ def get_current_page(browser: SyncBrowser) -> SyncPage:
     Return:
         SyncPage: The current page from the provided browser.
 
-
-
-    Example:
-        .. code-block:: python
-
-            from langchain import ReActChain, OpenAI
-            react = ReAct(llm=OpenAI())
-
     """
 
     if not browser.contexts:
@@ -44,14 +36,6 @@ def create_sync_playwright_browser(headless: bool = True) -> SyncBrowser:
         headless (bool, optional): Whether to launch the browser in headless mode. Default is True.
     Return:
         SyncBrowser: The created Playwright synchronous browser instance.
-
-
-
-    Example:
-        .. code-block:: python
-
-            from langchain import ReActChain, OpenAI
-            react = ReAct(llm=OpenAI())
 
     """
 

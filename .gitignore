@@ -2,4 +2,11 @@
 **/**/.vscode
 **/**/.DS_Store
 
+venv
+data
+node_modules
+
+*.json
 CHA.egg-info/
+build
+dist

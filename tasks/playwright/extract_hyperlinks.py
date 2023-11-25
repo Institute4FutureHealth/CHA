@@ -8,6 +8,11 @@ import json
 
 
 class ExtractHyperlinks(BaseBrowser):
+    """
+    **Description:** 
+
+        This task extracts all hyperlinks from the current webpage.
+    """
     name: str = "extract_hyperlinks"
     chat_name: str = "ExtractHyperLinks"
     description: str = (
@@ -21,7 +26,7 @@ class ExtractHyperlinks(BaseBrowser):
     @model_validator(mode='before')
     def check_bs_import(cls, values: dict) -> dict:
         """
-        Check that the arguments are valid.
+            Check that the arguments are valid.
 
         Args:
             values (Dict): The current attribute values.
@@ -29,14 +34,6 @@ class ExtractHyperlinks(BaseBrowser):
             Dict: The updated attribute values.
         Raise:
             ImportError: If 'beautifulsoup4' package is not installed.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -52,7 +49,7 @@ class ExtractHyperlinks(BaseBrowser):
     @staticmethod
     def scrape_page(page: Any, html_content: str, absolute_urls: bool) -> str:
         """
-        Scrape hyperlinks from the current webpage.
+            Scrape hyperlinks from the current webpage.
 
         Args:
             page (Any): The current webpage.
@@ -61,13 +58,6 @@ class ExtractHyperlinks(BaseBrowser):
         Return:
             str: JSON string containing the extracted hyperlinks.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -87,12 +77,12 @@ class ExtractHyperlinks(BaseBrowser):
         # Return the list of links as a JSON string
         return json.dumps(links)
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Execute the ExtractHyperlinks task.
+            Execute the ExtractHyperlinks task.
 
         Args:
             input (str): The input parameter for the task.
@@ -101,17 +91,7 @@ class ExtractHyperlinks(BaseBrowser):
         Raise:
             ValueError: If the synchronous browser is not provided.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
         if self.sync_browser is None:
             raise ValueError(f"Synchronous browser not provided to {self.name}")
         page = get_current_page(self.sync_browser)
@@ -122,18 +102,11 @@ class ExtractHyperlinks(BaseBrowser):
             self,
     ) -> str:
         """
-        Provide a brief explanation of the ExtractHyperlinks task.
+            Provide a brief explanation of the ExtractHyperlinks task.
 
         Return:
             str: An explanation of the task.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

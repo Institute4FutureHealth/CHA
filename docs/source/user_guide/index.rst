@@ -1,15 +1,14 @@
 User Guide
 ==========
 
+Get started with CHA.
 
 
+.. toctree::
+    :maxdepth: 1
 
-
-
-Get started with CHA
-
-
-
-
+    introduction
+    quick_start
+    contribute
 
 

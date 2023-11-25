@@ -20,10 +20,17 @@ else:
 
 
 class BaseBrowser(BaseTask):
+    """
+    **Description:**    
+        
+        This code defines a base class named BaseBrowser that inherits from BaseTask. 
+        This class is intended for tasks related to browser interactions using the Playwright library. 
+        The code uses conditional imports to handle situations where the Playwright library is not available.
+    """
     sync_browser: Optional[Any] = None
 
     def __init__(self, **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         if "sync_browser" in kwargs:
             self.sync_browser = kwargs["sync_browser"]
         if self.sync_browser is None:
@@ -32,7 +39,7 @@ class BaseBrowser(BaseTask):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
         Args:
             cls (object): The class itself.
@@ -41,14 +48,6 @@ class BaseBrowser(BaseTask):
             Dict:The original values.
         Raise:
             ImportError: If the 'playwright' package is not installed.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

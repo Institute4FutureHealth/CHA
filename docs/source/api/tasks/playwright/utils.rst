@@ -1,11 +1,6 @@
 Utils
 =====
 
-
-
-
-
-
 The provided code includes utility functions related to Playwright for synchronous browser automation.
 
 

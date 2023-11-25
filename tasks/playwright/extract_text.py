@@ -1,5 +1,5 @@
 from tasks.playwright.base import BaseBrowser
-from typing import List
+from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -8,6 +8,11 @@ from urllib.parse import urlparse
 
 
 class ExtractText(BaseBrowser):
+    """
+    **Description:** 
+
+        This task extracts all the text from the current webpage.
+    """
     name: str = "extract_text"
     chat_name: str = "ExtractText"
     description: str = (
@@ -21,7 +26,7 @@ class ExtractText(BaseBrowser):
     @model_validator(mode="before")
     def check_acheck_bs_importrgs(cls, values: dict) -> dict:
         """
-        Check that the arguments are valid.
+            Check that the arguments are valid.
 
         Args:
             values (Dict): The current attribute values.
@@ -29,14 +34,6 @@ class ExtractText(BaseBrowser):
             Dict: The updated attribute values.
         Raise:
             ImportError: If 'beautifulsoup4' or 'lxml' packages are not installed.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -59,7 +56,7 @@ class ExtractText(BaseBrowser):
 
     def validate_url(self, url):
         """
-        This method validates a given URL by checking if its scheme is either 'http' or 'https'.
+            This method validates a given URL by checking if its scheme is either 'http' or 'https'.
 
         Args:
             url (str): The URL to be validated.
@@ -69,13 +66,6 @@ class ExtractText(BaseBrowser):
             ValueError: If the URL scheme is not 'http' or 'https'.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         parsed_url = urlparse(url)
@@ -83,12 +73,12 @@ class ExtractText(BaseBrowser):
             raise ValueError("URL scheme must be 'http' or 'https'")
         return url
 
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Execute the ExtractText task.
+            Execute the ExtractText task.
 
         Args:
             input (str): The input parameter for the task.
@@ -97,19 +87,8 @@ class ExtractText(BaseBrowser):
         Raise:
             ValueError: If the synchronous browser is not provided.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
         from bs4 import BeautifulSoup
-
-        inputs = self.parse_input(input)
         self.validate_url(inputs[0].strip())
 
         if self.sync_browser is None:
@@ -132,18 +111,11 @@ class ExtractText(BaseBrowser):
             self,
     ) -> str:
         """
-        Explain the ExtractText task.
+            Explain the ExtractText task.
 
         Return:
             str: A brief explanation of the ExtractText task.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

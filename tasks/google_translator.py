@@ -8,6 +8,13 @@ from pydantic import model_validator
 
 
 class GoogleTranslate(BaseTask):
+    """
+    **Description:** 
+
+        This task uses google translate to autmatically convert from the user language to english or vise versa.
+
+    """
+
     name: str = "google_translator"
     chat_name: str = "GoogleTranslator"
     description: str = (
@@ -23,7 +30,7 @@ class GoogleTranslate(BaseTask):
     @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """
-        Validate that api key and python package exists in environment.
+            Validate that api key and python package exists in environment.
 
         Args:
             cls (object): The class itself.
@@ -33,13 +40,6 @@ class GoogleTranslate(BaseTask):
         Raise:
             ImportError: If the 'playwright' package is not installed.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -54,36 +54,27 @@ class GoogleTranslate(BaseTask):
             )
         return values
 
-    def parse_input(
-            self,
-            input: str,
+    def _parse_input(
+        self,
+        input_args: str,
     ) -> List[str]:
         """
-        Parse the input string into a list of strings.
+            Parse the input string into a list of strings.
 
         Args:
             input (str): Input string to be parsed.
         Return:
             List[str]: List of parsed strings.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
+        return input_args.split("$#")
 
-        return input.split("$#")
-
-    def execute(
-            self,
-            input: str,
+    def _execute(
+        self,
+        inputs: List[Any],
     ) -> str:
         """
-        Abstract method representing the execution of the task.
+            Abstract method representing the execution of the task.
 
         Args:
             input (str): Input data for the task.
@@ -92,19 +83,8 @@ class GoogleTranslate(BaseTask):
         Raise:
             NotImplementedError: Subclasses must implement the execute method.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
-
-        inputs = self.parse_input(input)
-        print("inputs translate", inputs)
-        dest = inputs[1] if inputs[1] is not None else "en"
+        dest = inputs[1] if inputs[1] is not None else "en" 
         result = self.translator.translate(inputs[0], dest=dest)
         return result.text, result.src
 
@@ -112,18 +92,10 @@ class GoogleTranslate(BaseTask):
             self,
     ) -> str:
         """
-        Provide a sample explanation for the task.
+            Provide a sample explanation for the task.
 
         Return:
             str: Sample explanation for the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
