@@ -3,10 +3,10 @@ Affect - Base
 '''
 
 import os
+from typing import List
 import pandas as pd
 from scipy.stats import linregress
 import requests
-from typing import List
 from tasks.task import BaseTask
 
 
@@ -31,7 +31,7 @@ class Affect(BaseTask):
         else:
             df = pd.read_csv(os.path.join(local_dir, file_name),
                              usecols=usecols)
-            
+            df = df[usecols]
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
         df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
