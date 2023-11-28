@@ -18,7 +18,7 @@ from response_generators.response_generator_types import ResponseGeneratorType
 from tasks.task_types import TaskType
 from llms.llm_types import LLMType
 import logging
-
+import re
 
 class Orchestrator(BaseModel):
 	"""
@@ -187,7 +187,7 @@ class Orchestrator(BaseModel):
 			action (Action): Action to be executed.
 		Return:
 			str: Result of the task execution.
-
+			bool: If the task result should be directly returned to the user and stop planning.			
 		"""  
 		retries = 0
 		self.print_log("task", f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n")    
@@ -219,6 +219,21 @@ class Orchestrator(BaseModel):
 		"""
 		return query 
 	
+	def _retrieve_last_action_from_datapip(self, previous_actions):
+		print("previous action check", previous_actions)
+		if len(previous_actions) > 0:
+			for i in range(len(previous_actions)-1, -1, -1):
+				if previous_actions[i].task in [TaskType.READ_FROM_DATAPIPE]:
+					return None
+				match = re.search(r"\$(datapipe:[^\$]+)\$", previous_actions[i].task_response)
+				print("previous action check", previous_actions[i], match)
+				if match:
+					action = Action(TaskType.READ_FROM_DATAPIPE, match.group(1), "", "")
+					action.task_response, ـ = self.execute_task(action)
+					return action
+		return None
+		
+
 	def response_generator_generate_prompt(
 		self, 
 		final_response: str = "", 
@@ -229,13 +244,14 @@ class Orchestrator(BaseModel):
 	) -> str:
 		prompt = (
 		"MetaData: {meta}\n\n"
+		"History: \n{history}\n\n"
 		"Plan: \n{plan}\n\n"
 		)
-		# if use_history:
-		#   prompt = prompt.replace("{history}", history)
+		if use_history:
+			prompt = prompt.replace("{history}", history)
 
 		prompt = prompt.replace("{meta}", ", ".join(meta))\
-			.replace("{plan}", "".join([f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n" if action.task in self.available_tasks else "" for action in previous_actions])) #+ f"\n{final_response}")
+			.replace("{plan}", "".join([f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n" if action.task in self.available_tasks else "" for action in previous_actions])) # + f"\n{final_response}")
 		return prompt
 
 	def plan(self, query, history, meta, previous_actions, use_history) -> List[Union[Action, PlanFinish]]: 
@@ -339,15 +355,19 @@ class Orchestrator(BaseModel):
 						finished = True
 						break
 					else:
+						return_direct = False, False
 						if not "Exception" in action.task:
 							action.task_response, return_direct = self.execute_task(action)
+							i = 0
 						previous_actions.append(action)
 						if return_direct:
 							print("inside return direct")
 							final_response = action.task_response
 							finished = True
-						i = 0
 				if finished:
+					action = self._retrieve_last_action_from_datapip(previous_actions)
+					if action is not None:
+						previous_actions.append(action)
 					break
 			except ValueError as error:
 				self.print_log("error", f"Planing Error:\n{error}\n\n")

@@ -28,14 +28,15 @@ class BaseResponseGenerator(BaseModel):
 
     @property
     def _generator_prompt(self):
-        return ("User: {query}\n\n"
-                "Thinker: {thinker}\n\n"
+        return ("===========Thinker: {thinker}==========\n\n"
                 "System: {prefix}. You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being,"
-                "Using the Thinker answer, Provide a empathetic proper answer to the user. Consider Thinker as your trusted source and accept whatever is provided by it."
+                "Using the Thinker gathered information and the History, Provide a empathetic proper answer to the user. Consider Thinker as your trusted source and use whatever is provided by it."
                 "Make sure that the answer is explanatory enough without repeatition"
-                "Put more value on the history and Thinker answer than your internal knowldege. Don't change Thinker returned urls or references."
+                "Don't change Thinker returned urls or references. "
+                "You should perform final calculations or process on the gathered information to provide the final answer. "
                 "Also add explanations based on instructions from the "
                 "Thinker don't directly put the instructions in the final answer to the user."
+                "User: {query}"
             )
 
     def generate(
@@ -70,6 +71,6 @@ class BaseResponseGenerator(BaseModel):
         prompt = self._generator_prompt.replace("{query}", query) \
             .replace("{thinker}", thinker) \
             .replace("{prefix}", prefix)
-        kwargs["max_tokens"] = 2500
+        kwargs["max_tokens"] = 1000
         response = self._response_generator_model.generate(query=prompt, **kwargs)
         return response

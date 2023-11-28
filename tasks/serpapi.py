@@ -119,7 +119,10 @@ class SerpAPI(BaseTask):
         """
 
         try:
-            toret = "url: " + res["organic_results"][0]["link"] + "\nmetadata: " + res["organic_results"][0]["snippet"]
+            if "answer_box" in res:                
+                toret = "url: " + res["answer_box"]["link"] + "\nmetadata: " + res["answer_box"]["snippet"]
+            else:
+                toret = "url: " + res["organic_results"][0]["link"] + "\nmetadata: " + res["organic_results"][0]["snippet"]
         except KeyError:
             return (
                 "Could not get the proper response from the search. Try another search query."

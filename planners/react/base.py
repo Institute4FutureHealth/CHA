@@ -41,22 +41,22 @@ class ReActPlanner(BasePlanner):
         return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being. 
 Answer the following questions as best you can. Make sure you call all the needed tools before reach to the Final Answer. You have access to the following tools:
 Use the following format. You should stick to the following format:
-Question: the input question you must answer
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
 History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
+Question: the input question you must answer
 Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
 Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task. The examples for a two input tasks are: input1,input2 or if datapipe is needed datapipe:key,input2
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
-Thought: Your final reasoning or 'I now know the final answer'. when you think you are done provide the 'Final Answer'. You can use the final thoughts directly in the final answer. never add extra information that is not present in the tools outputs.
-Final Answer: the final answer to the original input question. It should be based on the tools result. NEVER generate extra restuls by yourself
+Thought: Your final reasoning or 'I now know the final answer'. when you think you are done you should provide the 'Final Answer'.
+Final Answer: the final answer to the original input question. It should be based on the tools result.
 
 Begin!
 
-Question: {input}
 MetaData: {meta}
 History: {history}
+Question: {input}
 Thought: {agent_scratchpad}"""
 
 
@@ -105,14 +105,9 @@ Thought: {agent_scratchpad}"""
         index1 = response.find("\nAction:")
         if index1 == -1:
             index1 = 0
+        print("resp", response)
         response = response[index1:index]
         actions = self.parse(response)
-        if isinstance(actions[0], PlanFinish):
-            answer = self.self_reflect(query, actions[0].response)
-            print("self reflect\n", answer)
-            if "No" in answer:
-                return [Action("Exception", "Plan not complete", answer, "")]
-
         return actions    
 
 

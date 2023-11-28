@@ -31,9 +31,9 @@ class CHA(BaseModel):
                   chat_history: List[Tuple[str, str]] = []
                 ) -> str:
     print("chat history", chat_history)
-    history = "".join([f"User: {chat[0]}\nCHA: {chat[1]}\n" for chat in chat_history])
+    history = "".join([f"\n------------\nUser: {chat[0]}\nCHA: {chat[1]}\n------------\n" for chat in chat_history])
     if len(self.previous_actions) > 0:
-      history += "Previous Actions: " + "\n\n".join([f"action: {action.task}\naction_response: {action.task_response}" for action in self.previous_actions if action.task != "Exception"])
+      history += "Previous Actions: " + "".join([f"\n------------\naction: {action.task}\naction_response: {action.task_response}\n------------\n" for action in self.previous_actions if action.task != "Exception"])
     return history
   
   def _run(
