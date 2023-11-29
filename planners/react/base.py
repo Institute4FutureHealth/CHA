@@ -1,20 +1,25 @@
 """
 Heavily borrowed from langchain: https://github.com/langchain-ai/langchain/
 """
-from planners.planner import BasePlanner
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from planners.action import Action, PlanFinish
 import re
+from typing import Any
+from typing import List
+from typing import Union
+
+from planners.action import Action
+from planners.action import PlanFinish
+from planners.planner import BasePlanner
 
 
 class ReActPlanner(BasePlanner):
     """
-    **Description:**    
-        
-        This class implements ReAct planner, which inherits from the BasePlanner base class. 
-        ReAct employs reasoning and action techniques to ascertain the essential actions to be undertaken. `Paper <https://arxiv.org/abs/2210.03629>`_
+    **Description:**
 
-        This code defines a base class called "BasePlanner" that inherits from the "BaseModel" class of the pydantic library. 
+        This class implements ReAct planner, which inherits from the BasePlanner base class.
+        ReAct employs reasoning and action techniques to ascertain the essential actions to be undertaken.
+        `Paper <https://arxiv.org/abs/2210.03629>`_
+
+        This code defines a base class called "BasePlanner" that inherits from the "BaseModel" class of the pydantic library.
         The BasePlanner class serves as a base for implementing specific planners.
 
 
@@ -22,11 +27,12 @@ class ReActPlanner(BasePlanner):
 
     class Config:
         """Configuration for this pydantic object."""
+
         arbitrary_types_allowed = True
 
     @property
     def _planner_type(self):
-        raise "zero-shot-react-planner"
+        return "zero-shot-react-planner"
 
     @property
     def _planner_model(self):
@@ -38,15 +44,19 @@ class ReActPlanner(BasePlanner):
 
     @property
     def _planner_prompt(self):
-        return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about his/her health and well-being. 
-Answer the following questions as best you can. Make sure you call all the needed tools before reach to the Final Answer. You have access to the following tools:
+        return """You are very helpful empathetic health assistant and your goal is to help the user to get accurate information \
+about his/her health and well-being. Answer the following questions as best you can. Make sure you call all the needed tools before \
+reach to the Final Answer. You have access to the following tools: \
 Use the following format. You should stick to the following format:
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
-History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, just return it.
+History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, \
+just return it.
 Question: the input question you must answer
-Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. you may need to call tools several times for different purposes. 
+Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. \
+you may need to call tools several times for different purposes.
 Action: the action to take, SHOULD be only the tool name selected from one of [{tool_names}]
-Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task. The examples for a two input tasks are: input1,input2 or if datapipe is needed datapipe:key,input2
+Action Inputs: the comma seperated inputs to the action should be based on the input descriptions of the task. \
+The examples for a two input tasks are: input1,input2 or if datapipe is needed datapipe:key,input2
 Observation: the result of the action
 ... (this Thought/Action/Action Inputs/Observation can repeat N times)
 Thought: Your final reasoning or 'I now know the final answer'. when you think you are done you should provide the 'Final Answer'.
@@ -59,15 +69,14 @@ History: {history}
 Question: {input}
 Thought: {agent_scratchpad}"""
 
-
     def plan(
-            self,
-            query: str,
-            history: str = "",
-            meta: str = "",
-            previous_actions: List[Action] = [],
-            use_history: bool = False,
-            **kwargs: Any,
+        self,
+        query: str,
+        history: str = "",
+        meta: str = "",
+        previous_actions: List[Action] = None,
+        use_history: bool = False,
+        **kwargs: Any,
     ) -> List[Union[Action, PlanFinish]]:
         """
             Generate a plan using ReAct
@@ -83,24 +92,31 @@ Thought: {agent_scratchpad}"""
             Action: return action.
 
         """
-
+        if previous_actions is None:
+            previous_actions = []
 
         agent_scratchpad = ""
         if len(previous_actions) > 0:
-            agent_scratchpad = "\n".join([
-                f"Action: {action.task}\nAction Inputs: {action.task_input}\nObservation: {action.task_response}\nThought:"
-                for action in previous_actions
-            ])
-        prompt = self._planner_prompt.replace("{input}", query)\
-                                    .replace("{meta}", meta)\
-                                    .replace("{history}", history if use_history else "")\
-                                    .replace("{agent_scratchpad}", agent_scratchpad)\
-                                    .replace("{tool_names}", self.get_available_tasks())
+            agent_scratchpad = "\n".join(
+                [
+                    f"Action: {action.task}\nAction Inputs: {action.task_input}\nObservation: {action.task_response}\nThought:"
+                    for action in previous_actions
+                ]
+            )
+        prompt = (
+            self._planner_prompt.replace("{input}", query)
+            .replace("{meta}", meta)
+            .replace("{history}", history if use_history else "")
+            .replace("{agent_scratchpad}", agent_scratchpad)
+            .replace("{tool_names}", self.get_available_tasks())
+        )
         # if len(previous_actions) > 0:
         # prompt += "\nThought:"
         kwargs["max_tokens"] = 150
         kwargs["stop"] = self._stop
-        response = self._planner_model.generate(query=prompt, **kwargs)
+        response = self._planner_model.generate(
+            query=prompt, **kwargs
+        )
         index = min([response.find(text) for text in self._stop])
         index1 = response.find("\nAction:")
         if index1 == -1:
@@ -108,8 +124,7 @@ Thought: {agent_scratchpad}"""
         print("resp", response)
         response = response[index1:index]
         actions = self.parse(response)
-        return actions    
-
+        return actions
 
     def parse(
         self,
@@ -119,17 +134,17 @@ Thought: {agent_scratchpad}"""
         """
             Parse the output query into a list of actions or a final answer. It parses the output based on \
             the following format:
-                
+
                 Thought: though\n
                 Action: action\n
                 Action Input: inputs
-                
+
                 or
 
-                
-                Thought: though\n 
+
+                Thought: though\n
                 Final Answer: final answer\n
-                
+
 
         Args:\n
             query (str): The planner output query to extract actions.
@@ -143,26 +158,35 @@ Thought: {agent_scratchpad}"""
 
         FINAL_ANSWER_ACTION = "Final Answer:"
         includes_answer = FINAL_ANSWER_ACTION in query
-        str_pattern = "(?:" + "|".join(self.get_available_tasks_list()) + ")(?=.*Action\s*\d*\s*Inputs)"
-        regex = (
-            r"\s*Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
+        str_pattern = (
+            r"(?:"
+            + "|".join(self.get_available_tasks_list())
+            + r")(?=.*Action\s*\d*\s*Inputs)"
         )
-
+        regex = (
+            r"\s*Action\s*\d*\s*:[\s]*.*?("
+            + str_pattern
+            + r").*?[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)"
+        )
 
         action_match = re.search(regex, query, re.DOTALL)
         if action_match and includes_answer:
-            if query.find(FINAL_ANSWER_ACTION) < query.find(action_match.group(0)):
+            if query.find(FINAL_ANSWER_ACTION) < query.find(
+                action_match.group(0)
+            ):
                 # if final answer is before the hallucination, return final answer
-                start_index = query.find(FINAL_ANSWER_ACTION) + len(FINAL_ANSWER_ACTION)
+                start_index = query.find(FINAL_ANSWER_ACTION) + len(
+                    FINAL_ANSWER_ACTION
+                )
                 end_index = query.find("\n\n", start_index)
-                return [PlanFinish(
-                    query[start_index:end_index].strip()
-                )]
+                return [
+                    PlanFinish(query[start_index:end_index].strip())
+                ]
             else:
                 raise ValueError(
-                f"Parsing the output produced both a final answer and a parse-able action."
+                    "Parsing the output produced both a final answer and a parse-able action."
                 )
-        
+
         if action_match:
             action = action_match.group(1).strip()
             action_input = action_match.group(2)
@@ -174,20 +198,29 @@ Thought: {agent_scratchpad}"""
             return [Action(action, tool_input, "", query)]
 
         elif includes_answer:
-            return [PlanFinish(
-                query.split(FINAL_ANSWER_ACTION)[-1].strip(), query
-            )]
+            return [
+                PlanFinish(
+                    query.split(FINAL_ANSWER_ACTION)[-1].strip(),
+                    query,
+                )
+            ]
 
-        if not re.search(r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?", query, re.DOTALL):
+        if not re.search(
+            r"Action\s*\d*\s*:[\s]*.*?(" + str_pattern + r").*?",
+            query,
+            re.DOTALL,
+        ):
             raise ValueError(
                 "Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'\n"
                 # f"Or The tool name is wrong. The tool name should be one of: `{self.get_available_tasks_list()}`"
             )
         elif not re.search(
-                r"[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)", query, re.DOTALL
+            r"[\s]*Action\s*\d*\s*Inputs\s*\d*\s*:[\s]*(.*)",
+            query,
+            re.DOTALL,
         ):
             raise ValueError(
                 "Invalid Format: Missing 'Action Input:' after 'Action:'"
             )
         else:
-            raise ValueError(f"Wrong format.")
+            raise ValueError("Wrong format.")

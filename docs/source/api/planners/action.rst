@@ -5,5 +5,3 @@ These data classes are used to store and organize information related to actions
 
 .. literalinclude:: ../../../../planners/action.py
     :language: python
-
-

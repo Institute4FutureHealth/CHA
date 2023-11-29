@@ -1,13 +1,11 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from tasks.task import BaseTask
+from typing import Any
+
 from datapipes.datapipe import DataPipe
+from tasks.task import BaseTask
 from tasks.types import TASK_TO_CLASS
 
 
-def initialize_task(
-        task: str = "serpapi",
-        **kwargs: Any
-) -> BaseTask:
+def initialize_task(task: str = "serpapi", **kwargs: Any) -> BaseTask:
     """
     Initialize a task based on the provided task name.
 

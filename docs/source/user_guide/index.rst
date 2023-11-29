@@ -10,5 +10,3 @@ Get started with CHA.
     introduction
     quick_start
     contribute
-
-

@@ -2,3 +2,4 @@
 extend-ignore =
     F811
     F401
+    E231

@@ -1,18 +1,19 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any
+
 from datapipes.datapipe import DataPipe
-from datapipes.types import DATAPIPE_TO_CLASS
 from datapipes.datapipe_types import DatapipeType
+from datapipes.types import DATAPIPE_TO_CLASS
 
 
 def initialize_datapipe(
-        datapipe: str = DatapipeType.MEMORY,
-        **kwargs: Any
+    datapipe: str = DatapipeType.MEMORY, **kwargs: Any
 ) -> DataPipe:
     """
     Initializes and returns an instance of a data pipe based on the specified 'datapipe' type.
 
     Args:
-        datapipe (str , optional): A string specifying the type of data pipe to initialize (default is DatapipeType.MEMORY). Make sure you always use the DatapipeType enum and don't directly put the string names.
+        datapipe (str , optional): A string specifying the type of data pipe to initialize (default is DatapipeType.MEMORY).
+        Make sure you always use the DatapipeType enum and don't directly put the string names.
         kwargs (Any): Optional keyword arguments to be passed to the data pipe constructor.
     Return:
         DataPipe: An instance of the selected data pipe class.

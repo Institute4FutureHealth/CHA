@@ -31,6 +31,3 @@ This class uses the pydantic library as a base model.
 
    .. autofunction:: interface.base.Interface.close
         :no-index:
-
-
-

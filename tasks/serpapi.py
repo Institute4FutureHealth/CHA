@@ -1,23 +1,31 @@
 """
-A part of the task implementation is borrowed from LangChain: 
+A part of the task implementation is borrowed from LangChain:
 https://github.com/langchain-ai/langchain
 """
-from tasks.task import BaseTask
-from typing import Any, Optional, List, Dict
-from utils import get_from_dict_or_env
-from pydantic import Field, model_validator, Extra
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+
 import aiohttp
+from pydantic import Extra
+from pydantic import Field
+from pydantic import model_validator
+
+from tasks.task import BaseTask
+from utils import get_from_dict_or_env
 
 
 class SerpAPI(BaseTask):
     """
-    **Description:** 
+    **Description:**
 
-        This code defines a class named SerpAPI, which is a specific implementation of the abstract BaseTask class. 
-        The SerpAPI class represents a task that utilizes the SerpAPI (Google Search API) to perform internet searches 
+        This code defines a class named SerpAPI, which is a specific implementation of the abstract BaseTask class.
+        The SerpAPI class represents a task that utilizes the SerpAPI (Google Search API) to perform internet searches
         and retrieve relevant information.
 
     """
+
     name: str = "serpapi"
     chat_name: str = "InternetSearchSerp"
     description: str = (
@@ -41,7 +49,7 @@ class SerpAPI(BaseTask):
     serpapi_api_key: Optional[str] = None
     aiosession: Optional[aiohttp.ClientSession] = None
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
         """
             Validate that api key and python package exists in environment.
@@ -119,20 +127,27 @@ class SerpAPI(BaseTask):
         """
 
         try:
-            if "answer_box" in res:                
-                toret = "url: " + res["answer_box"]["link"] + "\nmetadata: " + res["answer_box"]["snippet"]
+            if "answer_box" in res:
+                toret = (
+                    "url: "
+                    + res["answer_box"]["link"]
+                    + "\nmetadata: "
+                    + res["answer_box"]["snippet"]
+                )
             else:
-                toret = "url: " + res["organic_results"][0]["link"] + "\nmetadata: " + res["organic_results"][0]["snippet"]
+                toret = (
+                    "url: "
+                    + res["organic_results"][0]["link"]
+                    + "\nmetadata: "
+                    + res["organic_results"][0]["snippet"]
+                )
         except KeyError:
-            return (
-                "Could not get the proper response from the search. Try another search query."
-            )
+            return "Could not get the proper response from the search. Try another search query."
         return toret
-
 
     def _execute(
         self,
-        inputs: List[Any],
+        inputs: List[Any] = None,
     ) -> str:
         """
             Run query through SerpAPI and parse result.
@@ -144,10 +159,12 @@ class SerpAPI(BaseTask):
 
 
         """
+        if len(inputs) == 0:
+            return ""
         return self._process_response(self.results(inputs[0]))
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             Provide an explanation of the task.

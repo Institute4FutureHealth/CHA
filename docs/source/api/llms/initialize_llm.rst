@@ -7,8 +7,3 @@ Initialize an instance of the Language Model Manager (LLM).
 
     .. autofunction:: llms.initialize_llm.initialize_llm
         :no-index:
-
-
-
-
-

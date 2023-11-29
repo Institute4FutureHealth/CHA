@@ -4,7 +4,7 @@ For detailed information you can see our framework paper: `Paper <https://arxiv.
 
 We design an LLM-powered framework leveraging a service-based architecture with a central agent that perceives and analyze user queries, provides appropriate response, \
 and manages access to external resources through Application Program Interfaces (APIs). \
-The user-framework interaction is bidirectional, ensuring a conversational tone for ongoing and follow-up conversations. Following are the main components of the CHA: 
+The user-framework interaction is bidirectional, ensuring a conversational tone for ongoing and follow-up conversations. Following are the main components of the CHA:
 
 .. figure:: ../../figs/Architecture.png
     :alt: Alt Text
@@ -22,7 +22,7 @@ It is noteworthy that questions can be presented in various modes of human commu
 Users can provide metadata (alongside their queries) within this framework, including images, audio, gestures, and more. \
 For instance, a user could capture an image of their meal and inquire about its nutritional values or calorie content, with the image serving as metadata. \
 In this open-source version, we are using Gradio as our Interface to make it easier for other contributers to start contributing.
- 
+
 
 Orchestrator
 ------------
@@ -53,17 +53,17 @@ It first examines the metadata if it includes last night's sleep data. Next, it 
 to extract sleep parameters, including sleep duration and wakefulness after sleep onset. Once the required information is obtained, \
 it then requests the retrieval of the most relevant information from online resources to provide an interpretation of sleep quality based on the obtained parameters.
 
-To transform a user query into a sequence of tasks, we used the ReAct model. \ 
+To transform a user query into a sequence of tasks, we used the ReAct model. \
 ReAct employs reasoning and action techniques to ascertain the essential actions to be undertaken. \
 An alternative model for task planners is the Plan-and-Solve Prompting. It is a form of chain-of-thought prompting that instructs the LLM model to devise a plan for generating the answer and subsequently \
 take action based on the devised plan. Additionally, Modular Reasoning, Knowledge, and Language (MRKL) can be used, which is linked to a set of predefined modules and can call upon them as needed.
 
 It is crucial to emphasize that communication between the task planner and task executor is bidirectional. An iterative process continues between the Task Executor and \
 Task Planner until the Task Planner accumulates sufficient information to respond appropriately to the user's inquiry. This two-way exchange proves indispensable because, \
-in specific scenarios, the Task Planner may necessitate intermediate information to determine subsequent actions. 
+in specific scenarios, the Task Planner may necessitate intermediate information to determine subsequent actions.
 
 The **Data Pipe** is a repository of metadata and data acquired from External Sources through the execution of conversational sessions. \
-This component is essential because numerous multimodal analysis involve intermediate stages, and their associated data must be retained for future retrieval. 
+This component is essential because numerous multimodal analysis involve intermediate stages, and their associated data must be retained for future retrieval.
 
 The **Promptist** is responsible for transforming text or outcomes from External Sources into suitable prompts that can be supplied to either the Task Planner or the Response Generator.
 
@@ -89,7 +89,7 @@ accessing user data with their consent to facilitate personalization within our 
 **Information retrieval platforms** fetches the most current and pertinent data from healthcare sources, such as healthcare literature, reputable websites, \
 or knowledge graphs using search engines or retrieval models. Accessing this retrieved information equips CHAs with up-to-date, personalized knowledge, \
 enhancing its trustworthiness while reducing hallucination and bias. Let's consider a scenario for stress level estimation where the Task Planner lacks knowledge of stress measurement methods. \
-In response, it requests a search for recent documents on stress measurement techniques through the retrieval platforms. 
+In response, it requests a search for recent documents on stress measurement techniques through the retrieval platforms.
 
 **AI platforms** provide data analytics tools to extract information, associations, and insights from data, playing a crucial role in the evolving landscape of LLM-healthcare integration, \
 enhancing trustworthiness and personalization. They can perform various tasks, including data denoising, abstraction, classification, and event detection, to mention a few. \
@@ -99,12 +99,10 @@ As generative models, LLMs cannot effectively perform extensive computations or 
 Existing agents face limitations that hinder their usability for large communities globally. Assuming universal text literacy for CHAs often narrows their reach and positioning them as a privilege. \
 Many underserved communities face obstacles while using CHAs due to their educational disparities, financial constraints, and biases that favor developed nations within existing technological paradigms. Our framework, \
 which integrates with Translator platforms, is designed to accommodate and support communication with diverse communities. This integration not only enhances the overall usability of CHAs but also ensures that they can effectively \
-serve a broader range of users with varying linguistic and cultural backgrounds. 
+serve a broader range of users with varying linguistic and cultural backgrounds.
 
 It is crucial to note that privacy and security are essential issues in this framework since healthcare applications must address users' privacy concerns. \
 Robust privacy measures are crucial for preventing unauthorized access, data breaches, and identity theft, which can have severe consequences for patients and healthcare providers. \
 Before transferring data from External Sources to the Orchestrator, we will employ data de-identification and anonymization to ensure privacy. \
 For example, in this data transformation process, GPS coordinates are converted into more generalized labels like 'home,' 'gym,' and 'work' within the Healthcare Platform. \
 Moreover, we will ensure secure data transmission between the Orchestrator and External Sources by implementing cryptographic tools~\cite{yakoubov2014survey}.
-
-

@@ -6,9 +6,3 @@ Initialize datapipe
 
     .. autofunction:: datapipes.initialize_datapipe.initialize_datapipe
         :no-index:
-
-
-
-
-
-

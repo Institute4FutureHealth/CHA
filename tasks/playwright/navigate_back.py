@@ -1,17 +1,20 @@
+from typing import Any
+from typing import List
+from urllib.parse import urlparse
+
 from tasks.playwright.base import BaseBrowser
-from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
-from urllib.parse import urlparse
 
 
 class NavigateBack(BaseBrowser):
     """
-    **Description:** 
+    **Description:**
 
         This class represents a browser navigation task using Playwright.
     """
+
     name: str = "navigate_back"
     chat_name: str = "NavigateBack"
     description: str = (
@@ -50,11 +53,14 @@ class NavigateBack(BaseBrowser):
         Args:
             input (str): The input string containing the URL to navigate to.
         Return:
-            str: A message indicating whether the navigation was successful, including the URL and status code if successful, or an error message if unsuccessful.
+            str:    A message indicating whether the navigation was successful, including the URL and status code if successful,
+                    or an error message if unsuccessful.
 
         """
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
         page = get_current_page(self.sync_browser)
         response = page.go_back()
 
@@ -67,7 +73,7 @@ class NavigateBack(BaseBrowser):
             return "Unable to navigate back; no previous page in the history"
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             This method provides an explanation of the task.
@@ -78,6 +84,4 @@ class NavigateBack(BaseBrowser):
 
         """
 
-        return (
-            "This task extracts all of the hyperlinks."
-        )
+        return "This task extracts all of the hyperlinks."

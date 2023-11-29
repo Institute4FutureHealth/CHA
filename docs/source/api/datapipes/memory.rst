@@ -4,11 +4,3 @@ Memory
 ======
 
 .. autoclass:: datapipes.memory.Memory
-
-
-
-
-
-
-
-

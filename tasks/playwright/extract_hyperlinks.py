@@ -1,29 +1,33 @@
+import json
+from typing import Any
+from typing import List
+
+from pydantic import model_validator
+
 from tasks.playwright.base import BaseBrowser
-from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
-from pydantic import model_validator
-import json
 
 
 class ExtractHyperlinks(BaseBrowser):
     """
-    **Description:** 
+    **Description:**
 
         This task extracts all hyperlinks from the current webpage.
     """
+
     name: str = "extract_hyperlinks"
     chat_name: str = "ExtractHyperLinks"
-    description: str = (
-        "Extract all hyperlinks on the current webpage"
-    )
+    description: str = "Extract all hyperlinks on the current webpage"
     dependencies: List[str] = []
-    inputs: List[str] = ["Boolean: True/False. Return absolute URLs instead of relative URLs."]
+    inputs: List[str] = [
+        "Boolean: True/False. Return absolute URLs instead of relative URLs."
+    ]
     outputs: List[str] = []
     output_type: bool = False
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     def check_bs_import(cls, values: dict) -> dict:
         """
             Check that the arguments are valid.
@@ -47,7 +51,9 @@ class ExtractHyperlinks(BaseBrowser):
         return values
 
     @staticmethod
-    def scrape_page(page: Any, html_content: str, absolute_urls: bool) -> str:
+    def scrape_page(
+        page: Any, html_content: str, absolute_urls: bool
+    ) -> str:
         """
             Scrape hyperlinks from the current webpage.
 
@@ -71,7 +77,10 @@ class ExtractHyperlinks(BaseBrowser):
         anchors = soup.find_all("a")
         if absolute_urls:
             base_url = page.url
-            links = [urljoin(base_url, anchor.get("href", "")) for anchor in anchors]
+            links = [
+                urljoin(base_url, anchor.get("href", ""))
+                for anchor in anchors
+            ]
         else:
             links = [anchor.get("href", "") for anchor in anchors]
         # Return the list of links as a JSON string
@@ -93,13 +102,15 @@ class ExtractHyperlinks(BaseBrowser):
 
         """
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
         page = get_current_page(self.sync_browser)
         html_content = page.content()
         return self.scrape_page(page, html_content, inputs[0])
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             Provide a brief explanation of the ExtractHyperlinks task.
@@ -110,6 +121,4 @@ class ExtractHyperlinks(BaseBrowser):
 
         """
 
-        return (
-            "This task extracts all of the hyperlinks."
-        )
+        return "This task extracts all of the hyperlinks."

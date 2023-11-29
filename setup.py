@@ -1,4 +1,5 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 # pip install setuptools wheel
 # python setup.py sdist bdist_wheel
@@ -7,54 +8,56 @@ from setuptools import setup, find_packages
 # twine upload dist/*
 
 
-
 setup(
-    name='CHA',
-    version='0.1.0',
+    name="CHA",
+    version="0.1.0",
     author="Mahyar Abbasian",
-    description="Conversational Health Agents (CHAs) are interactive systems designed to enhance personal healthcare services by engaging in empathetic conversations and processing multimodal data. ",
+    description=(
+        "Conversational Health Agents (CHAs) are interactive systems designed to enhance personal"
+        "healthcare services by engaging in empathetic conversations and processing multimodal data. "
+    ),
     packages=find_packages(),
     url="https://github.com/Mahyar12/CHA",
     install_requires=[
-        'httpcore==1.0.2',
-        'requests',
-        'gradio',
-        'pydantic'
+        "httpcore==1.0.2",
+        "requests",
+        "gradio",
+        "pydantic",
     ],
     extras_require={
-        'all': [
+        "all": [
             # all requirements
-            'anthropic',
-            'aiohttp',
-            'google-search-results',
-            'playwright',
-            'beautifulsoup4',
-            'lxml',
-            'tiktoken',
-            'openai~=1.2'
+            "anthropic",
+            "aiohttp",
+            "google-search-results",
+            "playwright",
+            "beautifulsoup4",
+            "lxml",
+            "tiktoken",
+            "openai~=1.2",
         ],
-        'minimum': [
+        "minimum": [
             # minimum requirements for running the codes
-            'aiohttp',
-            'google-search-results',
-            'playwright',
-            'beautifulsoup4',
-            'lxml',
-            'tiktoken',
-            'openai~=1.2'
+            "aiohttp",
+            "google-search-results",
+            "playwright",
+            "beautifulsoup4",
+            "lxml",
+            "tiktoken",
+            "openai~=1.2",
         ],
-        'develop': [
-            'sphinx',
-            'sphinx-copybutton',
-            'sphinxcontrib-video',
-            'sphinxcontrib.youtube',
-            'pydata_sphinx_theme'
-        ]
+        "develop": [
+            "sphinx",
+            "sphinx-copybutton",
+            "sphinxcontrib-video",
+            "sphinxcontrib.youtube",
+            "pydata_sphinx_theme",
+        ],
     },
     classifiers=[
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3',
-        'Operating System :: OS Independent',
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
     ],
     python_requires=">=3.9, <3.12",
 )

@@ -1,21 +1,27 @@
+from typing import Any
+from typing import List
+
+from pydantic import Extra
+from pydantic import Field
+from pydantic import model_validator
+
 from tasks.playwright.base import BaseBrowser
-from typing import Any, Optional, List, Dict
-from utils import get_from_dict_or_env
-from pydantic import Field, model_validator, Extra
 from tasks.playwright.utils import (
     get_current_page,
 )
+from utils import get_from_dict_or_env
 
 
 class Click(BaseBrowser):
     """
-    **Description:** 
+    **Description:**
 
-        This code defines a class named Click that inherits from the BaseBrowser class. 
-        The Click class represents a task related to browser interactions, specifically clicking on an element 
+        This code defines a class named Click that inherits from the BaseBrowser class.
+        The Click class represents a task related to browser interactions, specifically clicking on an element
         identified by a CSS selector using the Playwright library.
-        
+
     """
+
     name: str = "click"
     chat_name: str = "Clicker"
     description: str = (
@@ -56,11 +62,17 @@ class Click(BaseBrowser):
         """
         selector = inputs[0]
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
         page = get_current_page(self.sync_browser)
         # Navigate to the desired webpage before using this tool
-        selector_effective = self._selector_effective(selector=selector)
-        from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+        selector_effective = self._selector_effective(
+            selector=selector
+        )
+        from playwright.sync_api import (
+            TimeoutError as PlaywrightTimeoutError,
+        )
 
         try:
             page.click(
@@ -73,7 +85,7 @@ class Click(BaseBrowser):
         return f"Clicked element '{selector}'"
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             Explain the purpose of the click task.
@@ -83,6 +95,4 @@ class Click(BaseBrowser):
 
         """
 
-        return (
-            "This task clicks on an element in an specific url"
-        )
+        return "This task clicks on an element in an specific url"

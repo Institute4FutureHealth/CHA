@@ -8,4 +8,3 @@ ReAct employs reasoning and action techniques to ascertain the essential actions
     :maxdepth: 1
 
     react
-

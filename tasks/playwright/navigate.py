@@ -1,9 +1,11 @@
+from typing import Any
+from typing import List
+from urllib.parse import urlparse
+
 from tasks.playwright.base import BaseBrowser
-from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
-from urllib.parse import urlparse
 
 
 class Navigate(BaseBrowser):
@@ -12,11 +14,10 @@ class Navigate(BaseBrowser):
 
         This class represents a browser navigation task to a specified URL using Playwright.
     """
+
     name: str = "navigate"
     chat_name: str = "Navigate"
-    description: str = (
-        "Navigate a browser to the specified URL"
-    )
+    description: str = "Navigate a browser to the specified URL"
     dependencies: List[str] = []
     inputs: List[str] = ["url to navigate to"]
     outputs: List[str] = []
@@ -50,19 +51,24 @@ class Navigate(BaseBrowser):
         Args:
             input (str): The input string containing the URL to navigate to.
         Return:
-            str: A message indicating whether the navigation was successful, including the URL and status code if successful, or an error message if unsuccessful.
+            str:    A message indicating whether the navigation was successful, including the URL and status code if successful,
+                    or an error message if unsuccessful.
 
         """
         self.validate_url(inputs[0].strip())
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
         page = get_current_page(self.sync_browser)
         response = page.goto(inputs[0])
         status = response.status if response else "unknown"
-        return f"Navigating to {inputs[0]} returned status code {status}"
+        return (
+            f"Navigating to {inputs[0]} returned status code {status}"
+        )
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             This method provides an explanation of the task.
@@ -72,6 +78,4 @@ class Navigate(BaseBrowser):
 
         """
 
-        return (
-            "This task extracts all of the hyperlinks."
-        )
+        return "This task extracts all of the hyperlinks."

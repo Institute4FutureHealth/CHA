@@ -1,5 +1,7 @@
+from typing import Any
+from typing import List
+
 from tasks.playwright.base import BaseBrowser
-from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
@@ -7,17 +9,16 @@ from tasks.playwright.utils import (
 
 class CurrentWebPage(BaseBrowser):
     """
-    **Description:** 
+    **Description:**
 
-        This code defines a class named CurrentWebPage that inherits from the BaseBrowser class. 
+        This code defines a class named CurrentWebPage that inherits from the BaseBrowser class.
         The CurrentWebPage class represents a task related to browser interactions, specifically retrieving the URL of the current web page.
 
     """
+
     name: str = "current_page"
     chat_name: str = "CurrentPage"
-    description: str = (
-        "Returns the URL of the current page"
-    )
+    description: str = "Returns the URL of the current page"
     dependencies: List[str] = []
     inputs: List[str] = []
     outputs: List[str] = []
@@ -28,24 +29,26 @@ class CurrentWebPage(BaseBrowser):
         inputs: List[Any],
     ) -> str:
         """
-                This method executes the task by retrieving the current page from the synchronous browser using 
-                the get_current_page function and returning its URL.
+            This method executes the task by retrieving the current page from the synchronous browser using
+            the get_current_page function and returning its URL.
 
-            Args:
-                input (str): The input string (not used in this task).
-            Return:
-                str: The URL of the current web page.
-            Raise:
-                ValueError: If the synchronous browser is not provided.
+        Args:
+            input (str): The input string (not used in this task).
+        Return:
+            str: The URL of the current web page.
+        Raise:
+            ValueError: If the synchronous browser is not provided.
 
-            """
+        """
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
         page = get_current_page(self.sync_browser)
         return str(page.url)
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             Provides a brief explanation of the current_page task.
@@ -55,6 +58,4 @@ class CurrentWebPage(BaseBrowser):
 
         """
 
-        return (
-            "This task returns the ulr of the current page."
-        )
+        return "This task returns the ulr of the current page."

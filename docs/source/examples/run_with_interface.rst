@@ -110,7 +110,3 @@ video samples
             allowfullscreen>
         </iframe>
     </div>
-
-
-
-

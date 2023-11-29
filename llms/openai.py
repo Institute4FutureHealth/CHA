@@ -1,16 +1,20 @@
-import os
-from utils import get_from_dict_or_env
-from llms.llm import BaseLLM
-from typing import Any, List, Dict
+from typing import Any
+from typing import Dict
+from typing import List
+
 from pydantic import model_validator
+
+from llms.llm import BaseLLM
+from utils import get_from_dict_or_env
 
 
 class OpenAILLM(BaseLLM):
     """
-    **Description:** 
+    **Description:**
 
         An implementation of the OpenAI APIs. `OpenAI API <https://platform.openai.com/docs/libraries>`_
     """
+
     models: Dict = {
         "gpt-4": 8192,
         "gpt-4-0314": 8192,
@@ -42,13 +46,14 @@ class OpenAILLM(BaseLLM):
     llm_model: Any = None
     max_tokens: int = 150
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
         """
             Validate that api key and python package exists in environment.
 
             This method is defined as a validation model for the class and checks the required environment values for using OpenAILLM.
-            If the "openai_api_key" key exists in the input, its value is assigned to the "api_key" variable. Additionally, it checks the existence of the openai library, and if it's not found, it raises an error.
+            If the "openai_api_key" key exists in the input, its value is assigned to the "api_key" variable.
+            Additionally, it checksthe existence of the openai library, and if it's not found, it raises an error.
 
         Args:
             cls (type): The class itself.
@@ -111,7 +116,10 @@ class OpenAILLM(BaseLLM):
                 "Please install it with `pip install tiktoken`."
             )
         encoder = "gpt2"
-        if self.model_name in ("text-davinci-003", "text-davinci-002"):
+        if self.model_name in (
+            "text-davinci-003",
+            "text-davinci-002",
+        ):
             encoder = "p50k_base"
         if self.model_name.startswith("code"):
             encoder = "p50k_base"
@@ -148,11 +156,7 @@ class OpenAILLM(BaseLLM):
 
         return [{"role": "system", "content": prompt}]
 
-    def generate(
-        self,
-        query: str,
-        **kwargs: Any
-    ) -> str:
+    def generate(self, query: str, **kwargs: Any) -> str:
         """
             Generate a response based on the provided query.
 
@@ -175,10 +179,18 @@ class OpenAILLM(BaseLLM):
             )
 
         stop = kwargs["stop"] if "stop" in kwargs else None
-        max_tokens = kwargs["max_tokens"] if "max_tokens" in kwargs else self.max_tokens
+        max_tokens = (
+            kwargs["max_tokens"]
+            if "max_tokens" in kwargs
+            else self.max_tokens
+        )
 
         self.llm_model.api_key = self.api_key
         query = self._prepare_prompt(query)
-        response = self.llm_model.chat.completions.create(model=model_name, messages=query, max_tokens=max_tokens,
-                                                          stop=stop)
+        response = self.llm_model.chat.completions.create(
+            model=model_name,
+            messages=query,
+            max_tokens=max_tokens,
+            stop=stop,
+        )
         return self._parse_response(response)

@@ -17,7 +17,3 @@ The provided code includes utility functions related to Playwright for synchrono
 
     .. autofunction:: tasks.playwright.utils.create_sync_playwright_browser
         :no-index:
-
-
-
-
