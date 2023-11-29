@@ -78,7 +78,7 @@ class AntropicLLM(BaseLLM):
 
         return self.models.keys()
 
-    def is_max_token(self, model_name, query) -> bool:
+    async def is_max_token(self, model_name, query) -> bool:
         """
             Check if the token count of the query exceeds the maximum token count for the specified model.
 
@@ -92,10 +92,10 @@ class AntropicLLM(BaseLLM):
         """
 
         model_max_token = self.models[model_name]
-        token_count = self.llm_model(api_key=self.api_key).count_tokens(query)
+        token_count = await self.llm_model(api_key=self.api_key).count_tokens(query)
         return model_max_token < token_count
 
-    def _parse_response(self, response) -> str:
+    def _parse_response(self, response: Dict) -> str:
         """
             Parse the response object and return the generated completion text.
 
@@ -107,7 +107,7 @@ class AntropicLLM(BaseLLM):
 
         """
 
-        return response.completion
+        return response['completion']
 
     def _prepare_prompt(self, prompt) -> Any:
         """

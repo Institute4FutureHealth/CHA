@@ -31,7 +31,12 @@ setup(
             'beautifulsoup4',
             'lxml',
             'tiktoken',
-            'openai~=1.2'
+            'openai~=1.2',
+            'pandas',
+            'scipy',
+            'serpapi',
+            'pytest',
+            'pytest-mock'
         ],
         'minimum': [
             # minimum requirements for running the codes

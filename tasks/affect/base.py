@@ -86,8 +86,11 @@ class Affect(BaseTask):
             self,
             df: pd.DataFrame
     ) -> str:
+
+        data_dict = df.to_dict(orient='records')[0]
+
         # Create a formatted string for each column and its corresponding value
-        formatted_values = [f"{col} = {val}" for col, val in df.items()]
+        formatted_values = [f"{col} = {val}" for col, val in data_dict.items()]
 
         # Join the formatted values into a single string using a comma and space
         result_string = ", ".join(formatted_values)
@@ -114,7 +117,10 @@ class Affect(BaseTask):
             # Add the column-value pair to the dictionary
             data_dict[column] = [value]
         # Create a DataFrame from the dictionary
-        return pd.DataFrame(data_dict)
+        result_df = pd.DataFrame(data_dict)
+
+        # Convert the dtype of columns to the desired type (e.g., int64)
+        return result_df.astype({'col1': 'int64', 'col2': 'int64'})
 
 
     def _calculate_slope(

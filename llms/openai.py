@@ -111,9 +111,9 @@ class OpenAILLM(BaseLLM):
                 "Please install it with `pip install tiktoken`."
             )
         encoder = "gpt2"
-        if self.model_name in ("text-davinci-003", "text-davinci-002"):
+        if model_name in ("text-davinci-003", "text-davinci-002"):
             encoder = "p50k_base"
-        if self.model_name.startswith("code"):
+        if model_name.startswith("code"):
             encoder = "p50k_base"
 
         enc = tiktoken.get_encoding(encoder)
@@ -132,7 +132,7 @@ class OpenAILLM(BaseLLM):
 
         """
 
-        return response.choices[0].message.content
+        return response["choices"][0]["message"]["content"]
 
     def _prepare_prompt(self, prompt) -> Any:
         """
