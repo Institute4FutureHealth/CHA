@@ -1,4 +1,5 @@
-from enum import Enum 
+from enum import Enum
+
 
 class DatapipeType(str, Enum):
-  MEMORY = "memory"
+    MEMORY = "memory"

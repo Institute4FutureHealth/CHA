@@ -1,23 +1,25 @@
+from typing import Any
+from typing import List
+from urllib.parse import urlparse
+
+from pydantic import model_validator
+
 from tasks.playwright.base import BaseBrowser
-from typing import List, Any
 from tasks.playwright.utils import (
     get_current_page,
 )
-from pydantic import model_validator
-from urllib.parse import urlparse
 
 
 class ExtractText(BaseBrowser):
     """
-    **Description:** 
+    **Description:**
 
         This task extracts all the text from the current webpage.
     """
+
     name: str = "extract_text"
     chat_name: str = "ExtractText"
-    description: str = (
-        "Extract all the text on the current webpage"
-    )
+    description: str = "Extract all the text on the current webpage"
     dependencies: List[str] = ["navigate"]
     inputs: List[str] = ["url to navigate to"]
     outputs: List[str] = []
@@ -89,10 +91,13 @@ class ExtractText(BaseBrowser):
 
         """
         from bs4 import BeautifulSoup
+
         self.validate_url(inputs[0].strip())
 
         if self.sync_browser is None:
-            raise ValueError(f"Synchronous browser not provided to {self.name}")
+            raise ValueError(
+                f"Synchronous browser not provided to {self.name}"
+            )
 
         page = get_current_page(self.sync_browser)
         response = page.goto(inputs[0])
@@ -105,10 +110,12 @@ class ExtractText(BaseBrowser):
 
             return " ".join(text for text in soup.stripped_strings)
         else:
-            return "Error extracting text. The url is wrong. Try again."
+            return (
+                "Error extracting text. The url is wrong. Try again."
+            )
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
             Explain the ExtractText task.
@@ -119,6 +126,4 @@ class ExtractText(BaseBrowser):
 
         """
 
-        return (
-            "This task returns the ulr of the current page."
-        )
+        return "This task returns the ulr of the current page."

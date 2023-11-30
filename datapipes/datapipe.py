@@ -1,19 +1,23 @@
-from typing import Any
 from abc import abstractmethod
+from typing import Any
+
 from pydantic import BaseModel
 
 
 class DataPipe(BaseModel):
     """
-    **Description:**    
+    **Description:**
 
-        This class serves as a base class for creating new Data Pipes. Each new Data Pipe should implement the **store** and **retrieve** methods. 
-        The implementation should generate reasonable keys that can be used for accessing the data. It is recommended to not interfere in the way the data is stored. 
-        For example, changing the type of the data or the format of the data. If your Data Pipe requires specific format or type, make sure you the conversion inside the Data Pipe 
-        ensuring consistency in the way tasks interact with Data Pipes. Look at :ref:`memory` for sample implementation.
+        This class serves as a base class for creating new Data Pipes. Each new Data Pipe should implement the **store** and **retrieve** methods.
+        The implementation should generate reasonable keys that can be used for accessing the data. It is recommended to not interfere in the way
+        the data is stored. For example, changing the type of the data or the format of the data. If your Data Pipe requires specific format or
+        type, make sure you the conversion inside the Data Pipe ensuring consistency in the way tasks interact with Data Pipes. Look at
+        :ref:`memory` for sample implementation.
     """
+
     class Config:
         """Configuration for this pydantic object."""
+
         arbitrary_types_allowed = True
 
     @abstractmethod

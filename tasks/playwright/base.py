@@ -1,13 +1,18 @@
 """
-A part of the task implementation is borrowed from LangChain: 
+A part of the task implementation is borrowed from LangChain:
 https://github.com/langchain-ai/langchain
 """
 from __future__ import annotations
-from tasks.task import BaseTask
-from typing import TYPE_CHECKING, Optional, Dict, Any
+
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import TYPE_CHECKING
+
 from pydantic import model_validator
+
 from tasks.playwright.utils import create_sync_playwright_browser
-import asyncio
+from tasks.task import BaseTask
 
 if TYPE_CHECKING:
     from playwright.sync_api import Browser as SyncBrowser
@@ -21,12 +26,13 @@ else:
 
 class BaseBrowser(BaseTask):
     """
-    **Description:**    
-        
-        This code defines a base class named BaseBrowser that inherits from BaseTask. 
-        This class is intended for tasks related to browser interactions using the Playwright library. 
+    **Description:**
+
+        This code defines a base class named BaseBrowser that inherits from BaseTask.
+        This class is intended for tasks related to browser interactions using the Playwright library.
         The code uses conditional imports to handle situations where the Playwright library is not available.
     """
+
     sync_browser: Optional[Any] = None
 
     def __init__(self, **kwargs):
@@ -34,9 +40,11 @@ class BaseBrowser(BaseTask):
         if "sync_browser" in kwargs:
             self.sync_browser = kwargs["sync_browser"]
         if self.sync_browser is None:
-            raise ValueError("Either async_browser or sync_browser must be specified.")
+            raise ValueError(
+                "Either async_browser or sync_browser must be specified."
+            )
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
         """
             Validate that api key and python package exists in environment.
@@ -52,7 +60,9 @@ class BaseBrowser(BaseTask):
         """
 
         try:
-            from playwright.sync_api import Browser as SyncBrowser  # noqa: F401
+            from playwright.sync_api import (
+                Browser as SyncBrowser,
+            )  # noqa: F401
         except ImportError:
             raise ImportError(
                 "The 'playwright' package is required to use the playwright tools."

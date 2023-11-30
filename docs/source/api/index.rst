@@ -1,7 +1,7 @@
 API Doc
 =======
 
-This section includes a detailed documentation of all the implemented classes. Follow up all the recommendations on how to implement, add, or modify 
+This section includes a detailed documentation of all the implemented classes. Follow up all the recommendations on how to implement, add, or modify
 codes can be found here. Follow up all the best practices mentioned in the documentation.
 
 .. toctree::

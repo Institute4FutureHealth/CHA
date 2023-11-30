@@ -4,6 +4,3 @@ Task
 ====
 
 .. autoclass:: tasks.task.BaseTask
-
-
-

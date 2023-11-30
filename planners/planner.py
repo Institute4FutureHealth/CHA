@@ -1,36 +1,53 @@
 from __future__ import annotations
+
 from abc import abstractmethod
-from typing import Any, List, Optional, Union
-from planners.action import Action, PlanFinish
-from tasks.task import BaseTask
-from llms.llm import BaseLLM
+from typing import Any
+from typing import List
+from typing import Optional
+from typing import Union
+
 from pydantic import BaseModel
+
+from llms.llm import BaseLLM
+from planners.action import Action
+from planners.action import PlanFinish
+from tasks.task import BaseTask
 
 
 class BasePlanner(BaseModel):
     """
-    **Description:** 
+    **Description:**
 
-        This class is the base implementation for the Planner. For every new planner that you want to create, you should \
-        inherit from this class and override the attributes and methods based on your planner's need. 
+        This class is the base implementation for the Planner. For every new planner that you want to create, you should
+        inherit from this class and override the attributes and methods based on your planner's need.
         For sample implementaion look at `ReAct Implementation <_modules/planners/react.html#ReActPlanner>`_
 
     Attributes:
-        name: The name of the task. It should be unique underscore_case to be defined in TaskType. sample_task_name
-        chat_name: This is the name that later will be used if needed to mention the tasks inside the chat with the user. It should be Camel Case. SampleTaskChatName
-        description: The description of the what specifically the task is doing. Try to define it as specific as possible to help the Task Planner decide better.
-        dependencies: You can put the name of the TaskTypes that this task is dependent on. For example, in stress detection scenario, the stress analysis is dependent on the fetch hrv data task. [TaskType.SERPAPI, TASKTYPE.EXTRACT_TEXT]
-        inputs: This is the list of descriptions for the inputs that should be provided by the planner. For example if your task has two inputs: ["the first input description", "the second input description"]
-        outputs: This is the list of the description of the outputs that the task returns. This helps the planner to understand the returned results better and use it as needed. For example, if the task returns a list of sleep hours for different sleep states, the description helps planner learn which number is related to what state. 
-        output_type: This indicates if the task result should be stored in the DataPipe or be returned directly to the planner. This process will be done in the parse_input and post_execute methods. If needed you can overwrite them.
-        return_direct: This indicates if this task should completely interrupt the planning process or not. This is needed in cases like when you want to ask a question from user and no further planning is needed until the user gives the proper answer (look at ask_user task)
+        name:           The name of the task. It should be unique underscore_case to be defined in TaskType. sample_task_name
+        chat_name:      This is the name that later will be used if needed to mention the tasks inside the chat with the user.
+                        It should be Camel Case. SampleTaskChatName
+        description:    The description of the what specifically the task is doing.
+                        Try to define it as specific as possible to help the Task Planner decide better.
+        dependencies:   You can put the name of the TaskTypes that this task is dependent on. For example, in stress detection scenario,
+                        the stress analysis is dependent on the fetch hrv data task. [TaskType.SERPAPI, TASKTYPE.EXTRACT_TEXT]
+        inputs:         This is the list of descriptions for the inputs that should be provided by the planner.
+                        For example if your task has two inputs: ["the first input description", "the second input description"]
+        outputs:        This is the list of the description of the outputs that the task returns. This helps the planner to understand the returned
+                        results better and use it as needed. For example, if the task returns a list of sleep hours for different sleep states,
+                        the description helps planner learn which number is related to what state.
+        output_type:    This indicates if the task result should be stored in the DataPipe or be returned directly to the planner.
+                        This process will be done in the parse_input and post_execute methods. If needed you can overwrite them.
+        return_direct:  This indicates if this task should completely interrupt the planning process or not.
+                        This is needed in cases like when you want to ask a question from user and no further planning is
+                        needed until the user gives the proper answer (look at ask_user task)
     """
+
     llm_model: BaseLLM = None
     available_tasks: Optional[List[BaseTask]] = []
 
     @property
     def _planner_type(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def _planner_model(self):
@@ -55,41 +72,48 @@ class BasePlanner(BaseModel):
 
         """
 
-        return "\n".join([f"[{task.get_dict()}]" for task in self.available_tasks])
+        return "\n".join(
+            [f"[{task.get_dict()}]" for task in self.available_tasks]
+        )
 
     def get_available_tasks_list(self) -> List[str]:
         """
-                Returns a list of names of available tasks.
+            Returns a list of names of available tasks.
 
-            Return:
-                List[str]: List of task names.
+        Return:
+            List[str]: List of task names.
 
-            """
-        return [task.name for task in self.available_tasks]  
-  
+        """
+        return [task.name for task in self.available_tasks]
+
     def self_reflect(self, user_query, final_answer):
-        print("self reflect", (
-        "Based on the user_query, is the final_answer good or accurate Yes/No?\n"
-        f"user_query: {user_query}\n"
-        f"final_answer: {final_answer}"
-        ))
-        answer = self._planner_model.generate((
-        "Based on the user_query, is the final_answer good or accurate Yes/No and explain why?\n"
-        f"user_query: {user_query}\n"
-        f"final_answer: {final_answer}"
-        ))
+        print(
+            "self reflect",
+            (
+                "Based on the user_query, is the final_answer good or accurate Yes/No?\n"
+                f"user_query: {user_query}\n"
+                f"final_answer: {final_answer}"
+            ),
+        )
+        answer = self._planner_model.generate(
+            (
+                "Based on the user_query, is the final_answer good or accurate Yes/No and explain why?\n"
+                f"user_query: {user_query}\n"
+                f"final_answer: {final_answer}"
+            )
+        )
         return answer
 
     @abstractmethod
     def plan(
-            self,
-            query: str,
-            history: str,
-            meta: str,
-            previous_actions: List[Action],
-            use_history: bool = False,
-            **kwargs: Any,
-        ) -> List[Union[Action, PlanFinish]]:
+        self,
+        query: str,
+        history: str,
+        meta: str,
+        previous_actions: List[Action] = None,
+        use_history: bool = False,
+        **kwargs: Any,
+    ) -> List[Union[Action, PlanFinish]]:
         """
             Abstract method for generating a plan based on the input query and history.
 
@@ -107,9 +131,9 @@ class BasePlanner(BaseModel):
 
     @abstractmethod
     def parse(
-            self,
-            query: str,
-            **kwargs: Any,
+        self,
+        query: str,
+        **kwargs: Any,
     ) -> List[Union[Action, PlanFinish]]:
         """
             Abstract method for parsing the planner output into actions or a final answer.

@@ -1,7 +1,7 @@
 Affect
 ==========
 
-This folder contains the implementation of Affect dataset connection and analysis. Different tasks access the right data, perform needed analysis 
+This folder contains the implementation of Affect dataset connection and analysis. Different tasks access the right data, perform needed analysis
 and return the results.
 
 .. toctree::
@@ -12,4 +12,3 @@ and return the results.
    activity_analysis
    sleep_get
    sleep_analysis
-

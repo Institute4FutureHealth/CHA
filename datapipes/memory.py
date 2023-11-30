@@ -1,15 +1,18 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from abc import abstractmethod
-from datapipes.datapipe import DataPipe
 import uuid
+from typing import Any
+from typing import Dict
+from typing import Optional
+
+from datapipes.datapipe import DataPipe
 
 
 class Memory(DataPipe):
     """
-    **Description:** 
-    
+    **Description:**
+
         This class inherits from DataPipe and uses simple on memory python dictionary.
     """
+
     data: Optional[Dict[str, Dict]] = {}
 
     def store(self, data) -> str:
@@ -72,4 +75,3 @@ class Memory(DataPipe):
                 f"The data with the key {key} does not exist."
             )
         return self.data[key]
-    

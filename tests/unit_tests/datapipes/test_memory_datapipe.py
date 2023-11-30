@@ -6,7 +6,9 @@ from datapipes.initialize_datapipe import initialize_datapipe
 
 def test_memory_datapipe_store_and_retrieve():
     # Initialize a Memory DataPipe
-    memory_datapipe = initialize_datapipe(datapipe=DatapipeType.MEMORY)
+    memory_datapipe = initialize_datapipe(
+        datapipe=DatapipeType.MEMORY
+    )
 
     # Data to be stored
     sample_data = {"key": "value"}
@@ -23,11 +25,16 @@ def test_memory_datapipe_store_and_retrieve():
 
 def test_memory_datapipe_retrieve_nonexistent_key():
     # Initialize a Memory DataPipe
-    memory_datapipe = initialize_datapipe(datapipe=DatapipeType.MEMORY)
+    memory_datapipe = initialize_datapipe(
+        datapipe=DatapipeType.MEMORY
+    )
 
     # Attempt to retrieve data using a nonexistent key
     nonexistent_key = "nonexistent_key"
 
     # Check if ValueError is raised
-    with pytest.raises(ValueError, match=f"The data with the key {nonexistent_key} does not exist."):
+    with pytest.raises(
+        ValueError,
+        match=f"The data with the key {nonexistent_key} does not exist.",
+    ):
         memory_datapipe.retrieve(nonexistent_key)

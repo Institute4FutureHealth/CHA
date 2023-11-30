@@ -1,13 +1,13 @@
+from typing import Any
+from typing import List
+
 from tasks.task import BaseTask
-from typing import Any, List, Dict
 
 
 class TestFile(BaseTask):
     name: str = "test_file"
     chat_name: str = "TestFile"
-    description: str = (
-        "analyzes the image and returns description."
-    )
+    description: str = "analyzes the image and returns description."
     dependencies: List[str] = []
     inputs: List[str] = ["the image file name"]
     outputs: List[str] = []
@@ -17,8 +17,8 @@ class TestFile(BaseTask):
     translator: Any = None  #: :meta private:
 
     def parse_input(
-            self,
-            input: str,
+        self,
+        input: str,
     ) -> List[str]:
         """
         Parse the input string into a list of strings.
@@ -41,8 +41,8 @@ class TestFile(BaseTask):
         return input.split("$#")
 
     def execute(
-            self,
-            input: str,
+        self,
+        input: str,
     ) -> str:
         """
         Abstract method representing the execution of the task.
@@ -64,11 +64,11 @@ class TestFile(BaseTask):
 
         """
 
-        inputs = self.parse_input(input)
+        self.parse_input(input)
         return "this image is a classification results of a data"
 
     def explain(
-            self,
+        self,
     ) -> str:
         """
         Provide a sample explanation for the task.
@@ -86,6 +86,4 @@ class TestFile(BaseTask):
 
         """
 
-        return (
-            "This task simply asks user to provide more information or continue interaction."
-        )
+        return "This task simply asks user to provide more information or continue interaction."

@@ -1,19 +1,25 @@
 from __future__ import annotations
-from utils import get_from_dict_or_env
-from llms.llm import BaseLLM
-from typing import Any, List, Dict
+
+from typing import Any
+from typing import Dict
+from typing import List
+
 from pydantic import model_validator
+
+from llms.llm import BaseLLM
+from utils import get_from_dict_or_env
 
 
 class AntropicLLM(BaseLLM):
     """
     **description:**
 
-        This code implements Anthropic LLM API. 
+        This code implements Anthropic LLM API.
         This class uses the Anthropic service to connect to a language model for generating text based on user queries.
         `Anthropic API <https://docs.anthropic.com/claude/reference/getting-started-with-the-api>`_
-        
+
     """
+
     models: Dict = {
         "claude-2": 100000,
     }
@@ -22,14 +28,14 @@ class AntropicLLM(BaseLLM):
     HUMAN_PROMPT: str = ""
     AI_PROMPT: str = ""
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
         """
             Validate that api key and python package exists in environment.
 
             This method validates the environment by checking the existence of the API key and required Python packages.
-            It retrieves the API key from either the "anthropic_api_key" key in the "values" dictionary or from the "ANTHROPIC_API_KEY" environment variable.
-            It also imports the required packages and assigns the appropriate values to the class attributes.
+            It retrieves the API key from either the "anthropic_api_key" key in the "values" dictionary or from the "ANTHROPIC_API_KEY"
+            environment variable. It also imports the required packages and assigns the appropriate values to the class attributes.
 
         Args:
             cls (object): The class itself.
@@ -54,7 +60,11 @@ class AntropicLLM(BaseLLM):
         )
         values["api_key"] = anthropic_api_key
         try:
-            from anthropic import AsyncAnthropic, HUMAN_PROMPT, AI_PROMPT
+            from anthropic import (
+                AsyncAnthropic,
+                HUMAN_PROMPT,
+                AI_PROMPT,
+            )
 
             values["llm_model"] = AsyncAnthropic
             values["HUMAN_PROMPT"] = HUMAN_PROMPT
@@ -78,7 +88,7 @@ class AntropicLLM(BaseLLM):
 
         return self.models.keys()
 
-    async def is_max_token(self, model_name, query) -> bool:
+    def is_max_token(self, model_name, query) -> bool:
         """
             Check if the token count of the query exceeds the maximum token count for the specified model.
 
@@ -92,7 +102,9 @@ class AntropicLLM(BaseLLM):
         """
 
         model_max_token = self.models[model_name]
-        token_count = await self.llm_model(api_key=self.api_key).count_tokens(query)
+        token_count = self.llm_model(
+            api_key=self.api_key
+        ).count_tokens(query)
         return model_max_token < token_count
 
     def _parse_response(self, response: Dict) -> str:
@@ -107,7 +119,7 @@ class AntropicLLM(BaseLLM):
 
         """
 
-        return response['completion']
+        return response["completion"]
 
     def _prepare_prompt(self, prompt) -> Any:
         """
@@ -123,11 +135,7 @@ class AntropicLLM(BaseLLM):
 
         return f"{self.HUMAN_PROMPT} {prompt}{self.AI_PROMPT}"
 
-    def generate(
-            self,
-            query: str,
-            **kwargs: Any
-    ) -> str:
+    def generate(self, query: str, **kwargs: Any) -> str:
         """
             Generate a response based on the provided query. This calls anthropic API to generate the text.
 
@@ -149,9 +157,13 @@ class AntropicLLM(BaseLLM):
                 "model_name is not specified or OpenAI does not support provided model_name"
             )
 
-        max_token = kwargs["max_token"] if "max_token" in kwargs else 32000
+        max_token = (
+            kwargs["max_token"] if "max_token" in kwargs else 32000
+        )
         query = self._prepare_prompt(query)
-        response = self.llm_model(api_key=self.api_key).completions.create(
+        response = self.llm_model(
+            api_key=self.api_key
+        ).completions.create(
             model=model_name,
             max_tokens_to_sample=max_token,
             prompt=query,

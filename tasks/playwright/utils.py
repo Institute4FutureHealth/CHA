@@ -21,14 +21,18 @@ def get_current_page(browser: SyncBrowser) -> SyncPage:
     if not browser.contexts:
         context = browser.new_context()
         return context.new_page()
-    context = browser.contexts[0]  # Assuming you're using the default browser context
+    context = browser.contexts[
+        0
+    ]  # Assuming you're using the default browser context
     if not context.pages:
         return context.new_page()
     # Assuming the last page in the list is the active one
     return context.pages[-1]
 
 
-def create_sync_playwright_browser(headless: bool = True) -> SyncBrowser:
+def create_sync_playwright_browser(
+    headless: bool = True,
+) -> SyncBrowser:
     """
     This function creates and launches a Playwright synchronous browser.
 

@@ -13,7 +13,3 @@ discription
 
     general_health_questions
     run_with_interface
-
-
-
-

@@ -15,7 +15,7 @@ LLM Types
 
 This enumeration class defines different types of llm. This ensures consistency in case the llm developer \
 decides to change the name of their llm, the end user need not to change their code cause they use the **keys**.
-It inherits from the `str` class and the `Enum` class in Python's `enum` module. 
+It inherits from the `str` class and the `Enum` class in Python's `enum` module.
 Each value in this enumeration represents a specific type of llm. The **key** naming convention should be all uppercase with underscore, \
 and the **value** naming convention should be underscore_case: `NAME_OF_LLM = this_is_a_sample_llm_name`
 
@@ -29,11 +29,9 @@ and the **value** naming convention should be underscore_case: `NAME_OF_LLM = th
 Types
 -----
 
-This dictionary is used to map each LLMType value to its corresponding LLM class. 
+This dictionary is used to map each LLMType value to its corresponding LLM class.
 It allows for easy retrieval of the appropriate class based on the llm type.
 
 
 .. literalinclude:: ../../../../llms/types.py
     :language: python
-
-

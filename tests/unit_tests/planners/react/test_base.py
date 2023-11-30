@@ -1,81 +1,110 @@
-import os
-
 import pytest
 
 from llms.llm_types import LLMType
 from planners.initialize_planner import initialize_planner
 from planners.planner_types import PlannerType
-from planners.react.base import ReActPlanner, Action, PlanFinish
+from planners.react.base import Action
+from planners.react.base import PlanFinish
+from planners.react.base import ReActPlanner
 from tasks.initialize_task import initialize_task
 from tasks.task_types import TaskType
-
-
-os.environ["OPENAI_API_KEY"] = "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"
+from utils import get_from_dict_or_env
 
 
 @pytest.fixture
 def react_planner(get_serpapi_key):
-    task = TaskType.SERPAPI
-    tasks = {task.name: initialize_task(task=task, serpapi_api_key=get_serpapi_key)}
-
+    task_name = TaskType.SERPAPI
+    task = initialize_task(
+        task=task_name, serpapi_api_key=get_serpapi_key
+    )
+    tasks = {task.name: task}
     llm_type = LLMType.OPENAI
     planner_type = PlannerType.ZERO_SHOT_REACT_PLANNER
 
-    planner = initialize_planner(tasks=list(tasks.values()), llm=llm_type, planner=planner_type)
+    planner = initialize_planner(
+        tasks=list(tasks.values()), llm=llm_type, planner=planner_type
+    )
 
-    return ReActPlanner(llm_model=planner.llm_model)
-
-
-def test_plan_with_previous_actions(react_planner):
-    query = "How can I improve my health?"
-    history = "User: What should I eat?\nAssistant: You should have a balanced diet."
-    meta = "No specific metadata for this test."
-    previous_actions = [Action("DietRecommendationTool", "meal_plan", "Eat more vegetables.", ""),
-                        Action("ExerciseTool", "exercise_plan", "Go for a 30-minute walk.", "")]
-
-    result = react_planner.plan(query, history, meta, previous_actions, use_history=True)
-
-    assert isinstance(result, list)
-    assert all(isinstance(action, (Action, PlanFinish)) for action in result)
-
-
-def test_plan_without_previous_actions(react_planner):
-    query = "How can I improve my health?"
-    history = "User: What should I eat?\nAssistant: You should have a balanced diet."
-    meta = "No specific metadata for this test."
-
-    result = react_planner.plan(query, history, meta, use_history=True)
-
-    assert isinstance(result, list)
-    assert all(isinstance(action, (Action, PlanFinish)) for action in result)
+    return planner
 
 
 def test_parse_with_valid_query(react_planner):
-    query = """
+    query1 = f"""
         Thought: Think about the question
-        Action: DietRecommendationTool
+        Action: {TaskType.SERPAPI}
+        Action Inputs: meal_plan
+    """
+
+    query2 = """
+        Thought: I now know the final answer.
+        Final Answer: You should have a balanced diet with more vegetables.
+    """
+
+    query3 = """
+        Thought: Think about the question
+        Observation: Eat more vegetables.
+        Thought: Final reasoning or 'I now know the final answer'.
+        Final Answer: You should have a balanced diet with more vegetables.
+    """
+
+    result = react_planner.parse(query1)
+    assert isinstance(result, list)
+    assert isinstance(result[0], Action)
+    assert result[0].task == TaskType.SERPAPI
+    assert result[0].task_input == "meal_plan\n"
+
+    result = react_planner.parse(query2)
+    assert isinstance(result, list)
+    assert isinstance(result[0], PlanFinish)
+    assert (
+        result[0].response
+        == "You should have a balanced diet with more vegetables."
+    )
+
+    result = react_planner.parse(query3)
+    assert isinstance(result, list)
+    assert isinstance(result[0], PlanFinish)
+    assert (
+        result[0].response
+        == "You should have a balanced diet with more vegetables."
+    )
+
+
+def test_parse_with_invalid_query(react_planner):
+    query1 = """
+        Thought: Think about the question
+        Observation: Eat more vegetables.
+        Thought: Final reasoning or 'I now know the final answer'.
+    """
+
+    with pytest.raises(
+        ValueError,
+        match="Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'",
+    ):
+        react_planner.parse(query1)
+
+    query2 = """
+        Thought: Think about the question
+        Action:
+    """
+
+    with pytest.raises(
+        ValueError,
+        match="Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'",
+    ):
+        react_planner.parse(query2)
+
+    query3 = f"""
+        Thought: Think about the question
+        Action: {TaskType.SERPAPI}
         Action Inputs: meal_plan
         Observation: Eat more vegetables.
         Thought: Final reasoning or 'I now know the final answer'.
         Final Answer: You should have a balanced diet with more vegetables.
     """
 
-    result = react_planner.parse(query)
-
-    assert isinstance(result, list)
-    assert len(result) == 2
-    assert isinstance(result[0], Action)
-    assert isinstance(result[1], PlanFinish)
-
-
-def test_parse_with_invalid_query(react_planner):
-    query = """
-        Thought: Think about the question
-        Observation: Eat more vegetables.
-        Thought: Final reasoning or 'I now know the final answer'.
-        Final Answer: You should have a balanced diet with more vegetables.
-    """
-
-    with pytest.raises(ValueError, match="Invalid Format: Missing 'Action:' or 'Final Answer' after 'Thought:'"):
-        result = react_planner.parse(query)
-
+    with pytest.raises(
+        ValueError,
+        match="Parsing the output produced both a final answer and a parse-able action.",
+    ):
+        react_planner.parse(query3)

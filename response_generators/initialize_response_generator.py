@@ -1,16 +1,22 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any
+
 from llms.llm import BaseLLM
-from response_generators.response_generator import BaseResponseGenerator
-from response_generators.types import RESPONSE_GENERATOR_TO_CLASS
-from llms.types import LLM_TO_CLASS
 from llms.llm_types import LLMType
-from response_generators.response_generator_types import ResponseGeneratorType
+from llms.types import LLM_TO_CLASS
+from response_generators.response_generator import (
+    BaseResponseGenerator,
+)
+from response_generators.response_generator_types import (
+    ResponseGeneratorType,
+)
+from response_generators.types import RESPONSE_GENERATOR_TO_CLASS
+
 
 def initialize_response_generator(
-        llm: str = LLMType.OPENAI,
-        response_generator: str = ResponseGeneratorType.BASE_GENERATOR,
-        prefix: str = "",
-        **kwargs: Any
+    llm: str = LLMType.OPENAI,
+    response_generator: str = ResponseGeneratorType.BASE_GENERATOR,
+    prefix: str = "",
+    **kwargs: Any,
 ) -> BaseResponseGenerator:
     """
     This method provides a convenient way to initialize a response generator based on the specified language model type
@@ -47,7 +53,11 @@ def initialize_response_generator(
             f"Valid types are: {LLM_TO_CLASS.keys()}."
         )
 
-    response_generator_cls = RESPONSE_GENERATOR_TO_CLASS[response_generator]
+    response_generator_cls = RESPONSE_GENERATOR_TO_CLASS[
+        response_generator
+    ]
     llm_model = LLM_TO_CLASS[llm]()
-    response_generator = response_generator_cls(llm_model=llm_model, prefix=prefix)
+    response_generator = response_generator_cls(
+        llm_model=llm_model, prefix=prefix
+    )
     return response_generator

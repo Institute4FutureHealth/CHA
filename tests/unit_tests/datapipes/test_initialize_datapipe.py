@@ -11,7 +11,9 @@ def fake_datapipe():
 
 
 def test_initialize_datapipe_with_valid_type(fake_datapipe):
-    result = initialize_datapipe(datapipe=DatapipeType.MEMORY, fake_datapipe=fake_datapipe)
+    result = initialize_datapipe(
+        datapipe=DatapipeType.MEMORY, fake_datapipe=fake_datapipe
+    )
     assert isinstance(result, DataPipe)
 
 
@@ -21,5 +23,7 @@ def test_initialize_datapipe_with_invalid_type():
 
 
 def test_with_default_type():
-    memory_datapipe = initialize_datapipe(datapipe=DatapipeType.MEMORY)
+    memory_datapipe = initialize_datapipe(
+        datapipe=DatapipeType.MEMORY
+    )
     assert isinstance(memory_datapipe, DataPipe)

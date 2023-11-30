@@ -1,18 +1,20 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
-from tasks.task import BaseTask
+from typing import Any
+from typing import List
+
 from llms.llm import BaseLLM
-from planners.planner import BasePlanner
-from planners.types import PLANNER_TO_CLASS
-from llms.types import LLM_TO_CLASS
 from llms.llm_types import LLMType
+from llms.types import LLM_TO_CLASS
+from planners.planner import BasePlanner
 from planners.planner_types import PlannerType
+from planners.types import PLANNER_TO_CLASS
+from tasks.task import BaseTask
 
 
 def initialize_planner(
-        tasks: List[BaseTask],
-        llm: str = LLMType.OPENAI,
-        planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER,
-        **kwargs: Any
+    tasks: List[BaseTask] = None,
+    llm: str = LLMType.OPENAI,
+    planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER,
+    **kwargs: Any,
 ) -> BasePlanner:
     """
     Initialize a planner with specified tasks, language model type, and planner type.
@@ -38,6 +40,8 @@ def initialize_planner(
             planner = initialize_planner(tasks=[TaskType.SERPAPI], llm=LLMType.OPENAI, planner=PlannerType.ZERO_SHOT_REACT_PLANNER)
 
     """
+    if tasks is None:
+        tasks = []
 
     if planner not in PLANNER_TO_CLASS:
         raise ValueError(
