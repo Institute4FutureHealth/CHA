@@ -127,10 +127,7 @@ class Affect(BaseTask):
             # Add the column-value pair to the dictionary
             data_dict[column] = [value]
         # Create a DataFrame from the dictionary
-        result_df = pd.DataFrame(data_dict)
-
-        # Convert the dtype of columns to the desired type (e.g., int64)
-        return result_df.astype({"col1": "int64", "col2": "int64"})
+        return pd.DataFrame(data_dict)
 
     def _calculate_slope(self, df: pd.DataFrame) -> pd.DataFrame:
         # Create a new DataFrame to store the slopes
