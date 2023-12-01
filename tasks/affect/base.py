@@ -4,10 +4,14 @@ Affect - Base
 
 import os
 from typing import List
+from datetime import datetime
+import csv
 import pandas as pd
 from scipy.stats import linregress
 import requests
 from tasks.task import BaseTask
+import pytz
+import json
 
 
 class Affect(BaseTask):
@@ -43,6 +47,48 @@ class Affect(BaseTask):
             return f"No data found between the date {start_date} and {end_date}."
         else:
             return selected_rows
+
+
+    def _get_data_with_timestamp(
+            self,
+            local_dir: str,
+            file_name: str,
+            start_date: str,
+            end_date: str = "",
+    ) -> pd.DataFrame:
+        local_dir = os.path.join(os.getcwd(), local_dir)
+
+        # Convert start_date and end_date strings to datetime objects
+        start_date = datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S')
+        start_date = pytz.utc.localize(start_date)
+        if end_date:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d %H:%M:%S')
+            end_date = pytz.utc.localize(end_date)
+        else:
+            # Set the time to the last second of the day if there is no end_date
+            end_date = start_date.replace(hour=23, minute=59, second=59)
+        selected_rows = []
+        # Open the CSV file and create a CSV reader
+        with open(os.path.join(local_dir, file_name), 'r') as file:
+            csv_reader = csv.DictReader(file)
+            # Iterate through each row in the CSV file
+            for row in csv_reader:
+                # Convert the timestamp to a datetime object
+                timestamp = datetime.strptime(datetime.fromtimestamp(
+                    int(row['timestamp'])/1000).strftime(
+                        '%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                timestamp = pytz.utc.localize(timestamp)
+                timestamp = timestamp.astimezone(pytz.timezone('America/Los_Angeles'))
+                # Check if the timestamp is within the specified date range
+                if start_date <= timestamp <= end_date:
+                    selected_rows.append(row)
+                elif timestamp > end_date:
+                    # Break the loop if we've passed the end date
+                    break
+        # Convert the list of dictionaries to a DataFrame
+        selected_df = pd.DataFrame(selected_rows)
+        # Return the filtered DataFrame
+        return selected_df
 
 
     def _download_data(
@@ -131,3 +177,65 @@ class Affect(BaseTask):
             # Add the slope to the result DataFrame
             df_out[column] = [slope]
         return df_out
+
+
+    def _split_dataframe_by_time(
+            self,
+            df: pd.DataFrame,
+            sampling_frequency: int,
+            window_length: int = 5,
+    ) -> List:
+        # Ensure the 'timestamp' column is of datetime type
+        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+        df['timestamp'] = df['timestamp'].dt.tz_localize(
+            'UTC').dt.tz_convert('America/Los_Angeles')
+        # Group by 5-minute intervals and convert to a list of DataFrames
+        chunks = [group for name, group in df.groupby(
+            pd.Grouper(key='timestamp', freq='5min'))]
+        err_rate = 0.95
+        chunks_filtered = [sublist for sublist in chunks if len(
+            sublist) > window_length*60*sampling_frequency*err_rate]
+        return chunks_filtered
+
+
+    def _ppg_dataframes_and_fs_to_json(
+            self,
+            dataframes_list: List[pd.DataFrame],
+            sampling_frequency: int,
+    ) -> str:
+        # PPG
+        json_dict = {}
+        for i, df in enumerate(dataframes_list):
+            key = f'df_{i}'
+            json_dict[key] = df.to_json(orient='records')
+
+        # Sampling frequency
+        int_dict = {'value': sampling_frequency}
+
+        # Combine both into a single dictionary
+        combined_dict = {'ppg': json_dict, 'sampling_frequency': int_dict}
+        # Convert the combined dictionary to JSON
+        json_out = json.dumps(combined_dict)
+        return json_out
+
+
+    def _json_to_ppg_dataframes_and_fs(
+            self,
+            json_data: str
+    ):
+        # Load the JSON data
+        combined_dict = json.loads(json_data)
+
+        # Extract the dataframe JSONs and the value from the combined dictionary
+        df_json = combined_dict.get('ppg', {})
+        int_dict = combined_dict.get('sampling_frequency', {})
+
+        # Initialize lists to store dataframes
+        ppg_dataframes_list = []
+
+        # Iterate through dataframe JSONs and convert them back to dataframes
+        for _, df_json_str in df_json.items():
+            df = pd.read_json(df_json_str, orient='records')
+            ppg_dataframes_list.append(df)
+
+        return ppg_dataframes_list, int_dict['value']

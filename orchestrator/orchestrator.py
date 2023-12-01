@@ -197,7 +197,7 @@ class Orchestrator(BaseModel):
 			try:
 				task = self.available_tasks[action.task] 
 				result = task.execute(task_input)        
-				self.print_log("task", f"Task is executed successfully\nResult: {result}\n---------------\n")
+				#self.print_log("task", f"Task is executed successfully\nResult: {result}\n---------------\n")
 				return result, task.return_direct
 			except Exception as e:
 				self.print_log("error", f"Error running task:\n{e}\n---------------\n")
