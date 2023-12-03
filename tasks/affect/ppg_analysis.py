@@ -25,8 +25,8 @@ class PpgAnalysis(Affect):
     #True if it should be stored in datapipe
     output_type: bool = True
 
-    revised_voi_names: List[str] = ['Heart rate', 'SDNN', 'RMSSD', 'pNN50',
-                                    'LF', 'HF', 'LFHF', 'SD1', 'SD2', 'SD1SD2']
+    revised_voi_names: List[str] = ['Heart rate', 'RMSSD', 'pNN50',
+                                    'LF', 'HF', 'LFHF']
 
 
     def _hrv_extraction(
