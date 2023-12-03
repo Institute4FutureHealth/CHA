@@ -13,67 +13,85 @@ Your journey with CHA begins here, and the possibilities are boundless.
 Getting Started
 ---------------
 
-- **Familiarize Yourself with CHA**:
+Familiarize Yourself with CHA:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	Before contributing, it's essential to understand the framework and its capabilities.
-	First of all we recommend you reading our `Paper <https://arxiv.org/abs/2310.02374>`_ or :ref:`introduction` section to get a high level idea of how it works and what are the main components.
-	Then we encourage you to take a look at our code base. We have provided a comprehensive documentation on all implemented parts in the :ref:`api` section.
+Before contributing, it's essential to understand the framework and its capabilities.
+First of all we recommend you reading our `Paper <https://arxiv.org/abs/2310.02374>`_ or :ref:`introduction` section to get a high level idea of how it works and what are the main components.
+Then we encourage you to take a look at our code base. We have provided a comprehensive documentation on all implemented parts in the :ref:`api` section.
 
-- **Installation and Setup**:
+Installation and Setup:
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-	For those without extensive development experience, we've designed CHA to be user-friendly. Most configurations are pre-set, making it easy to start using the framework.
-	Follow our :ref:`quick_start` guide to get up and running quickly. Also you can take a look at current :ref:`examples` to get ideas on how to start your journey.
+For those without extensive development experience, we've designed CHA to be user-friendly. Most configurations are pre-set, making it easy to start using the framework.
+Follow our :ref:`quick_start` guide to get up and running quickly. Also you can take a look at current :ref:`examples` to get ideas on how to start your journey.
 
 
 Contribution Opportunities
 --------------------------
 
-- **Healthcare Specialists and Research Teams**:
+Healthcare Specialists and Research Teams:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	Healthcare specialists and research teams have the opportunity to enhance CHA by effortlessly introducing new :ref:`tasks` or creating unique :ref:`examples` by combining existing tasks.
-	We've streamlined this process by offering clear instructions and, in numerous instances, requiring the implementation of just a single function.
-	Your contributions will significantly bolster healthcare applications with minimal effort on your part.
+Healthcare specialists and research teams have the opportunity to enhance CHA by effortlessly introducing new :ref:`tasks` or creating unique :ref:`examples` by combining existing tasks.
+We've streamlined this process by offering clear instructions and, in numerous instances, requiring the implementation of just a single function.
+Your contributions will significantly bolster healthcare applications with minimal effort on your part.
 
-- **Inspired Developers and Researchers**:
+Inspired Developers and Researchers:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	For visionary developers and researchers, CHA is a boundless realm of opportunities.
-	Our framework features fully customizable components, inviting you to explore, experiment, and amplify CHA's potential.
+For visionary developers and researchers, CHA is a boundless realm of opportunities.
+Our framework features fully customizable components, inviting you to explore, experiment, and amplify CHA's potential.
 
-	In the ever-evolving landscape of healthcare technology, we thrive at the forefront, where creativity and innovation are the cornerstones of our journey.
-	Beyond contributing, you'll find a multitude of research avenues awaiting your exploration, paving the way for groundbreaking advancements in healthcare.
-	Join us in shaping the future of healthcare technology, where your ingenuity is the catalyst for success.
+In the ever-evolving landscape of healthcare technology, we thrive at the forefront, where creativity and innovation are the cornerstones of our journey.
+Beyond contributing, you'll find a multitude of research avenues awaiting your exploration, paving the way for groundbreaking advancements in healthcare.
+Join us in shaping the future of healthcare technology, where your ingenuity is the catalyst for success.
 
 Research and Development Ideas
 ------------------------------
 
 There are many research and development tracks that we have in mind that may give you some ideas:
 
-- **Powerful Thinkers**: Exploration of novel Task Planners lies at the core of our endeavor. These Task Planners serve as the cognitive hub of CHAs,
-  	aimed to comprehend user queries and orchestrate the optimal sequence of tasks to deliver personalized responses. The art of task selection holds paramount significance in our pursuit.
-- **Empathy**: Empathy stands as a pivotal element within the realm of forthcoming healthcare technologies, enriching user engagement and fostering trust when interacting with CHAs. A promising avenue
-	for research involves the integration of novel Result Generators, with the aim of delivering personalized outcomes in a genuinely empathetic manner.
-  	This represents a crucial frontier in our quest to enhance the healthcare experience.
-- **Better Prompting**: As we progress, the significance of prompts becomes increasingly pivotal in shaping the future of interactions with Large Language Models (LLMs).
-  	Numerous research studies have affirmed that well-crafted prompts can substantially enhance the reliability and accuracy of LLM responses,
-  	all while ensuring adherence to specific guidelines and instructions.
+**Powerful Thinkers**:
 
-	Consider, for instance, the scenario where user health data is collected for crafting the final response.
-	Here, the proper interpretation of this data, along with its seamless incorporation or referencing as needed, can significantly enrich the information provided to the user.
-	Transforming user inquiries into refined prompts destined for the Task Planner, shaping user-collected data into apt prompts,
-	and infusing prompts with empathy-inducing qualities are but a few instances of research pathways within the realm of Promptist investigations.
-- **Explore New Applications**: The realm of application-specific research holds great promise as the next exhilarating frontier in research and development.
-	Within our CHA framework, it bears early fruit by either introducing fresh tasks or utilizing existing ones to address prevalent healthcare challenges.
+Exploration of novel Task Planners lies at the core of our endeavor. These Task Planners serve as the cognitive hub of CHAs,
+aimed to comprehend user queries and orchestrate the optimal sequence of tasks to deliver personalized responses. The art of task selection holds paramount significance in our pursuit.
 
-	For instance, one practical application involves enabling users to engage in simple reference-based question answering for health-related queries.
-	Leveraging the power of Google Search tasks (such as SERPAPI), CHA can scour the internet to pinpoint highly regarded websites housing the desired answers.
-	If necessary, utilizing the Playwright extract_text task, CHA can extract text from webpages, ensuring the delivery of reliable responses.
-	Furthermore, CHA can present users with the webpage link for further exploration.
+**Empathy**:
 
-	In more intricate scenarios, researchers can implement a CT image classifier, adept at identifying tumors, and seamlessly integrate it with CHA to craft an
-	interactive medical image reporting system. These examples underscore the immense potential for innovation and problem-solving within the healthcare landscape
-	using our framework.
-- **Your New Idea**: It is important to note that these are some general ideas and the sky is unlimited. We fully encourage and support new ideas and we are willing
-	to help and contribute in new ideas. You can contact us by email to setup meetings so that we can discuss new ideas.
+Empathy stands as a pivotal element within the realm of forthcoming healthcare technologies, enriching user engagement and fostering trust when interacting with CHAs. A promising avenue
+for research involves the integration of novel Result Generators, with the aim of delivering personalized outcomes in a genuinely empathetic manner.
+This represents a crucial frontier in our quest to enhance the healthcare experience.
+
+**Better Prompting**:
+
+As we progress, the significance of prompts becomes increasingly pivotal in shaping the future of interactions with Large Language Models (LLMs).
+Numerous research studies have affirmed that well-crafted prompts can substantially enhance the reliability and accuracy of LLM responses,
+all while ensuring adherence to specific guidelines and instructions.
+
+Consider, for instance, the scenario where user health data is collected for crafting the final response.
+Here, the proper interpretation of this data, along with its seamless incorporation or referencing as needed, can significantly enrich the information provided to the user.
+Transforming user inquiries into refined prompts destined for the Task Planner, shaping user-collected data into apt prompts,
+and infusing prompts with empathy-inducing qualities are but a few instances of research pathways within the realm of Promptist investigations.
+
+**Explore New Applications**:
+
+The realm of application-specific research holds great promise as the next exhilarating frontier in research and development.
+Within our CHA framework, it bears early fruit by either introducing fresh tasks or utilizing existing ones to address prevalent healthcare challenges.
+
+For instance, one practical application involves enabling users to engage in simple reference-based question answering for health-related queries.
+Leveraging the power of Google Search tasks (such as SERPAPI), CHA can scour the internet to pinpoint highly regarded websites housing the desired answers.
+If necessary, utilizing the Playwright extract_text task, CHA can extract text from webpages, ensuring the delivery of reliable responses.
+Furthermore, CHA can present users with the webpage link for further exploration.
+
+In more intricate scenarios, researchers can implement a CT image classifier, adept at identifying tumors, and seamlessly integrate it with CHA to craft an
+interactive medical image reporting system. These examples underscore the immense potential for innovation and problem-solving within the healthcare landscape
+using our framework.
+
+**Your New Idea**:
+
+It is important to note that these are some general ideas and the sky is unlimited. We fully encourage and support new ideas and we are willing
+to help and contribute in new ideas. You can contact us by email to setup meetings so that we can discuss new ideas.
 
 
 Documentation and Citation
