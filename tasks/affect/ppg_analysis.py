@@ -29,7 +29,7 @@ class PpgAnalysis(Affect):
                                     'LF', 'HF', 'LFHF']
 
 
-    def _hrv_extraction(
+    def _hr_hrv_extraction(
             self,
             df_ppg: pd.DataFrame,
             sampling_frequency: int,
@@ -75,7 +75,7 @@ class PpgAnalysis(Affect):
         for df_ppg in df_ppg_chunks:
             temp = self._hr_hrv_extraction(df_ppg=df_ppg,
                                            sampling_frequency=sampling_frequency,
-                                           parameters_of_interest=self.revised_voi_names)
+                                           revised_voi_names=self.revised_voi_names)
             df_voi = pd.concat([df_voi, temp], ignore_index=True)
         df_out = df_voi.mean().to_frame().T
         df_out = df_out.round(2)
