@@ -34,7 +34,7 @@ class PpgAnalysis(Affect):
             df_ppg: pd.DataFrame,
             sampling_frequency: int,
             revised_voi_names: List[str],
-            hrv_extraction_method: str = 'e2epyppg',
+            hrv_extraction_method: str = 'neurokit',
     ) -> pd.DataFrame:
         sig = df_ppg['ppg'].values.astype(int)
         if hrv_extraction_method == 'neurokit':
