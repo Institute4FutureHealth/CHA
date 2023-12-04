@@ -53,4 +53,3 @@ This code will run the default interface, and you can access it at the following
 For more examples, visit the [Examples page](https://docs.opencha.com/examples/index.html).
 
 ![Alt Text](./docs/figs/Interface.png)
-```
