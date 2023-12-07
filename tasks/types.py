@@ -3,6 +3,8 @@ from typing import Type
 
 from tasks.affect import ActivityAnalysis
 from tasks.affect import ActivityGet
+from tasks.affect import PpgAnalysis
+from tasks.affect import PpgGet
 from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.ask_user import AskUser
@@ -32,8 +34,10 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.NAVIGATE: Navigate,
     TaskType.AFFECT_SLEEP_GET: SleepGet,
     TaskType.AFFECT_ACTIVITY_GET: ActivityGet,
+    TaskType.AFFECT_PPG_GET: PpgGet,
     TaskType.AFFECT_SLEEP_ANALYSIS: SleepAnalysis,
     TaskType.AFFECT_ACTIVITY_ANALYSIS: ActivityAnalysis,
+    TaskType.AFFECT_PPG_ANALYSIS: PpgAnalysis,
     TaskType.GOOGLE_TRANSLATE: GoogleTranslate,
     TaskType.ASK_USER: AskUser,
     TaskType.TEST_FILE: TestFile,

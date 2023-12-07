@@ -18,6 +18,7 @@ class ReadDataPipe(BaseTask):
     chat_name: str = "DataPipeReader"
     description: str = (
         "Get the stored information from datapipe to be used to answer user query accurately. "
+        "The key should be found in the History otherwise you cannot call this tool."
         "This should be called when the final answer is in datapipe."
     )
     dependencies: List[str] = []

@@ -49,8 +49,7 @@ about his/her health and well-being. Answer the following questions as best you 
 reach to the Final Answer. You have access to the following tools: \
 Use the following format. You should stick to the following format:
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
-History: the history of previous chats happened. You should use them to answer user's current question. If the answer is already in the history, \
-just return it.
+History: the history of previous chats happened. You should use them to answer user's current question.
 Question: the input question you must answer
 Thought: you should always think about what to do. Ask yourself how to break down the Question into actions using tools. \
 you may need to call tools several times for different purposes.

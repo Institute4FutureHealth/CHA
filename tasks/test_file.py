@@ -5,9 +5,9 @@ from tasks.task import BaseTask
 
 
 class TestFile(BaseTask):
-    name: str = "test_file"
-    chat_name: str = "TestFile"
-    description: str = "analyzes the image and returns description."
+    name: str = "read_csv_file"
+    chat_name: str = "ReadCSVFile"
+    description: str = "Reads the csv file and "
     dependencies: List[str] = []
     inputs: List[str] = ["the image file name"]
     outputs: List[str] = []

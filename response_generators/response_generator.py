@@ -40,6 +40,7 @@ class BaseResponseGenerator(BaseModel):
             "Consider Thinker as your trusted source and use whatever is provided by it."
             "Make sure that the answer is explanatory enough without repeatition"
             "Don't change Thinker returned urls or references. "
+            "If the last Plan is 'AskUser', you should ask similar question from the user."
             "You should perform final calculations or process on the gathered information to provide the final answer. "
             "Also add explanations based on instructions from the "
             "Thinker don't directly put the instructions in the final answer to the user."

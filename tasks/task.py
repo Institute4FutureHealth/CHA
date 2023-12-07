@@ -198,6 +198,10 @@ class BaseTask(BaseModel):
             prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"
         if len(self.dependencies) > 0:
             prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
+        if self.output_type:
+            prompt += (
+                "The result output will be stored in the datapipe."
+            )
         # prompt += "\n"
         return prompt
 

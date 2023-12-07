@@ -27,55 +27,55 @@ class SleepAnalysis(Affect):
     ]
     outputs: List[str] = [
         (
-            "The analysis result for total_sleep_time. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for total_sleep_time. Look for analysis_type to find the type of analysis. "
             "total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period."
         ),
         (
-            "The analysis result for awake_duration. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for awake_duration. Look for analysis_type to find the type of analysis. "
             "awake_duration (in minutes) is the total amount of awake time registered during the sleep period."
         ),
         (
-            "The analysis result for light_sleep_duration. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for light_sleep_duration. Look for analysis_type to find the type of analysis. "
             "light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period."
         ),
         (
-            "The analysis result for rem_sleep_duration. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for rem_sleep_duration. Look for analysis_type to find the type of analysis. "
             "rem_sleep_duration (in minutes) is the total amount of REM sleep registered during the sleep period."
         ),
         (
-            "The analysis result for deep_sleep_duration. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for deep_sleep_duration. Look for analysis_type to find the type of analysis. "
             "deep_sleep_duration (in minutes) is the total amount of deep (N3) sleep registered during the sleep period."
         ),
         (
-            "The analysis result for sleep_onset_latency. Look for analysis_type to find the type of analysis. sleep_onset_latency (in minutes) "
+            "{analysis_type} result for sleep_onset_latency. Look for analysis_type to find the type of analysis. sleep_onset_latency (in minutes) "
             "is the detected latency from bedtime_start to the beginning of the first five minutes of persistent sleep."
         ),
         (
-            "The analysis result for midpoint_time_of_sleep. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for midpoint_time_of_sleep. Look for analysis_type to find the type of analysis. "
             "midpoint_time_of_sleep (in minutes) is the time from the start of sleep to the midpoint of sleep. The midpoint ignores awake periods."
         ),
         (
-            "The analysis result for sleep_efficiency. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for sleep_efficiency. Look for analysis_type to find the type of analysis. "
             "sleep_efficiency is the percentage of the sleep period spent asleep (100% * sleep duration / time in bed)."
         ),
         (
-            "The analysis result for average_heart_rate. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for average_heart_rate. Look for analysis_type to find the type of analysis. "
             "average_heart_rate is the average heart rate registered during the sleep period."
         ),
         (
-            "The analysis result for minimum_heart_rate. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for minimum_heart_rate. Look for analysis_type to find the type of analysis. "
             "minimum_heart_rate is the lowest heart rate (5 minutes sliding average) registered during the sleep period."
         ),
         (
-            "The analysis result for rmssd. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for rmssd. Look for analysis_type to find the type of analysis. "
             "rmssd is the average Root Mean Square of Successive Differences (RMSSD) registered during the sleep period."
         ),
         (
-            "The analysis result for average_breathing_rate. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for average_breathing_rate. Look for analysis_type to find the type of analysis. "
             "average_breathing_rate is the average breathing rate registered during the sleep period."
         ),
         (
-            "The analysis result for temperature_variation. Look for analysis_type to find the type of analysis. "
+            "{analysis_type} result for temperature_variation. Look for analysis_type to find the type of analysis. "
             "temperature_variation is the skin temperature deviation from the long-term temperature average."
         ),
     ]
@@ -102,4 +102,9 @@ class SleepAnalysis(Affect):
             )
         df = df.round(2)
         json_out = df.to_json(orient="records")
+
+        self.outputs = [
+            output.replace("{analysis_type}", analysis_type)
+            for output in self.outputs
+        ]
         return json_out
