@@ -13,7 +13,7 @@ To use CHA in a safe and stable way, ensure you have Python 3.10 or higher insta
 python -m venv /path/to/new/virtual/environment
 
 # Activate the virtual environment
-source activate /path/to/new/virtual/environment/bin
+source /path/to/new/virtual/environment/bin/activate
 ```
 
 Now, install the CHA package. Unfortunately, currently due to PyPi registration problem, we could not upload our package to be
