@@ -98,7 +98,8 @@ class PpgAnalysis(Affect):
                 df_hrv = df_hrv.mean().to_frame().T
             except Exception:
                 print("No clean PPG segments was detected!")
-                raise
+                df_hrv = pd.DataFrame(columns=voi)
+                return df_hrv
             return df_hrv
         else:
             raise ValueError(
@@ -123,6 +124,10 @@ class PpgAnalysis(Affect):
                 revised_voi_names=self.revised_voi_names,
             )
             df_voi = pd.concat([df_voi, temp], ignore_index=True)
+        if df_voi.empty:
+            print(
+                "No HR or HRV extracted. PPG signals are missing or too noisy!"
+            )
         df_out = df_voi.mean().to_frame().T
         df_out = df_out.round(2)
         json_out = df_out.to_json(orient="records")
