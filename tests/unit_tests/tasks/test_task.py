@@ -65,7 +65,6 @@ def test_parse_input_with_datapipe(sample_task, datapipe):
     key = datapipe.store(data)
     input_args = f"datapipe:{key},input2"
     inputs = sample_task._parse_input(input_args=input_args)
-    print("inputs", inputs)
     assert len(inputs) == 2
     assert "sample data" in inputs[0]["data"]
     assert inputs[1] == "input2"
@@ -84,3 +83,16 @@ def test_post_execute_store_in_datapipe(sample_task):
 
 def test_get_dict(sample_task):
     assert isinstance(sample_task.get_dict(), str)
+
+
+def test_validate_inputs(sample_task):
+    sample_task.inputs = ["input 1", "input 2"]
+
+    inputs = []
+    assert not sample_task._validate_inputs(inputs)
+
+    inputs = ["input 1"]
+    assert not sample_task._validate_inputs(inputs)
+
+    inputs = ["input 1", "input 2"]
+    assert sample_task._validate_inputs(inputs)

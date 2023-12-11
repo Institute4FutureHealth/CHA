@@ -30,6 +30,7 @@ setup(
             "anthropic",
             "aiohttp",
             "google-search-results",
+            "googletrans-py",
             "playwright",
             "beautifulsoup4",
             "lxml",

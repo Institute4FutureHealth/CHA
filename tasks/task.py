@@ -124,7 +124,25 @@ class BaseTask(BaseModel):
             for arg in inputs
         ]
 
-    def _post_execute(self, result: str = ""):
+    def _validate_inputs(self, inputs: List[str]) -> bool:
+        """
+            This method is called inside **execute** method after calling **_parse_input**. The result of **_parse_input** will be passed to this
+            method to check the validity of the provided inputs by the Task Planner. Currently it only checks the length of the parsed input and
+            the length of the inputs attribute of the tasks class. You can inherit this function to further add more input checkings for your own
+            tasks.
+
+        Args:
+            inputs (List): List of strings containig the parsed inputs.
+        Return:
+            bool: True if the inputs are valid, False otherwise
+
+        """
+        valid = True
+        if len(inputs) != len(self.inputs):
+            valid = False
+        return valid
+
+    def _post_execute(self, result: str = "") -> str:
         """
             This method is called inside **execute** method after calling **_execute**. The result of **_execute** will be passed to this method
             in case the **output_type** attribute is True, the result will be stored inside the datapipe and the datapipe key is returned to
@@ -172,6 +190,15 @@ class BaseTask(BaseModel):
 
         """
         inputs = self._parse_input(input_args)
+        if not self._validate_inputs(inputs):
+            inputs_format = ",".join(
+                f"input{i+1}-{word}"
+                for i, word in enumerate(self.inputs)
+            )
+            raise ValueError(
+                "Wrong inputs are provided."
+                f"The inputs should follow the descriptions: {inputs_format}"
+            )
         result = self._execute(inputs)
         return self._post_execute(result)
 
