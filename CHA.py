@@ -87,7 +87,7 @@ class CHA(BaseModel):
                 **kwargs,
             )
 
-        response, actions = self.orchestrator.run(
+        response, actions, files = self.orchestrator.run(
             query=query,
             history=history,
             meta=self.meta,
@@ -95,16 +95,20 @@ class CHA(BaseModel):
         )
         self.previous_actions += actions
 
-        return response
+        return response, files
 
     def respond(self, message, chat_history, check_box, tasks_list):
-        response = self._run(
+        response, files = self._run(
             query=message,
             chat_history=chat_history,
             tasks_list=tasks_list,
             use_history=check_box,
         )
+        print("files", files)
         chat_history.append((message, response))
+        if len(files) > 0:
+            for file in files:
+                chat_history.append((None, (file,)))
         return "", chat_history
 
     def reset(self):

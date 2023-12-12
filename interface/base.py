@@ -96,11 +96,11 @@ class Interface(BaseModel):
                     label="Question",
                     info="Put your query here and press enter.",
                 )
-                # btn = self.gr.UploadButton(
-                #     "📁",
-                #     scale=1,
-                #     file_types=["image", "video", "audio", "text"],
-                # )
+                btn = self.gr.UploadButton(
+                    "📁",
+                    scale=1,
+                    file_types=["image", "video", "audio", "text"],
+                )
                 check_box = self.gr.Checkbox(
                     scale=1,
                     value=True,
@@ -110,7 +110,7 @@ class Interface(BaseModel):
 
             with self.gr.Row():
                 tasks = self.gr.Dropdown(
-                    value=available_tasks,
+                    value=[],
                     choices=available_tasks,
                     multiselect=True,
                     label="Tasks List",
@@ -124,9 +124,9 @@ class Interface(BaseModel):
                 [msg, chatbot, check_box, tasks],
                 [msg, chatbot],
             )
-            # btn.upload(
-            #     upload_meta, [chatbot, btn], [chatbot], queue=False
-            # )
+            btn.upload(
+                upload_meta, [chatbot, btn], [chatbot], queue=False
+            )
 
         demo.launch(share=share)
         self.interface = demo

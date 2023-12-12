@@ -18,3 +18,4 @@ class TaskType(str, Enum):
     ASK_USER = "ask_user"
     READ_FROM_DATAPIPE = "read_from_datapipe"
     TEST_FILE = "test_file"
+    RUN_PYTHON_CODE = "run_python_code"

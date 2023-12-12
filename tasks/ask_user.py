@@ -27,8 +27,6 @@ class AskUser(BaseTask):
     output_type: bool = False
     return_direct: bool = True
 
-    translator: Any = None  #: :meta private:
-
     def _execute(
         self,
         inputs: List[Any] = None,

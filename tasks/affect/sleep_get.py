@@ -30,6 +30,8 @@ class SleepGet(Affect):
         ),
     ]
     outputs: List[str] = [
+        "returns an array of json objects which contains the following keys:",
+        "date (in milliseconds) epoch format",
         "total_sleep_time (in minutes) is Total amount of sleep (a.k.a. sleep duration) registered during the sleep period.",
         "awake_duration (in minutes) is the total amount of awake time registered during the sleep period.",
         "light_sleep_duration (in minutes) is the total amount of light (N1 or N2) sleep registered during the sleep period.",

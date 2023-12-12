@@ -177,13 +177,13 @@ class OpenAILLM(BaseLLM):
             raise ValueError(
                 "model_name is not specified or OpenAI does not support provided model_name"
             )
-
         stop = kwargs["stop"] if "stop" in kwargs else None
         max_tokens = (
             kwargs["max_tokens"]
             if "max_tokens" in kwargs
             else self.max_tokens
         )
+        print("here", max_tokens)
 
         self.llm_model.api_key = self.api_key
         query = self._prepare_prompt(query)

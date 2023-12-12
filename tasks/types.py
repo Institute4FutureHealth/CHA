@@ -15,6 +15,7 @@ from tasks.playwright import GetElements
 from tasks.playwright import Navigate
 from tasks.playwright import NavigateBack
 from tasks.read_from_datapipe import ReadDataPipe
+from tasks.run_python_code import RunPythonCode
 from tasks.serpapi import SerpAPI
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
@@ -38,4 +39,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.ASK_USER: AskUser,
     TaskType.TEST_FILE: TestFile,
     TaskType.READ_FROM_DATAPIPE: ReadDataPipe,
+    TaskType.RUN_PYTHON_CODE: RunPythonCode,
 }

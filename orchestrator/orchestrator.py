@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 from typing import Any
 from typing import Dict
@@ -344,17 +345,20 @@ class Orchestrator(BaseModel):
         if use_history:
             prompt = prompt.replace("{history}", history)
 
-        prompt = prompt.replace("{meta}", ", ".join(meta)).replace(
-            "{plan}",
-            "".join(
-                [
-                    f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n"
-                    if action.task in self.available_tasks
-                    else ""
-                    for action in previous_actions
-                ]
-            ),
-        )  # + f"\n{final_response}")
+        prompt = (
+            prompt.replace("{meta}", ", ".join(meta)).replace(
+                "{plan}",
+                "".join(
+                    [
+                        f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n"
+                        if action.task in self.available_tasks
+                        else ""
+                        for action in previous_actions
+                    ]
+                ),
+            )
+            + f"\n{final_response}"
+        )
         return prompt
 
     def plan(
@@ -461,6 +465,7 @@ class Orchestrator(BaseModel):
         final_response = ""
         finished = False
         self.print_log("planner", "Planing Started...\n")
+        generated_files = []
         while True:
             try:
                 self.print_log(
@@ -488,6 +493,11 @@ class Orchestrator(BaseModel):
                             ) = self.execute_task(action)
                             i = 0
                         previous_actions.append(action)
+                        if action.task == TaskType.RUN_PYTHON_CODE:
+                            if os.path.exists(action.task_response):
+                                generated_files.append(
+                                    action.task_response
+                                )
                         if return_direct:
                             print("inside return direct")
                             final_response = action.task_response
@@ -530,7 +540,7 @@ class Orchestrator(BaseModel):
 
         self.print_log(
             "response_generator",
-            f"Final Answer Generation Started...\n\nInput Prompt: \n{final_response}",
+            f"Final Answer Generation Started...\nInput Prompt: \n\n{final_response}",
         )
         final_response = self.generate_final_answer(
             query=query, thinker=final_response
@@ -545,4 +555,4 @@ class Orchestrator(BaseModel):
                 "google_translate"
             ].execute(f"{final_response}$#{source_language}")[0]
 
-        return final_response, previous_actions
+        return final_response, previous_actions, generated_files

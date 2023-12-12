@@ -38,6 +38,7 @@ setup(
             "openai~=1.2",
             "pandas",
             "scipy",
+            "seaborn",
         ],
         "minimum": [
             # minimum requirements for running the codes
