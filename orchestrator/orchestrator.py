@@ -274,6 +274,8 @@ class Orchestrator(BaseModel):
                     f"Error running task: \n{e}\n---------------\n",
                 )
                 logging.exception(e)
+                if action.task not in self.available_tasks:
+                    break
                 error_message = e
                 retries += 1
         return (
@@ -295,23 +297,26 @@ class Orchestrator(BaseModel):
         return query
 
     def _retrieve_last_action_from_datapip(self, previous_actions):
-        print("previous action check", previous_actions)
         if len(previous_actions) > 0:
             for i in range(len(previous_actions) - 1, -1, -1):
                 if previous_actions[i].task in [
-                    TaskType.READ_FROM_DATAPIPE
-                ]:
+                    TaskType.READ_FROM_DATAPIPE,
+                ] or (
+                    "Exception" not in previous_actions[i].task
+                    and not self.available_tasks[
+                        previous_actions[i].task
+                    ].output_type
+                ):
                     return None
                 match = re.search(
-                    r"\$(datapipe:[^\$]+)\$",
+                    r"(datapipe:[^\$]+)",
                     previous_actions[i].task_response,
                 )
-                print(
-                    "previous action check",
-                    previous_actions[i],
-                    match,
-                )
-                if match:
+                if (
+                    match
+                    and TaskType.READ_FROM_DATAPIPE
+                    in self.available_tasks
+                ):
                     action = Action(
                         TaskType.READ_FROM_DATAPIPE,
                         match.group(1),
@@ -357,7 +362,7 @@ class Orchestrator(BaseModel):
                     ]
                 ),
             )
-            + f"\n{final_response}"
+            # + f"\n{final_response}"
         )
         return prompt
 
@@ -464,13 +469,13 @@ class Orchestrator(BaseModel):
         # history = self.available_tasks["google_translate"].execute(history+"$#en").text
         final_response = ""
         finished = False
-        self.print_log("planner", "Planing Started...\n")
+        self.print_log("planner", "Planning Started...\n")
         generated_files = []
         while True:
             try:
                 self.print_log(
                     "planner",
-                    f"Continueing Planing... Try number {i}\n\n",
+                    f"Continueing Planning... Try number {i}\n\n",
                 )
                 actions = self.plan(
                     query=prompt,
@@ -485,7 +490,7 @@ class Orchestrator(BaseModel):
                         finished = True
                         break
                     else:
-                        return_direct = False, False
+                        return_direct = False
                         if "Exception" not in action.task:
                             (
                                 action.task_response,
@@ -494,9 +499,18 @@ class Orchestrator(BaseModel):
                             i = 0
                         previous_actions.append(action)
                         if action.task == TaskType.RUN_PYTHON_CODE:
-                            if os.path.exists(action.task_response):
+                            if (
+                                "address:" in action.task_response
+                                and os.path.exists(
+                                    action.task_response.split(
+                                        "address:"
+                                    )[-1]
+                                )
+                            ):
                                 generated_files.append(
-                                    action.task_response
+                                    action.task_response.split(
+                                        "address:"
+                                    )[-1]
                                 )
                         if return_direct:
                             print("inside return direct")
@@ -511,7 +525,7 @@ class Orchestrator(BaseModel):
                     break
             except ValueError as error:
                 self.print_log(
-                    "error", f"Planing Error:\n{error}\n\n"
+                    "error", f"Planning Error:\n{error}\n\n"
                 )
                 i += 1
                 if i > self.max_retries:
@@ -527,7 +541,7 @@ class Orchestrator(BaseModel):
                 )
         self.print_log(
             "planner",
-            f"Planner final response: {final_response}\nPlaning Ended...\n\n",
+            f"Planner final response: {final_response}\nPlanning Ended...\n\n",
         )
 
         final_response = self.response_generator_generate_prompt(

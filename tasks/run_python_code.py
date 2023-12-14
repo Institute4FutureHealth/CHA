@@ -1,4 +1,3 @@
-import json
 import re
 from typing import Any
 from typing import Dict
@@ -24,14 +23,16 @@ class RunPythonCode(BaseTask):
     name: str = "run_python_code"
     chat_name: str = "RunPythonCode"
     description: str = (
-        "This tool runs a python code based on the input query and returns the result. "
-        "This tool should be used to convert data formats, plotting data, or performing basic "
-        "statistical tasks like mean, and sum"
+        "This tool should be used to convert data formats, plot data, or perform basic "
+        "statistical tasks like mean, and sum."
     )
     dependencies: List[str] = []
     inputs: List[str] = [
-        "The description of what you want to be done.",
-        "The needed data. You should pass the datapipe key not the raw data.",
+        "Data source - You should provide the data source, which is in form of "
+        "datapipe:[datapipe_key] the datapipe_key should be extracted from the result of previous actions.",
+        "Task description - You should provide a detailed description of the task you want to perform, NEVER provide codes. "
+        "Be specific about what you want to achieve, such as plotting, data conversion, or statistical calculations."
+        "You can use your Thought before action as input.",
     ]
     outputs: List[str] = []
     output_type: bool = False
@@ -60,27 +61,33 @@ class RunPythonCode(BaseTask):
     ) -> str:
         """Translate query"""
         prompt = (
-            f"Generate a python function code named 'custom_function' with one json input to solve the following problem:\n{inputs[0]}\n"
+            "Generate a python code which contains a function named 'custom_function' with one "
+            f"json input to solve the following problem:\n{inputs[1]}\n"
             "The description of the json keys in the input data is as follows:"
-            f"\n{inputs[1]['description']}\n\n"
-            "If the final result is  plot, image, or any types of files, you SHOULD save them inside the 'data' folder with a random uuid "
+            f"\n{inputs[0]['description']}\n\n"
+            "If the final result is a plot, or image, you SHOULD save them inside the 'data' folder with a random uuid "
             "name and suffix and return the final path in the following format: 'address:path'. "
-            "If the data is raw data, simply return the data itself. Only return the code. Make sure you IMPORT ALL necessary libraries."
+            "If the data is json or other numerical formats, simply return the data itself."
+            "Only return the code. Make sure you IMPORT ALL necessary libraries."
+            "Always make sure that you only use the keys which have the description. Always put checkings to see if specific key exists."
+            "You can assume that the data contains enought information and does not rely on the keys that does not exist."
+            "In custom_function, always check if the input is json or json string and convert it to json if needed."
         )
-        kwargs = {"max_tokens": 2000}
+        kwargs = {"max_tokens": 1000}
         code = self.llm_model.generate(prompt, **kwargs)
         pattern = r"```python\n(.*?)```"
         code = re.search(pattern, code, re.DOTALL).group(1)
         print("generated code", code)
         global result
         result = ""
-        code += f"\nresult=custom_function({json.dumps(inputs[1]['data'])})"
+        code += f"\nresult=custom_function({inputs[0]['data']})"
         exec(code, locals())
         result = locals().get("result")
-        if "address:" in result:
-            self.output_type = False
-            return result.split("address:")[-1]
-        return result
+        print("result", result)
+        if "address:" not in result:
+            self.output_type = True
+            return result
+        return f"The code is successfully executed and the result is either stored as file path with address or returned directly. Result: {result}"
 
     def explain(
         self,

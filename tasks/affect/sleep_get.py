@@ -15,17 +15,15 @@ class SleepGet(Affect):
     name: str = "affect_sleep_get"
     chat_name: str = "AffectSleepGet"
     description: str = (
-        "Get the sleep parameters for a specific date or "
-        "a period (if two dates are provided). "
-        "You must Call $affect_sleep_analysis$ whenever sleep "
-        "analysis (e.g., 'average' or 'trend') is needed. DON'T rely on your analysis"
+        "Returns the sleep parameters for a specific patient over a date or a period (if two dates are provided). "
+        "This will return the detailed raw data."
     )
     dependencies: List[str] = []
     inputs: List[str] = [
         "user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
-        "start date of the sleep data in string with the following format: '%Y-%m-%d'",
+        "start date of the sleep data in string with the following format: `%Y-%m-%d`",
         (
-            "end date of the sleep data in string with the following format: '%Y-%m-%d'. "
+            "end date of the sleep data in string with the following format: `%Y-%m-%d`. "
             "If there is no end date, the value should be an empty string (i.e., '')"
         ),
     ]

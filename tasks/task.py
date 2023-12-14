@@ -109,7 +109,7 @@ class BaseTask(BaseModel):
 
 
         """
-        inputs = input_args.split(",")
+        inputs = input_args.split("$")
         return [
             json.loads(
                 self.datapipe.retrieve(
@@ -171,10 +171,16 @@ class BaseTask(BaseModel):
                 )
             )
             return (
-                f"The result of the tool {self.name} is stored in the datapipe with key: $datapipe:{key}$"
-                " pass this key to other tools to access to the result or call read_from_datapipe to get the raw data."
+                f"The result of the tool {self.name} is stored in the variable called: `datapipe:{key}`"
+                f" pass `datapipe:{key}` to other tools when you need them. here is the description of the data:\n"
+                f"{','.join(self.outputs)}"
             )
         return result
+
+    def _get_input_format(self):
+        return "$".join(
+            f"{i+1}-{word}\n" for i, word in enumerate(self.inputs)
+        )
 
     def execute(self, input_args: str) -> str:
         """
@@ -191,10 +197,7 @@ class BaseTask(BaseModel):
         """
         inputs = self._parse_input(input_args)
         if not self._validate_inputs(inputs):
-            inputs_format = ",".join(
-                f"input{i+1}-{word}"
-                for i, word in enumerate(self.inputs)
-            )
+            inputs_format = self._get_input_format()
             raise ValueError(
                 "Wrong inputs are provided."
                 f"The inputs should follow the descriptions: {inputs_format}"
@@ -211,9 +214,7 @@ class BaseTask(BaseModel):
 
 
         """
-        inputs = ",".join(
-            f"input{i+1}-{word}" for i, word in enumerate(self.inputs)
-        )
+        inputs = self._get_input_format()
         dependencies = ",".join(
             f"{i+1}-{word}"
             for i, word in enumerate(self.dependencies)
@@ -222,7 +223,7 @@ class BaseTask(BaseModel):
             f"tool name:{self.name}, description: {self.description}."
         )
         if len(self.inputs) > 0:
-            prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"
+            prompt += f"\nThe input to this tool should be $ separated list of data representing:\n {inputs}"
         if len(self.dependencies) > 0:
             prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
         # prompt += "\n"

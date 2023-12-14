@@ -17,12 +17,14 @@ class SleepAnalysis(Affect):
     name: str = "affect_sleep_analysis"
     chat_name: str = "AffectSleepAnalysis"
     description: str = (
-        "Performs trend or average analysis on the provided sleep data. You must Call this whenever sleep trend or average is needed."
-        "For example, if the user asks for trends (or variations) in data, you must call this task"
+        "Performs trend or average analysis on the provided sleep data and returns only a single result."
+        "You must Call this whenever sleep trend or average overal report is needed."
+        "For example, if the user asks for summary of trends (or variations) in data, you must call this task"
     )
     dependencies: List[str] = ["affect_sleep_get"]
     inputs: List[str] = [
-        "datapipe key to the data",
+        "You should provide the data source, which is in form of datapipe:[datapipe_key] "
+        "the datapipe_key should be extracted from the result of previous actions.",
         "analysis_type. It can be one of [average, trend].",
     ]
     outputs: List[str] = [

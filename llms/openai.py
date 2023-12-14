@@ -183,7 +183,7 @@ class OpenAILLM(BaseLLM):
             if "max_tokens" in kwargs
             else self.max_tokens
         )
-        print("here", max_tokens)
+        print("here", max_tokens, model_name)
 
         self.llm_model.api_key = self.api_key
         query = self._prepare_prompt(query)
