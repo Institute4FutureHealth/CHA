@@ -23,6 +23,7 @@ setup(
         "requests",
         "gradio",
         "pydantic",
+        "scipy",
     ],
     extras_require={
         "all": [

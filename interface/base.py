@@ -110,7 +110,7 @@ class Interface(BaseModel):
 
             with self.gr.Row():
                 tasks = self.gr.Dropdown(
-                    value=available_tasks,
+                    value=[],
                     choices=available_tasks,
                     multiselect=True,
                     label="Tasks List",

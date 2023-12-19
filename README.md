@@ -22,7 +22,7 @@ installed via pip directly. For now you can simply clone our code and do the ins
 ```bash
 git clone https://github.com/Institute4FutureHealth/CHA.git
 cd CHA
-pip install .
+pip install '.[all]'
 ```
 
 To simplify installation with minimum requirements and be ready to go, you can use the following command. This installs OpenAI, React Planner, as well as SerpAPI (search) and Playwright (browser) tasks:
@@ -37,7 +37,20 @@ If you want to install all requirements for all tasks and other components, use 
 pip install '.[all]'
 ```
 
-After installing the package, you can start running our framework with the following simple code:
+After installing the package, based on what tasks you want to use, you may need to acquire some api_keys. For example, to get started using openAI GPT3.5 model as LLM in CHA, you need to signup
+in their website and get the api_key. Then you should add openAI api_key as environment vairable in your terminal:
+
+```bash
+export OPENAI_API_KEY="your api_key"
+```
+
+The same goes for using tasks like SerpAPI:
+
+```bash
+export SERPAPI_API_KEY="your api_key"
+```
+
+Finally, you can start running our framework with the following simple code:
 
 ```python
 from CHA import CHA
