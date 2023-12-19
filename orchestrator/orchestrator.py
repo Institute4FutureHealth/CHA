@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import re
 from typing import Any
 from typing import Dict
@@ -259,27 +258,25 @@ class Orchestrator(BaseModel):
         )
         task_input = action.task_input
         error_message = ""
-        while retries < self.max_task_execute_retries:
-            try:
-                task = self.available_tasks[action.task]
-                result = task.execute(task_input)
-                self.print_log(
-                    "task",
-                    f"Task is executed successfully\nResult: {result}\n---------------\n",
-                )
-                return result, task.return_direct
-            except Exception as e:
-                self.print_log(
-                    "error",
-                    f"Error running task: \n{e}\n---------------\n",
-                )
-                logging.exception(e)
-                if action.task not in self.available_tasks:
-                    break
-                error_message = e
-                retries += 1
+
+        try:
+            task = self.available_tasks[action.task]
+            result = task.execute(task_input)
+            self.print_log(
+                "task",
+                f"Task is executed successfully\nResult: {result}\n---------------\n",
+            )
+            return result, task.return_direct
+        except Exception as e:
+            self.print_log(
+                "error",
+                f"Error running task: \n{e}\n---------------\n",
+            )
+            logging.exception(e)
+            error_message = e
+            retries += 1
         return (
-            f"Error executing task {action.task}: {error_message}",
+            f"Error executing task {action.task}: {error_message}\n\nTry again with different inputs.",
             False,
         )
 
@@ -470,7 +467,6 @@ class Orchestrator(BaseModel):
         final_response = ""
         finished = False
         self.print_log("planner", "Planning Started...\n")
-        generated_files = []
         while True:
             try:
                 self.print_log(
@@ -498,20 +494,6 @@ class Orchestrator(BaseModel):
                             ) = self.execute_task(action)
                             i = 0
                         previous_actions.append(action)
-                        if action.task == TaskType.RUN_PYTHON_CODE:
-                            if (
-                                "address:" in action.task_response
-                                and os.path.exists(
-                                    action.task_response.split(
-                                        "address:"
-                                    )[-1]
-                                )
-                            ):
-                                generated_files.append(
-                                    action.task_response.split(
-                                        "address:"
-                                    )[-1]
-                                )
                         if return_direct:
                             print("inside return direct")
                             final_response = action.task_response
@@ -569,4 +551,4 @@ class Orchestrator(BaseModel):
                 "google_translate"
             ].execute(f"{final_response}$#{source_language}")[0]
 
-        return final_response, previous_actions, generated_files
+        return final_response, previous_actions

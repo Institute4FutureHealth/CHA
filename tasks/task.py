@@ -166,14 +166,13 @@ class BaseTask(BaseModel):
                 json.dumps(
                     {
                         "data": result,
-                        "description": ",".join(self.outputs),
+                        "description": "\n".join(self.outputs),
                     }
                 )
             )
             return (
                 f"The result of the tool {self.name} is stored in the variable called: `datapipe:{key}`"
-                f" pass `datapipe:{key}` to other tools when you need them. here is the description of the data:\n"
-                f"{','.join(self.outputs)}"
+                f" pass `datapipe:{key}` to other tools when you need them."
             )
         return result
 
@@ -219,14 +218,17 @@ class BaseTask(BaseModel):
             f"{i+1}-{word}"
             for i, word in enumerate(self.dependencies)
         )
-        prompt = (
-            f"tool name:{self.name}, description: {self.description}."
-        )
+        prompt = f"tool name: {self.name}, description: {self.description}."
         if len(self.inputs) > 0:
             prompt += f"\nThe input to this tool should be $ separated list of data representing:\n {inputs}"
         if len(self.dependencies) > 0:
             prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
         # prompt += "\n"
+        if self.output_type:
+            prompt += (
+                "\nThe result will be stored in datapipe and here is the description of what will be returnd: "
+                + "\n".join(self.outputs)
+            )
         return prompt
 
     def explain(

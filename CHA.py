@@ -16,6 +16,7 @@ from response_generators.response_generator_types import (
 from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 from tasks.types import TASK_TO_CLASS
+from utils import parse_addresses
 
 
 class CHA(BaseModel):
@@ -87,7 +88,7 @@ class CHA(BaseModel):
                 **kwargs,
             )
 
-        response, actions, files = self.orchestrator.run(
+        response, actions = self.orchestrator.run(
             query=query,
             history=history,
             meta=self.meta,
@@ -95,20 +96,31 @@ class CHA(BaseModel):
         )
         self.previous_actions += actions
 
-        return response, files
+        return response
 
     def respond(self, message, chat_history, check_box, tasks_list):
-        response, files = self._run(
+        response = self._run(
             query=message,
             chat_history=chat_history,
             tasks_list=tasks_list,
             use_history=check_box,
         )
+
+        files = parse_addresses(response)
         print("files", files)
-        chat_history.append((message, response))
-        if len(files) > 0:
-            for file in files:
-                chat_history.append((None, (file,)))
+        if len(files) == 0:
+            chat_history.append((message, response))
+        else:
+            for i in range(len(files)):
+                chat_history.append(
+                    (
+                        message if i == 0 else None,
+                        response[: files[i][1]],
+                    )
+                )
+                chat_history.append((None, (files[i][0],)))
+                response = response[files[i][2] :]
+
         return "", chat_history
 
     def reset(self):

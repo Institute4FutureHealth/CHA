@@ -43,6 +43,7 @@ class BaseResponseGenerator(BaseModel):
             "You should perform final calculations or process on the gathered information to provide the final answer. "
             "Also add explanations based on instructions from the "
             "Thinker don't directly put the instructions in the final answer to the user."
+            "Return all `address:[path]` exactly as they are."
             "User: {query}"
         )
 
