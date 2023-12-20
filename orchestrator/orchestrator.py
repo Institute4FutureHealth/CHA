@@ -293,7 +293,7 @@ class Orchestrator(BaseModel):
         """
         return query
 
-    def _retrieve_last_action_from_datapip(self, previous_actions):
+    def _retrieve_last_action_from_datapipe(self, previous_actions):
         if len(previous_actions) > 0:
             for i in range(len(previous_actions) - 1, -1, -1):
                 if previous_actions[i].task in [
@@ -499,7 +499,7 @@ class Orchestrator(BaseModel):
                             final_response = action.task_response
                             finished = True
                 if finished:
-                    action = self._retrieve_last_action_from_datapip(
+                    action = self._retrieve_last_action_from_datapipe(
                         previous_actions
                     )
                     if action is not None:

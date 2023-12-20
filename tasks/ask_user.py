@@ -15,10 +15,7 @@ class AskUser(BaseTask):
 
     name: str = "ask_user"
     chat_name: str = "AskUser"
-    description: str = (
-        "Ask user to provide more information or directly answer user's question. "
-        "You should try your best using other tools before calling this tool."
-    )
+    description: str = "Engages with the user for additional information or direct responses."
     dependencies: List[str] = []
     inputs: List[str] = [
         "The text returned to user. It should be relevant and very detailed based on the latest user's Question."

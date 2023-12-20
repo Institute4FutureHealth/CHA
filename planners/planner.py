@@ -73,7 +73,10 @@ class BasePlanner(BaseModel):
         """
 
         return "\n".join(
-            [f"[{task.get_dict()}]" for task in self.available_tasks]
+            [
+                f"\n-----------------------------------\n{task.get_dict()}\n-----------------------------------\n"
+                for task in self.available_tasks
+            ]
         )
 
     def get_available_tasks_list(self) -> List[str]:

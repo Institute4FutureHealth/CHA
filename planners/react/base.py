@@ -122,6 +122,7 @@ Thought: {agent_scratchpad}"""
             .replace("{agent_scratchpad}", agent_scratchpad)
             .replace("{tool_names}", self.get_available_tasks())
         )
+        print("prompt", prompt)
         # if len(previous_actions) > 0:
         # prompt += "\nThought:"
         kwargs["max_tokens"] = 500

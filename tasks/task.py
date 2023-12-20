@@ -177,8 +177,8 @@ class BaseTask(BaseModel):
         return result
 
     def _get_input_format(self):
-        return "$".join(
-            f"{i+1}-{word}\n" for i, word in enumerate(self.inputs)
+        return "\n".join(
+            f"  {i+1}-{word}\n" for i, word in enumerate(self.inputs)
         )
 
     def execute(self, input_args: str) -> str:
@@ -218,17 +218,18 @@ class BaseTask(BaseModel):
             f"{i+1}-{word}"
             for i, word in enumerate(self.dependencies)
         )
-        prompt = f"tool name: {self.name}, description: {self.description}."
+        prompt = f"**{self.name}**: {self.description}"
         if len(self.inputs) > 0:
-            prompt += f"\nThe input to this tool should be $ separated list of data representing:\n {inputs}"
+            prompt += f"\n  The input to this tool should be $ separated list of data representing:\n {inputs}"
         if len(self.dependencies) > 0:
-            prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
-        # prompt += "\n"
-        if self.output_type:
+            prompt += f"\n  This tool is dependent on the following tools. make sure these tools are called first: {dependencies}"
+        if len(self.outputs) > 0:
             prompt += (
-                "\nThe result will be stored in datapipe and here is the description of what will be returnd: "
+                "\n   This tool will return the following data:"
                 + "\n".join(self.outputs)
             )
+        if self.output_type:
+            prompt += "\n The result will be stored in datapipe."
         return prompt
 
     def explain(
