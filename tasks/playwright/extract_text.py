@@ -20,9 +20,13 @@ class ExtractText(BaseBrowser):
     name: str = "extract_text"
     chat_name: str = "ExtractText"
     description: str = "Extract all the text on the current webpage"
-    dependencies: List[str] = ["navigate"]
-    inputs: List[str] = ["url to navigate to"]
-    outputs: List[str] = []
+    dependencies: List[str] = []
+    inputs: List[str] = [
+        "url to extract the text from. It requires links which is gathered from other tools. Never provide urls on your own."
+    ]
+    outputs: List[str] = [
+        "An string containing the text of the scraped webpage."
+    ]
     output_type: bool = False
 
     @model_validator(mode="before")

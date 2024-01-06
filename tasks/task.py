@@ -96,7 +96,7 @@ class BaseTask(BaseModel):
 
     def _parse_input(
         self,
-        input_args: str,
+        input_args: List[str],
     ) -> List[str]:
         """
             Parses the input string into a list of strings. If the input is in format `datapipe:key`,
@@ -109,7 +109,6 @@ class BaseTask(BaseModel):
 
 
         """
-        inputs = input_args.split("$")
         return [
             json.loads(
                 self.datapipe.retrieve(
@@ -121,7 +120,7 @@ class BaseTask(BaseModel):
             )
             if "datapipe" in arg
             else arg.strip()
-            for arg in inputs
+            for arg in input_args
         ]
 
     def _validate_inputs(self, inputs: List[str]) -> bool:
@@ -170,10 +169,7 @@ class BaseTask(BaseModel):
                     }
                 )
             )
-            return (
-                f"The result of the tool {self.name} is stored in the variable called: `datapipe:{key}`"
-                f" pass `datapipe:{key}` to other tools when you need them."
-            )
+            return f"datapipe:{key}"
         return result
 
     def _get_input_format(self):
@@ -181,7 +177,7 @@ class BaseTask(BaseModel):
             f"  {i+1}-{word}\n" for i, word in enumerate(self.inputs)
         )
 
-    def execute(self, input_args: str) -> str:
+    def execute(self, input_args: List[str]) -> str:
         """
             This method is called by the **Orchestrator** which provides the planner provided inputs.
             This method first calls **_parse_input** to parse the inputs and retrieve needed data from the **DataPipe**
@@ -213,20 +209,20 @@ class BaseTask(BaseModel):
 
 
         """
-        inputs = self._get_input_format()
         dependencies = ",".join(
             f"{i+1}-{word}"
             for i, word in enumerate(self.dependencies)
         )
         prompt = f"**{self.name}**: {self.description}"
         if len(self.inputs) > 0:
-            prompt += f"\n  The input to this tool should be $ separated list of data representing:\n {inputs}"
+            inputs = self._get_input_format()
+            prompt += f"\n  The input to this tool should be a list of data representing:\n {inputs}"
         if len(self.dependencies) > 0:
             prompt += f"\n  This tool is dependent on the following tools. make sure these tools are called first: {dependencies}"
         if len(self.outputs) > 0:
             prompt += (
-                "\n   This tool will return the following data:"
-                + "\n".join(self.outputs)
+                "\n   This tool will return the following data:\n- "
+                + "\n- ".join(self.outputs)
             )
         if self.output_type:
             prompt += "\n The result will be stored in datapipe."

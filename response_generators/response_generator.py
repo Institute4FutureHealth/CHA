@@ -40,9 +40,10 @@ class BaseResponseGenerator(BaseModel):
             "Consider Thinker as your trusted source and use whatever is provided by it."
             "Make sure that the answer is explanatory enough without repeatition"
             "Don't change Thinker returned urls or references. "
-            "You should perform final calculations or process on the gathered information to provide the final answer. "
             "Also add explanations based on instructions from the "
             "Thinker don't directly put the instructions in the final answer to the user."
+            "Never answer outside of the Thinker's provided information."
+            "Do not show datapipe keys in your final answer."
             "Return all `address:[path]` exactly as they are."
             "User: {query}"
         )
@@ -81,7 +82,7 @@ class BaseResponseGenerator(BaseModel):
             .replace("{thinker}", thinker)
             .replace("{prefix}", prefix)
         )
-        kwargs["max_tokens"] = 1000
+        kwargs["max_tokens"] = 2000
         response = self._response_generator_model.generate(
             query=prompt, **kwargs
         )

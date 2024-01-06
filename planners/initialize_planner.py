@@ -13,7 +13,7 @@ from tasks.task import BaseTask
 def initialize_planner(
     tasks: List[BaseTask] = None,
     llm: str = LLMType.OPENAI,
-    planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER,
+    planner: str = PlannerType.TREE_OF_THOUGHT,
     **kwargs: Any,
 ) -> BasePlanner:
     """

@@ -29,7 +29,7 @@ class ActivityAnalysis(Affect):
     inputs: List[str] = [
         "You should provide the data source, which is in form of datapipe:datapipe_key "
         "the datapipe_key should be extracted from the result of previous actions.",
-        "analysis_type. It can be one of [$average$, $sum$, $trend$].",
+        "the analysis type which is one of **average**, **sum**, or **trend**.",
     ]
     outputs: List[str] = [
         (
@@ -39,7 +39,7 @@ class ActivityAnalysis(Affect):
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
-    output_type: bool = False
+    output_type: bool = True
 
     def _execute(
         self,

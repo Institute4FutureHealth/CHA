@@ -26,7 +26,7 @@ class SleepAnalysis(Affect):
     inputs: List[str] = [
         "You should provide the data source, which is in form of datapipe:datapipe_key "
         "the datapipe_key should be extracted from the result of previous actions.",
-        "analysis_type. It can be one of [average, trend].",
+        "the analysis type which is one of **average** or **trend**.",
     ]
     outputs: List[str] = [
         (

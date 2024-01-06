@@ -4,7 +4,6 @@ Heavily borrowed from langchain: https://github.com/langchain-ai/langchain/
 import re
 from typing import Any
 from typing import List
-from typing import Union
 
 from planners.action import Action
 from planners.action import PlanFinish
@@ -51,22 +50,16 @@ information regarding their health and well-being. Utilize the available tools e
 Here are the tools at your disposal:
 {tool_names}
 
-Following is a general recommendation on how to call the tools to properly answer user query:
-    1- Call needed tools to acquire data or information needed.
-    2- Call needed analysis tools by providing requested information such as datapipe keys and retrieved infomartion.
-    3- If the final results are stored in the datapipe, call `read_from_datapipe` task to get access to the raw data and use \
-        it for your final answer. Make sure that you only read the needed data and not all the tools results. For example, \
-        if you performed analysis on a sleep data, you should only read the result of the analysis and not the tool from step 2.
-
 The following is the format of the information provided:
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
 History: the history of previous chats happened. Review the history for any previous responses relevant to the current query
 PreviousActions: the list of already performed actions. You should start planning knowing that these actions are performed.
 Question: the input question you must answer.
 
-Considering previously executed actions and their results, use the tools and provided information, first suggest three \
-strategies consisting of sequences of actions to properly answer the user query. Make sure the strategies are comprehensive enough \
-and use proper tools.
+Considering previously actions and their results, use the tools and provided information, first suggest three \
+strategies with detailed explanation consisting of sequences of tools to properly answer the user query. \
+Make sure the strategies are comprehensive enough and use proper tools. The tools constraints should be always satisfied. \
+Do not rerun an already executed tool with the same input in the previous actions.
 
 Then mention the pros and cons of each way. In the end decide the best strategy and write the detailed tool executions step by step.
 start your final decision with
@@ -74,25 +67,40 @@ start your final decision with
 
 Begin!
 
-MetaData: {meta}
-History: {history}
-PreviousActions: {agent_scratchpad}
+MetaData:
+{meta}
+=========================
+History:
+{history}
+=========================
+PreviousActions:
+{agent_scratchpad}
+=========================
 Question: {input}
 """,
             """
 {strategy}
-
+=========================
 PreviousActions:
 {agent_scratchpad}
-
+=========================
 Tools:
 {tool_names}
+=========================
 
-Using the selected final strategy mentioned in the 'Decision:\n', create a structured pseudo-code flow that outlines a \
-sequence of steps. The flow should utilize predefined functions representing the tools available in a language \
-model environment. If a step's output is required as input for a subsequent step, ensure the pseudo-code captures this dependency clearly. \
-For each tool or function, include necessary parameters and assume each will return a result. If a step cannot be completed due to missing inputs, \
-stop the flow at that point.
+You are skilled python programmer that can solve problems and convert them into python codes. \
+Using the selected final strategy mentioned in the 'Decision:
+', create a python code inside a ```python ``` block that outlines a sequence of steps using the Tools. \
+assume that there is an **self.execute_task** function that can execute the tools in it. The execute_task \
+recieves task name and an array of the inputs and returns the result. Make sure that you always pass and array as second argument. \
+You can call tools like this: \
+**task_result = self.execute_task('tool_name', ['input_1', 'input2', ...])**. \
+The flow should utilize this style representing the tools available. Make sure all the execute_task calls outputs are stored in a variable.\
+If a step's output is required as input for a subsequent step, ensure the python code captures this dependency clearly. \
+The output variables should directly passed as inputs with no changes in the wording.
+If the tool input is a datapipe only put the variable as the input. \
+For each tool, include necessary parameters directly without any names and assume each will return an output. \
+The outputs' description are provided for each Tool individually. Make sure you use the directives when passing the outputs.
 """,
         ]
 
@@ -103,7 +111,8 @@ stop the flow at that point.
                     "\n-----------------------------------\n"
                     f"**{task.name}**: {task.description}"
                     "\nThis tool have the following outputs:\n"
-                    "\n".join(task.outputs)(
+                    + "\n".join(task.outputs)
+                    + (
                         "\n- The result of this tool will be stored in the datapipe."
                         if task.output_type
                         else ""
@@ -119,10 +128,10 @@ stop the flow at that point.
         query: str,
         history: str = "",
         meta: str = "",
-        previous_actions: List[Action] = None,
+        previous_actions: List[str] = None,
         use_history: bool = False,
         **kwargs: Any,
-    ) -> List[Union[Action, PlanFinish]]:
+    ) -> str:
         """
             Generate a plan using Tree of Thought
 
@@ -143,30 +152,32 @@ stop the flow at that point.
         agent_scratchpad = ""
         if len(previous_actions) > 0:
             agent_scratchpad = "\n".join(
-                [
-                    f"\nname: {action.task}\ninputs: {action.task_input}\nresult: {action.task_response}"
-                    for action in previous_actions
-                ]
+                [f"\n{action}" for action in previous_actions]
             )
         prompt = (
             self._planner_prompt[0]
             .replace("{input}", query)
             .replace("{meta}", ", ".join(meta))
-            .replace("{history}", history if use_history else "")
+            .replace(
+                "{history}", history if use_history else "No History"
+            )
             .replace("{agent_scratchpad}", agent_scratchpad)
             .replace("{tool_names}", self.task_descriptions())
         )
         # if len(previous_actions) > 0:
         # prompt += "\nThought:"
         print(prompt)
-        kwargs["max_tokens"] = 2000
+        kwargs["max_tokens"] = 1000
         response = self._planner_model.generate(
             query=prompt, **kwargs
         )
         print("respp\n\n", response)
         prompt = (
             self._planner_prompt[1]
-            .replace("{strategy}", response.split("Decision:\n")[-1])
+            .replace(
+                "{strategy}",
+                "Decision:\n" + response.split("Decision:")[-1],
+            )
             .replace("{tool_names}", self.get_available_tasks())
             .replace("{agent_scratchpad}", agent_scratchpad)
         )
@@ -178,7 +189,6 @@ stop the flow at that point.
 
         index = min([response.find(text) for text in self._stop])
         response = response[0:index]
-        print("resp", response)
         actions = self.parse(response)
         print("actions", actions)
         return actions
@@ -187,7 +197,7 @@ stop the flow at that point.
         self,
         query: str,
         **kwargs: Any,
-    ) -> List[Union[Action, PlanFinish]]:
+    ) -> str:
         """
             Parse the output query into a list of actions or a final answer. It parses the output based on \
             the following format:
@@ -204,25 +214,6 @@ stop the flow at that point.
             ValueError: If parsing encounters an invalid format or unexpected content.
 
         """
-
-        pattern = r"([a-zA-Z_]+)\s*=\s*([a-zA-Z_]+)\(([^)]+)\)"
-
-        # Find all matches in the pseudo code
-        matches = re.findall(pattern, query)
-        if len(matches) == 0:
-            raise ValueError(
-                "The tools should be called like functions with proper inputs and their result "
-                "should be stored inside a variable."
-            )
-        actions = []
-        for match in matches:
-            tool_action = {
-                "return_variable": match[0],
-                "tool_name": match[1],
-                "input_parameters": [
-                    param.strip() for param in match[2].split(",")
-                ],
-            }
-            actions.append(tool_action)
-
-        return actions
+        pattern = r"`+python\n(.*?)`+"
+        code = re.search(pattern, query, re.DOTALL).group(1)
+        return code

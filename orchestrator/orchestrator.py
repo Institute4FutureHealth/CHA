@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
 from typing import Any
 from typing import Dict
 from typing import List
@@ -62,6 +61,9 @@ class Orchestrator(BaseModel):
     final_answer_generator_logger: Optional[logging.Logger] = None
     promptist_logger: Optional[logging.Logger] = None
     error_logger: Optional[logging.Logger] = None
+    previous_actions: List[str] = []
+    current_actions: List[str] = []
+    runtime: Dict[str, bool] = {}
 
     class Config:
         """Configuration for this pydantic object."""
@@ -93,6 +95,7 @@ class Orchestrator(BaseModel):
         response_generator_llm: str = LLMType.OPENAI,
         response_generator_name: str = ResponseGeneratorType.BASE_GENERATOR,
         available_tasks: Optional[List[str]] = None,
+        previous_actions: List[str] = None,
         verbose: bool = False,
         **kwargs,
     ) -> Orchestrator:
@@ -108,6 +111,7 @@ class Orchestrator(BaseModel):
             response_generator_llm (str): LLMType to be used as LLM for response generator.
             response_generator_name (str): ResponseGeneratorType to be used as response generator.
             available_tasks (List[str]): List of available task using TaskType.
+            previous_actions (List[Action]): List of previous actions.
             verbose (bool): Specifies if the debugging logs be printed or not.
             **kwargs (Any): Additional keyword arguments.
         Return:
@@ -145,6 +149,8 @@ class Orchestrator(BaseModel):
         """
         if available_tasks is None:
             available_tasks = []
+        if previous_actions is None:
+            previous_actions = []
 
         planner_logger = (
             tasks_logger
@@ -220,6 +226,8 @@ class Orchestrator(BaseModel):
             response_generator=response_generator,
             available_tasks=tasks,
             verbose=verbose,
+            previous_actions=previous_actions,
+            current_actions=[],
             planner_logger=planner_logger,
             tasks_logger=tasks_logger,
             orchestrator_logger=orchestrator_logger,
@@ -238,7 +246,21 @@ class Orchestrator(BaseModel):
         """
         return False
 
-    def execute_task(self, action) -> str:
+    def _update_runtime(
+        self,
+        task_output_type: bool,
+        task_output: str,
+        task_inputs: List[str],
+    ):
+        if task_output_type:
+            self.runtime[task_output] = False
+        for task_input in task_inputs:
+            if task_input in self.runtime:
+                self.runtime[task_input] = True
+
+    def execute_task(
+        self, task_name: str, task_inputs: List[str]
+    ) -> Any:
         """
             Execute the specified task based on the planner's selected **Action**. This method executes a specific task based on the provided action.
             It takes an action as input and retrieves the corresponding task from the available tasks dictionary.
@@ -251,22 +273,33 @@ class Orchestrator(BaseModel):
             str: Result of the task execution.
             bool: If the task result should be directly returned to the user and stop planning.
         """
-        retries = 0
         self.print_log(
             "task",
-            f"---------------\nExecuting task:\nTask Name: {action.task}\nTask Inputs: {action.task_input}\n",
+            f"---------------\nExecuting task:\nTask Name: {task_name}\nTask Inputs: {task_inputs}\n",
         )
-        task_input = action.task_input
         error_message = ""
 
         try:
-            task = self.available_tasks[action.task]
-            result = task.execute(task_input)
+            task = self.available_tasks[task_name]
+            result = task.execute(task_inputs)
             self.print_log(
                 "task",
                 f"Task is executed successfully\nResult: {result}\n---------------\n",
             )
-            return result, task.return_direct
+            action = (
+                "\n------------------\n"
+                f"{task.name}: {task_inputs}\n"
+                f"{result}"
+                "\n------------------\n"
+            )
+
+            self._update_runtime(
+                task.output_type, result, task_inputs
+            )
+
+            self.previous_actions.append(action)
+            self.current_actions.append(action)
+            return result  # , task.return_direct
         except Exception as e:
             self.print_log(
                 "error",
@@ -274,11 +307,9 @@ class Orchestrator(BaseModel):
             )
             logging.exception(e)
             error_message = e
-            retries += 1
-        return (
-            f"Error executing task {action.task}: {error_message}\n\nTry again with different inputs.",
-            False,
-        )
+            raise ValueError(
+                f"Error executing task {task_name}: {error_message}\n\nTry again with different inputs."
+            )
 
     def planner_generate_prompt(self, query) -> str:
         """
@@ -293,78 +324,59 @@ class Orchestrator(BaseModel):
         """
         return query
 
-    def _retrieve_last_action_from_datapipe(self, previous_actions):
-        if len(previous_actions) > 0:
-            for i in range(len(previous_actions) - 1, -1, -1):
-                if previous_actions[i].task in [
-                    TaskType.READ_FROM_DATAPIPE,
-                ] or (
-                    "Exception" not in previous_actions[i].task
-                    and not self.available_tasks[
-                        previous_actions[i].task
-                    ].output_type
-                ):
-                    return None
-                match = re.search(
-                    r"(datapipe:[^\$]+)",
-                    previous_actions[i].task_response,
+    def _retrieve_needed_data_from_datapipe(self):
+        print("runtime", self.runtime)
+        for key in self.runtime.keys():
+            if not self.runtime[key]:
+                data = self.datapipe.retrieve(
+                    key.split("datapipe:")[-1]
                 )
-                if (
-                    match
-                    and TaskType.READ_FROM_DATAPIPE
-                    in self.available_tasks
-                ):
-                    action = Action(
-                        TaskType.READ_FROM_DATAPIPE,
-                        match.group(1),
-                        "",
-                        "",
-                    )
-                    action.task_response, ـ = self.execute_task(
-                        action
-                    )
-                    return action
-        return None
+                action = (
+                    "\n------------------\n"
+                    f"Content of {key}:\n"
+                    f"{data}"
+                    "\n------------------\n"
+                )
+                self.current_actions.append(action)
+                self.previous_actions.append(action)
 
     def response_generator_generate_prompt(
         self,
         final_response: str = "",
         history: str = "",
         meta: List[str] = None,
-        previous_actions: List[Action] = None,
         use_history: bool = False,
     ) -> str:
         if meta is None:
             meta = []
-        if previous_actions is None:
-            previous_actions = []
 
         prompt = (
             "MetaData: {meta}\n\n"
             "History: \n{history}\n\n"
-            "Plan: \n{plan}\n\n"
+            # "Plan: \n{plan}\n\n"
         )
         if use_history:
             prompt = prompt.replace("{history}", history)
 
         prompt = (
-            prompt.replace("{meta}", ", ".join(meta)).replace(
-                "{plan}",
-                "".join(
-                    [
-                        f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n"
-                        if action.task in self.available_tasks
-                        else ""
-                        for action in previous_actions
-                    ]
-                ),
-            )
-            # + f"\n{final_response}"
+            prompt.replace("{meta}", ", ".join(meta))
+            # .replace(
+            #     "{plan}",
+            #     "".join(
+            #         [
+            #             f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n"
+            #             if action.task in self.available_tasks
+            #             else ""
+            #             for action in previous_actions
+            #         ]
+            #     ),
+            # )
+            + f"\n{final_response}"
         )
         return prompt
 
     def plan(
-        self, query, history, meta, previous_actions, use_history
+        self, query, history, meta, use_history
     ) -> List[Union[Action, PlanFinish]]:
         """
             Plan actions based on the query, history, and previous actions using the selected planner type.
@@ -375,7 +387,6 @@ class Orchestrator(BaseModel):
             query (str): Input query.
             history (str): History information.
             meta (Any): meta information.
-            previous_actions (List[Action]): List of previous actions.
             use_history (bool): Flag indicating whether to use history.
         Return:
             List[Union[Action, PlanFinish]]: List of planned actions.
@@ -390,7 +401,7 @@ class Orchestrator(BaseModel):
 
         """
         return self.planner.plan(
-            query, history, meta, previous_actions, use_history
+            query, history, meta, self.previous_actions, use_history
         )
 
     def generate_final_answer(self, query, thinker) -> str:
@@ -448,7 +459,6 @@ class Orchestrator(BaseModel):
         if meta is None:
             meta = []
         i = 0
-        previous_actions = []
         meta_infos = ""
         for meta_data in meta:
             key = self.datapipe.store(meta_data)
@@ -459,7 +469,7 @@ class Orchestrator(BaseModel):
         prompt = self.planner_generate_prompt(query)
         if "google_translate" in self.available_tasks:
             prompt = self.available_tasks["google_translate"].execute(
-                prompt + "$#en"
+                [prompt, "en"]
             )
             source_language = prompt[1]
             prompt = prompt[0]
@@ -477,50 +487,24 @@ class Orchestrator(BaseModel):
                     query=prompt,
                     history=history,
                     meta=meta_infos,
-                    previous_actions=previous_actions,
                     use_history=use_history,
                 )
-                for action in actions:
-                    if isinstance(action, PlanFinish):
-                        final_response = action.response
-                        finished = True
-                        break
-                    else:
-                        return_direct = False
-                        if "Exception" not in action.task:
-                            (
-                                action.task_response,
-                                return_direct,
-                            ) = self.execute_task(action)
-                            i = 0
-                        previous_actions.append(action)
-                        if return_direct:
-                            print("inside return direct")
-                            final_response = action.task_response
-                            finished = True
-                if finished:
-                    action = self._retrieve_last_action_from_datapipe(
-                        previous_actions
-                    )
-                    if action is not None:
-                        previous_actions.append(action)
-                    break
+                vars = {}
+                exec(actions, locals(), vars)
+                self._retrieve_needed_data_from_datapipe()
+                final_response = "\n".join(self.current_actions)
+                self.current_actions = []
+                break
             except ValueError as error:
                 self.print_log(
                     "error", f"Planning Error:\n{error}\n\n"
                 )
+                self.current_actions = []
                 i += 1
                 if i > self.max_retries:
                     final_response = "Problem preparing the answer. Please try again."
                     break
-                previous_actions.append(
-                    Action(
-                        "Exception",
-                        "Invalid or incomplete response",
-                        "".join(error.args),
-                        "",
-                    )
-                )
+
         self.print_log(
             "planner",
             f"Planner final response: {final_response}\nPlanning Ended...\n\n",
@@ -530,7 +514,6 @@ class Orchestrator(BaseModel):
             final_response=final_response,
             history=history,
             meta=meta_infos,
-            previous_actions=previous_actions,
             use_history=use_history,
         )
 
@@ -549,6 +532,6 @@ class Orchestrator(BaseModel):
         if "google_translate" in self.available_tasks:
             final_response = self.available_tasks[
                 "google_translate"
-            ].execute(f"{final_response}$#{source_language}")[0]
+            ].execute([final_response, source_language])[0]
 
-        return final_response, previous_actions
+        return final_response
