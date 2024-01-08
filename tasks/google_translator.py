@@ -61,20 +61,6 @@ class GoogleTranslate(BaseTask):
             )
         return values
 
-    def _parse_input(
-        self,
-        input_args: str,
-    ) -> List[str]:
-        """
-            Parse the input string into a list of strings.
-
-        Args:
-            input (str): Input string to be parsed.
-        Return:
-            List[str]: List of parsed strings.
-
-        """
-        return input_args.split("$#")
 
     def _execute(
         self,
