@@ -30,6 +30,7 @@ setup(
             "anthropic",
             "aiohttp",
             "google-search-results",
+            "pdfminer.six",
             "googletrans-py",
             "playwright",
             "beautifulsoup4",
@@ -44,6 +45,7 @@ setup(
             # minimum requirements for running the codes
             "aiohttp",
             "google-search-results",
+            "pdfminer.six",
             "playwright",
             "beautifulsoup4",
             "lxml",
