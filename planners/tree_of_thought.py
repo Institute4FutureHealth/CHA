@@ -52,7 +52,8 @@ class TreeOfThoughtPlanner(BasePlanner):
     def _shorten_prompt(self):
         return (
             "Summarize the following text. Make sure to keep the main ideas "
-            "and objectives in the summary: "
+            "and objectives in the summary. Keep the links "
+            "exactly as they are: "
             "{agent_scratchpad}"
         )
 

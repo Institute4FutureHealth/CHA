@@ -148,6 +148,7 @@ class ExtractText(BaseBrowser):
                     text for text in soup.stripped_strings
                 )
             else:
+                page.close()
                 return "Error extracting text. The url is wrong. Try again."
 
     def explain(
