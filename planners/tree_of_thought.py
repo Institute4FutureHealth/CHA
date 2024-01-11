@@ -25,6 +25,8 @@ class TreeOfThoughtPlanner(BasePlanner):
 
     """
 
+    summarize_prompt: bool = True
+
     class Config:
         """Configuration for this pydantic object."""
 
@@ -39,8 +41,20 @@ class TreeOfThoughtPlanner(BasePlanner):
         return self.llm_model
 
     @property
+    def _response_generator_model(self):
+        return self.llm_model
+
+    @property
     def _stop(self) -> List[str]:
         return ["Wait"]
+
+    @property
+    def _shorten_prompt(self):
+        return (
+            "Summarize the following text. Make sure to keep the main ideas "
+            "and objectives in the summary: "
+            "{agent_scratchpad}"
+        )
 
     @property
     def _planner_prompt(self):
@@ -154,6 +168,18 @@ The outputs' description are provided for each Tool individually. Make sure you 
             agent_scratchpad = "\n".join(
                 [f"\n{action}" for action in previous_actions]
             )
+        # agent_scratchpad
+        if self.summarize_prompt:
+            # Shorten agent_scratchpad
+            prompt_summary = (
+                self._shorten_prompt.replace(
+                    "{agent_scratchpad}", agent_scratchpad)
+            )
+            kwargs["max_tokens"] = 2000
+            agent_scratchpad = self._response_generator_model.generate(
+                query=prompt_summary, **kwargs
+            )
+
         prompt = (
             self._planner_prompt[0]
             .replace("{input}", query)
