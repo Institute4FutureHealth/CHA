@@ -1,6 +1,7 @@
 """
 Affect - Physical activity analysis
 """
+import json
 from io import StringIO
 from typing import Any
 from typing import List
@@ -45,12 +46,19 @@ class ActivityAnalysis(Affect):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        if len(inputs) == 0:
-            return ""
-
-        df = pd.read_json(
-            StringIO(inputs[0]["data"].strip()), orient="records"
-        )
+        try:
+            df = pd.read_json(
+                StringIO(inputs[0]["data"].strip()), orient="records"
+            )
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return json.loads(
+                '{"Data": "No data for the selected date(s)!"}'
+            )
+        if df.empty:
+            return json.loads(
+                '{"Data": "No data for the selected date(s)!"}'
+            )
         analysis_type = inputs[1].strip()
         if analysis_type == "average":
             df = df.drop("date", axis=1)  # No average for date!
