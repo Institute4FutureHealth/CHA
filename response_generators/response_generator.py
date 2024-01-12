@@ -43,7 +43,7 @@ class BaseResponseGenerator(BaseModel):
             "Also add explanations based on instructions from the "
             "Thinker don't directly put the instructions in the final answer to the user."
             "Never answer outside of the Thinker's provided information."
-            "Do not show datapipe keys in your final answer."
+            "Never show or use the datapipe keys in your final answer."
             "Return all `address:[path]` exactly as they are."
             "User: {query}"
         )
