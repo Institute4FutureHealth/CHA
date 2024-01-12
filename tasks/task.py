@@ -103,7 +103,7 @@ class BaseTask(BaseModel):
             the parser will retrieve the data from datapipe before sending it over to the **_execute** method.
 
         Args:
-            input_args (str): Input string provided by planner. It should be parsed and return a list of str variables.
+            input_args List(str): List of Input string provided by planner. It should be parsed and return a list of str variables.
         Return:
             List[str]: List of parsed strings. These strings can be converted into desired types inside **_execute** method.
 

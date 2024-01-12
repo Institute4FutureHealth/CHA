@@ -43,7 +43,7 @@ class SleepGet(Affect):
         "\n**minimum_heart_rate**: is the lowest heart rate (5 minutes sliding average) registered during the sleep period."
         "\n**rmssd is the average**: Root Mean Square of Successive Differences (RMSSD) registered during the sleep period."
         "\n**average_breathing_rate**: is the average breathing rate registered during the sleep period."
-        "\n**temperature_variation**: is the skin temperature deviation from the long-term temperature average.",
+        "\n**temperature_variation**: is the skin temperature deviation from the long-term temperature average."
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
