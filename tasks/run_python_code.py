@@ -29,9 +29,8 @@ class RunPythonCode(BaseTask):
     )
     dependencies: List[str] = []
     inputs: List[str] = [
-        "Data source - You should provide the data source, which is in form of "
-        "datapipe:[datapipe_key] the datapipe_key should be extracted from the result of previous actions.",
-        "Problem description - provide a descriptive Chain of Thought prompt to help this tool solve the problem the "
+        "You should provide the data source, which is in form of datapipe:datapipe_key",
+        "You should provide a descriptive Chain of Thought prompt to help this tool solve the problem the "
         "best way possible.",
     ]
     outputs: List[str] = []
@@ -112,10 +111,7 @@ class RunPythonCode(BaseTask):
                 exec(code, locals())
                 result = locals().get("result")
                 print("result", result)
-                return (
-                    "The code is successfully executed and the result is either stored as file path"
-                    f"with address or returned directly. Result: {result}"
-                )
+                return result
             except Exception:
                 retries += 1
                 previous_attempts += (

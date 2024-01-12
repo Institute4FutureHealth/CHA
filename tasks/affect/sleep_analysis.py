@@ -20,7 +20,7 @@ class SleepAnalysis(Affect):
         "When a request for analysis of sleep data is received (such as calculating averages, sums, or identifying trends), "
         "call this analysis tool. This tool is specifically designed to handle complex data computations on sleep data records, "
         "ensuring precise and reliable results. Example: If the data spans a year and the user seeks an average sleep data, "
-        "this tool will calculate the yearly average."
+        "this tool will calculate the yearly average. If monthly data is needed, this task should be called multiple times for each month."
     )
     dependencies: List[str] = ["affect_sleep_get"]
     inputs: List[str] = [
