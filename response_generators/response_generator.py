@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
+from typing import List
 
 from pydantic import BaseModel
 
@@ -74,8 +75,10 @@ class BaseResponseGenerator(BaseModel):
             chunks(List): List of string variables
         """
         # 1 token ~= 4 chars in English
-        chunks = [input_text[i:i + max_tokens*4] for i in range(
-            0, len(input_text), max_tokens*4)]
+        chunks = [
+            input_text[i : i + max_tokens * 4]
+            for i in range(0, len(input_text), max_tokens * 4)
+        ]
         return chunks
 
     def generate(
@@ -107,31 +110,28 @@ class BaseResponseGenerator(BaseModel):
                 response_generator.generate(query="How can I improve my sleep?", thinker="Based on data found on the internet there are several ...")
         """
 
-        if self.summarize_prompt and len(thinker)/4 > self.max_tokens_allowed:
+        if (
+            self.summarize_prompt
+            and len(thinker) / 4 > self.max_tokens_allowed
+        ):
             # Shorten thinker
             chunks = self.divide_text_into_chunks(
-                input_text=thinker, max_tokens=self.max_tokens_allowed)
+                input_text=thinker, max_tokens=self.max_tokens_allowed
+            )
             thinker = ""
-            #len(thinker)/4 
-            kwargs["max_tokens"] = min(2000, int(
-                self.max_tokens_allowed/len(chunks)))
+            kwargs["max_tokens"] = min(
+                2000, int(self.max_tokens_allowed / len(chunks))
+            )
             for chunk in chunks:
-                prompt = (
-                    self._shorten_prompt.replace("{chunk}", chunk)
+                prompt = self._shorten_prompt.replace(
+                    "{chunk}", chunk
                 )
-                chunk_summary = self._response_generator_model.generate(
-                    query=prompt, **kwargs
+                chunk_summary = (
+                    self._response_generator_model.generate(
+                        query=prompt, **kwargs
+                    )
                 )
                 thinker += chunk_summary + " "
-            '''
-            prompt_summary = (
-                self._shorten_prompt.replace("{thinker}", thinker)
-            )
-            
-            thinker = self._response_generator_model.generate(
-                query=prompt_summary, **kwargs
-            )
-            '''
 
         prompt = (
             self._generator_prompt.replace("{query}", query)

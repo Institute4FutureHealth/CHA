@@ -60,7 +60,7 @@ class ExtractText(BaseBrowser):
                 "The 'lxml' package is required to use this tool."
                 " Please install it with 'pip install lxml'."
             )
-        
+
         try:
             from pdfminer import high_level  # noqa: F401
         except ImportError:
