@@ -61,7 +61,6 @@ class GoogleTranslate(BaseTask):
             )
         return values
 
-
     def _execute(
         self,
         inputs: List[Any] = None,
