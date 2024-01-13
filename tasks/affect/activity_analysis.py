@@ -1,6 +1,7 @@
 """
 Affect - Physical activity analysis
 """
+import json
 from io import StringIO
 from typing import Any
 from typing import List
@@ -32,10 +33,13 @@ class ActivityAnalysis(Affect):
         "the analysis type which is one of **average**, **sum**, or **trend**.",
     ]
     outputs: List[str] = [
-        (
-            "Returns the same structure as data input. For example if the provided data is the output of affect_activity_get,"
-            "The same keys as affect_activity_get will be returned."
-        )
+        "returns an array of json objects which contains the following keys:"
+        "\n**steps_count**: is the total number of steps registered during the day."
+        "\n**rest_time**: is the time (in minutes) during the day spent resting, i.e. sleeping or lying down.",
+        "\n**inactive_time**: is the time (in minutes) during the day spent resting, i.e. sitting or standing still.",
+        "\n**low_acitivity_time** is the (in minutes) during the day with low intensity activity (e.g. household work).",
+        "\n**medimum_acitivity_time** is the (in minutes) during the day with medium intensity activity (e.g. walking).",
+        "\n**high_acitivity_time** is the (in minutes) during the day with high intensity activity (e.g. running).",
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
@@ -45,12 +49,19 @@ class ActivityAnalysis(Affect):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        if len(inputs) == 0:
-            return ""
-
-        df = pd.read_json(
-            StringIO(inputs[0]["data"].strip()), orient="records"
-        )
+        try:
+            df = pd.read_json(
+                StringIO(inputs[0]["data"].strip()), orient="records"
+            )
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return json.loads(
+                '{"Data": "No data for the selected date(s)!"}'
+            )
+        if df.empty:
+            return json.loads(
+                '{"Data": "No data for the selected date(s)!"}'
+            )
         analysis_type = inputs[1].strip()
         if analysis_type == "average":
             df = df.drop("date", axis=1)  # No average for date!

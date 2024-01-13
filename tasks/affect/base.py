@@ -24,16 +24,23 @@ class Affect(BaseTask):
         file_name: str,
         start_date: str,
         end_date: str = "",
-        usecols: str = None,
+        usecols: List[str] = None,
     ) -> pd.DataFrame:
         local_dir = os.path.join(os.getcwd(), local_dir)
         if usecols is None:
-            df = pd.read_csv(os.path.join(local_dir, file_name))
+            try:
+                df = pd.read_csv(os.path.join(local_dir, file_name))
+            except FileNotFoundError:
+                return pd.DataFrame()
         else:
-            df = pd.read_csv(
-                os.path.join(local_dir, file_name), usecols=usecols
-            )
-            df = df[usecols]
+            try:
+                df = pd.read_csv(
+                    os.path.join(local_dir, file_name),
+                    usecols=usecols,
+                )
+                df = df[usecols]
+            except FileNotFoundError:
+                return pd.DataFrame(columns=usecols)
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
         df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
 
@@ -60,9 +67,10 @@ class Affect(BaseTask):
 
         # Check if the input date exists in the DataFrame
         if selected_rows.empty:
-            return f"No data found between the date {start_date} and {end_date}."
-        else:
-            return selected_rows
+            print(
+                f"No data found between the date {start_date} and {end_date}."
+            )
+        return selected_rows
 
     def _download_data(
         self,
