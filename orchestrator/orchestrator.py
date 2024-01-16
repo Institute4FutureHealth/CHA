@@ -494,6 +494,7 @@ class Orchestrator(BaseModel):
                 self._retrieve_needed_data_from_datapipe()
                 final_response = "\n".join(self.current_actions)
                 self.current_actions = []
+                self.runtime = {}
                 break
             except ValueError as error:
                 self.print_log(

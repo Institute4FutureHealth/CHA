@@ -57,13 +57,13 @@ PreviousActions: the list of already performed actions. You should start plannin
 Question: the input question you must answer.
 
 Considering previously actions and their results, use the tools and provided information, first suggest three \
-strategies with detailed explanation consisting of sequences of tools to properly answer the user query. \
+creative strategies with detailed explanation consisting of sequences of tools to properly answer the user query. \
 Make sure the strategies are comprehensive enough and use proper tools. The tools constraints should be always satisfied. \
-Do not rerun an already executed tool with the same input in the previous actions.
 
-Then mention the pros and cons of each way. In the end decide the best strategy and write the detailed tool executions step by step.
+After specifying the strategies, mention the pros and cons of each strategy. \
+In the end decide the best strategy and write the detailed tool executions step by step.
 start your final decision with
-'Decision:\n'.
+'Decision:'.
 
 Begin!
 
