@@ -40,6 +40,10 @@ setup(
             "pandas",
             "scipy",
             "seaborn",
+            "neurokit2",
+            "torch",
+            "torchvision",
+            "torchdata",
         ],
         "minimum": [
             # minimum requirements for running the codes

@@ -10,3 +10,4 @@ node_modules
 CHA.egg-info/
 build
 dist
+models

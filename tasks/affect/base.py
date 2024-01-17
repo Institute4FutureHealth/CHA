@@ -25,6 +25,7 @@ class Affect(BaseTask):
         start_date: str,
         end_date: str = "",
         usecols: List[str] = None,
+        date_column: str = "date",
     ) -> pd.DataFrame:
         local_dir = os.path.join(os.getcwd(), local_dir)
         if usecols is None:
@@ -42,25 +43,33 @@ class Affect(BaseTask):
             except FileNotFoundError:
                 return pd.DataFrame(columns=usecols)
         # Convert the "date" column to a datetime object with the format "YYYY-MM-DD"
-        df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
+        if date_column == "date":
+            df[date_column] = pd.to_datetime(
+                df[date_column], format="%Y-%m-%d"
+            )
+        else:
+            df[date_column] = pd.to_datetime(
+                df[date_column], unit="ms"
+            )
 
         if end_date or end_date == start_date:
             # Filter the DataFrame to get the rows for the input dates (multiple dates)
             selected_rows = df[
                 (
-                    df["date"]
+                    df[date_column]
                     >= pd.to_datetime(start_date, format="%Y-%m-%d")
                 )
                 & (
-                    df["date"]
+                    df[date_column]
                     <= pd.to_datetime(end_date, format="%Y-%m-%d")
+                    + pd.Timedelta(days=1)
                 )
             ]
         else:
             # Filter the DataFrame to get the rows for the input date (single dates)
             selected_rows = df[
                 (
-                    df["date"]
+                    df[date_column]
                     == pd.to_datetime(start_date, format="%Y-%m-%d")
                 )
             ]
