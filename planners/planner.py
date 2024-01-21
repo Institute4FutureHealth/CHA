@@ -44,6 +44,7 @@ class BasePlanner(BaseModel):
 
     llm_model: BaseLLM = None
     available_tasks: Optional[List[BaseTask]] = []
+    use_previous_action: bool = False
 
     @property
     def _planner_type(self):

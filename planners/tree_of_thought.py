@@ -89,16 +89,14 @@ MetaData:
 History:
 {history}
 =========================
-PreviousActions:
-{agent_scratchpad}
+{previous_actions}
 =========================
 Question: {input}
 """,
             """
 {strategy}
 =========================
-PreviousActions:
-{agent_scratchpad}
+{previous_actions}
 =========================
 Tools:
 {tool_names}
@@ -160,29 +158,9 @@ The outputs' description are provided for each Tool individually. Make sure you 
         ]
         return chunks
 
-    def plan(
-        self,
-        query: str,
-        history: str = "",
-        meta: str = "",
-        previous_actions: List[str] = None,
-        use_history: bool = False,
-        **kwargs: Any,
-    ) -> str:
-        """
-            Generate a plan using Tree of Thought
-
-        Args:
-            query (str): Input query.
-            history (str): History information.
-            meta (str): meta information.
-            previous_actions (List[Action]): List of previous actions.
-            use_history (bool): Flag indicating whether to use history.
-            **kwargs (Any): Additional keyword arguments.
-        Return:
-            Action: return action.
-
-        """
+    def generate_scratch_pad(
+        self, previous_actions: List[str] = None, **kwargs: Any
+    ):
         if previous_actions is None:
             previous_actions = []
 
@@ -216,6 +194,36 @@ The outputs' description are provided for each Tool individually. Make sure you 
                 )
                 agent_scratchpad += chunk_summary + " "
 
+    def plan(
+        self,
+        query: str,
+        history: str = "",
+        meta: str = "",
+        previous_actions: List[str] = None,
+        use_history: bool = False,
+        **kwargs: Any,
+    ) -> str:
+        """
+            Generate a plan using Tree of Thought
+
+        Args:
+            query (str): Input query.
+            history (str): History information.
+            meta (str): meta information.
+            previous_actions (List[Action]): List of previous actions.
+            use_history (bool): Flag indicating whether to use history.
+            **kwargs (Any): Additional keyword arguments.
+        Return:
+            Action: return action.
+
+        """
+        if previous_actions is None:
+            previous_actions = []
+
+        previous_actions_prompt = ""
+        if len(previous_actions) > 0 and self.use_previous_action:
+            previous_actions_prompt = f"Previoius Actions:\n{self.generate_scratch_pad(previous_actions, **kwargs)}"
+
         prompt = (
             self._planner_prompt[0]
             .replace("{input}", query)
@@ -223,7 +231,7 @@ The outputs' description are provided for each Tool individually. Make sure you 
             .replace(
                 "{history}", history if use_history else "No History"
             )
-            .replace("{agent_scratchpad}", agent_scratchpad)
+            .replace("{previous_actions}", previous_actions_prompt)
             .replace("{tool_names}", self.task_descriptions())
         )
         # if len(previous_actions) > 0:
@@ -241,7 +249,7 @@ The outputs' description are provided for each Tool individually. Make sure you 
                 "Decision:\n" + response.split("Decision:")[-1],
             )
             .replace("{tool_names}", self.get_available_tasks())
-            .replace("{agent_scratchpad}", agent_scratchpad)
+            .replace("{previous_actions}", previous_actions_prompt)
         )
         print("prompt2", prompt)
         kwargs["stop"] = self._stop

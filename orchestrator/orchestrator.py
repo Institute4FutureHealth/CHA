@@ -5,7 +5,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Union
 
 from pydantic import BaseModel
 
@@ -14,7 +13,7 @@ from datapipes.datapipe import DataPipe
 from datapipes.datapipe_types import DatapipeType
 from datapipes.initialize_datapipe import initialize_datapipe
 from llms.llm_types import LLMType
-from planners.action import Action
+from orchestrator.action import Action
 from planners.action import PlanFinish
 from planners.initialize_planner import initialize_planner
 from planners.planner import BasePlanner
@@ -95,7 +94,7 @@ class Orchestrator(BaseModel):
         response_generator_llm: str = LLMType.OPENAI,
         response_generator_name: str = ResponseGeneratorType.BASE_GENERATOR,
         available_tasks: Optional[List[str]] = None,
-        previous_actions: List[str] = None,
+        previous_actions: List[Action] = None,
         verbose: bool = False,
         **kwargs,
     ) -> Orchestrator:
@@ -246,15 +245,10 @@ class Orchestrator(BaseModel):
         """
         return False
 
-    def _update_runtime(
-        self,
-        task_output_type: bool,
-        task_output: str,
-        task_inputs: List[str],
-    ):
-        if task_output_type:
-            self.runtime[task_output] = False
-        for task_input in task_inputs:
+    def _update_runtime(self, action: Action = None):
+        if action.output_type:
+            self.runtime[action.task_response] = False
+        for task_input in action.task_inputs:
             if task_input in self.runtime:
                 self.runtime[task_input] = True
 
@@ -268,7 +262,8 @@ class Orchestrator(BaseModel):
             a message indicating the storage key. Otherwise, it returns the result directly.
 
         Args:
-            action (Action): Action to be executed.
+            task_name (str): The name of the Task.
+            task_inputs List(str): The list of the inputs for the task.
         Return:
             str: Result of the task execution.
             bool: If the task result should be directly returned to the user and stop planning.
@@ -286,16 +281,15 @@ class Orchestrator(BaseModel):
                 "task",
                 f"Task is executed successfully\nResult: {result}\n---------------\n",
             )
-            action = (
-                "\n------------------\n"
-                f"{task.name}: {task_inputs}\n"
-                f"{result}"
-                "\n------------------\n"
+            action = Action(
+                task_name=task_name,
+                task_inputs=task_inputs,
+                task_response=result,
+                output_type=task.output_type,
+                datapipe=self.datapipe,
             )
 
-            self._update_runtime(
-                task.output_type, result, task_inputs
-            )
+            self._update_runtime(action)
 
             self.previous_actions.append(action)
             self.current_actions.append(action)
@@ -324,21 +318,14 @@ class Orchestrator(BaseModel):
         """
         return query
 
-    def _retrieve_needed_data_from_datapipe(self):
+    def _prepare_planner_response_for_response_generator(self):
         print("runtime", self.runtime)
-        for key in self.runtime.keys():
-            if not self.runtime[key]:
-                data = self.datapipe.retrieve(
-                    key.split("datapipe:")[-1]
-                )
-                action = (
-                    "\n------------------\n"
-                    f"Content of {key}:\n"
-                    f"{data}"
-                    "\n------------------\n"
-                )
-                self.current_actions.append(action)
-                self.previous_actions.append(action)
+        final_response = ""
+        for action in self.current_actions:
+            final_response += action.dict(
+                not self.runtime[action.task_response]
+            )
+        return final_response
 
     def response_generator_generate_prompt(
         self,
@@ -350,34 +337,17 @@ class Orchestrator(BaseModel):
         if meta is None:
             meta = []
 
-        prompt = (
-            "MetaData: {meta}\n\n"
-            "History: \n{history}\n\n"
-            # "Plan: \n{plan}\n\n"
-        )
+        prompt = "MetaData: {meta}\n\nHistory: \n{history}\n\n"
         if use_history:
             prompt = prompt.replace("{history}", history)
 
         prompt = (
             prompt.replace("{meta}", ", ".join(meta))
-            # .replace(
-            #     "{plan}",
-            #     "".join(
-            #         [
-            #             f"{self.available_tasks[action.task].chat_name}: {action.task_response}\n"
-            #             if action.task in self.available_tasks
-            #             else ""
-            #             for action in previous_actions
-            #         ]
-            #     ),
-            # )
             + f"\n{final_response}"
         )
         return prompt
 
-    def plan(
-        self, query, history, meta, use_history
-    ) -> List[Union[Action, PlanFinish]]:
+    def plan(self, query, history, meta, use_history) -> str:
         """
             Plan actions based on the query, history, and previous actions using the selected planner type.
             This method generates a plan of actions based on the provided query, history, previous actions, and use_history flag.
@@ -389,7 +359,7 @@ class Orchestrator(BaseModel):
             meta (Any): meta information.
             use_history (bool): Flag indicating whether to use history.
         Return:
-            List[Union[Action, PlanFinish]]: List of planned actions.
+            str: A python code block will be returnd to be executed by Task Executor.
 
 
 
@@ -452,7 +422,7 @@ class Orchestrator(BaseModel):
             use_history (bool): Flag indicating whether to use history.
             **kwargs (Any): Additional keyword arguments.
         Return:
-            Tuple[str, List[Action]]:Final response and list of previous actions.
+            str: The final response to shown to the user.
 
 
         """
@@ -491,12 +461,14 @@ class Orchestrator(BaseModel):
                 )
                 vars = {}
                 exec(actions, locals(), vars)
-                self._retrieve_needed_data_from_datapipe()
-                final_response = "\n".join(self.current_actions)
+                final_response = (
+                    self._prepare_planner_response_for_response_generator()
+                )
+                print("final resp", final_response)
                 self.current_actions = []
                 self.runtime = {}
                 break
-            except ValueError as error:
+            except (Exception, SystemExit) as error:
                 self.print_log(
                     "error", f"Planning Error:\n{error}\n\n"
                 )

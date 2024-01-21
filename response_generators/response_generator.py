@@ -81,6 +81,22 @@ class BaseResponseGenerator(BaseModel):
         ]
         return chunks
 
+    def summarize_thinker_response(self, thinker, **kwargs):
+        chunks = self.divide_text_into_chunks(
+            input_text=thinker, max_tokens=self.max_tokens_allowed
+        )
+        thinker = ""
+        kwargs["max_tokens"] = min(
+            2000, int(self.max_tokens_allowed / len(chunks))
+        )
+        for chunk in chunks:
+            prompt = self._shorten_prompt.replace("{chunk}", chunk)
+            chunk_summary = self._response_generator_model.generate(
+                query=prompt, **kwargs
+            )
+            thinker += chunk_summary + " "
+        return thinker
+
     def generate(
         self,
         prefix: str = "",
@@ -114,24 +130,7 @@ class BaseResponseGenerator(BaseModel):
             self.summarize_prompt
             and len(thinker) / 4 > self.max_tokens_allowed
         ):
-            # Shorten thinker
-            chunks = self.divide_text_into_chunks(
-                input_text=thinker, max_tokens=self.max_tokens_allowed
-            )
-            thinker = ""
-            kwargs["max_tokens"] = min(
-                2000, int(self.max_tokens_allowed / len(chunks))
-            )
-            for chunk in chunks:
-                prompt = self._shorten_prompt.replace(
-                    "{chunk}", chunk
-                )
-                chunk_summary = (
-                    self._response_generator_model.generate(
-                        query=prompt, **kwargs
-                    )
-                )
-                thinker += chunk_summary + " "
+            thinker = self.summarize_thinker_response(thinker)
 
         prompt = (
             self._generator_prompt.replace("{query}", query)
