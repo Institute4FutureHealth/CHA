@@ -4,7 +4,6 @@ from typing import List
 from urllib.parse import urlparse
 
 import requests
-from pdfminer import high_level
 from pydantic import model_validator
 
 from tasks.playwright.base import BaseBrowser
@@ -42,7 +41,7 @@ class ExtractText(BaseBrowser):
         Return:
             Dict: The updated attribute values.
         Raise:
-            ImportError: If 'beautifulsoup4' or 'lxml' packages are not installed.
+            ImportError: If 'beautifulsoup4', 'lxml', or 'pdfminer' packages are not installed.
 
         """
 
@@ -61,6 +60,15 @@ class ExtractText(BaseBrowser):
                 "The 'lxml' package is required to use this tool."
                 " Please install it with 'pip install lxml'."
             )
+
+        try:
+            from pdfminer import high_level  # noqa: F401
+        except ImportError:
+            raise ImportError(
+                "The 'pdfminer' package is required to use this tool."
+                " Please install it with 'pip install pdfminer.six'."
+            )
+
         return values
 
     def validate_url(self, url):
@@ -98,6 +106,7 @@ class ExtractText(BaseBrowser):
 
         """
         from bs4 import BeautifulSoup
+        from pdfminer import high_level
 
         self.validate_url(inputs[0].strip())
 
@@ -139,6 +148,7 @@ class ExtractText(BaseBrowser):
                     text for text in soup.stripped_strings
                 )
             else:
+                page.close()
                 return "Error extracting text. The url is wrong. Try again."
 
     def explain(

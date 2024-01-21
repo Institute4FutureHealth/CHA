@@ -25,6 +25,9 @@ class TreeOfThoughtPlanner(BasePlanner):
 
     """
 
+    summarize_prompt: bool = True
+    max_tokens_allowed: int = 10000
+
     class Config:
         """Configuration for this pydantic object."""
 
@@ -39,8 +42,21 @@ class TreeOfThoughtPlanner(BasePlanner):
         return self.llm_model
 
     @property
+    def _response_generator_model(self):
+        return self.llm_model
+
+    @property
     def _stop(self) -> List[str]:
         return ["Wait"]
+
+    @property
+    def _shorten_prompt(self):
+        return (
+            "Summarize the following text. Make sure to keep the main ideas "
+            "and objectives in the summary. Keep the links "
+            "exactly as they are: "
+            "{chunk}"
+        )
 
     @property
     def _planner_prompt(self):
@@ -123,6 +139,27 @@ The outputs' description are provided for each Tool individually. Make sure you 
             ]
         )
 
+    def divide_text_into_chunks(
+        self,
+        input_text: str = "",
+        max_tokens: int = 10000,
+    ) -> List[str]:
+        """
+        Generate a response based on the input prefix, query, and thinker (task planner).
+
+        Args:
+            input_text (str): the input text (e.g., prompt).
+            max_tokens (int): Maximum number of tokens allowed.
+        Return:
+            chunks(List): List of string variables
+        """
+        # 1 token ~= 4 chars in English
+        chunks = [
+            input_text[i : i + max_tokens * 4]
+            for i in range(0, len(input_text), max_tokens * 4)
+        ]
+        return chunks
+
     def plan(
         self,
         query: str,
@@ -154,6 +191,31 @@ The outputs' description are provided for each Tool individually. Make sure you 
             agent_scratchpad = "\n".join(
                 [f"\n{action}" for action in previous_actions]
             )
+        # agent_scratchpad
+        if (
+            self.summarize_prompt
+            and len(agent_scratchpad) / 4 > self.max_tokens_allowed
+        ):
+            # Shorten agent_scratchpad
+            chunks = self.divide_text_into_chunks(
+                input_text=agent_scratchpad,
+                max_tokens=self.max_tokens_allowed,
+            )
+            agent_scratchpad = ""
+            kwargs["max_tokens"] = min(
+                2000, int(self.max_tokens_allowed / len(chunks))
+            )
+            for chunk in chunks:
+                prompt = self._shorten_prompt.replace(
+                    "{chunk}", chunk
+                )
+                chunk_summary = (
+                    self._response_generator_model.generate(
+                        query=prompt, **kwargs
+                    )
+                )
+                agent_scratchpad += chunk_summary + " "
+
         prompt = (
             self._planner_prompt[0]
             .replace("{input}", query)
