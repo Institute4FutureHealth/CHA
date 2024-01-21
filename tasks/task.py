@@ -96,20 +96,19 @@ class BaseTask(BaseModel):
 
     def _parse_input(
         self,
-        input_args: str,
+        input_args: List[str],
     ) -> List[str]:
         """
             Parses the input string into a list of strings. If the input is in format `datapipe:key`,
             the parser will retrieve the data from datapipe before sending it over to the **_execute** method.
 
         Args:
-            input_args (str): Input string provided by planner. It should be parsed and return a list of str variables.
+            input_args List(str): List of Input string provided by planner. It should be parsed and return a list of str variables.
         Return:
             List[str]: List of parsed strings. These strings can be converted into desired types inside **_execute** method.
 
 
         """
-        inputs = input_args.split(",")
         return [
             json.loads(
                 self.datapipe.retrieve(
@@ -121,10 +120,28 @@ class BaseTask(BaseModel):
             )
             if "datapipe" in arg
             else arg.strip()
-            for arg in inputs
+            for arg in input_args
         ]
 
-    def _post_execute(self, result: str = ""):
+    def _validate_inputs(self, inputs: List[str]) -> bool:
+        """
+            This method is called inside **execute** method after calling **_parse_input**. The result of **_parse_input** will be passed to this
+            method to check the validity of the provided inputs by the Task Planner. Currently it only checks the length of the parsed input and
+            the length of the inputs attribute of the tasks class. You can inherit this function to further add more input checkings for your own
+            tasks.
+
+        Args:
+            inputs (List): List of strings containig the parsed inputs.
+        Return:
+            bool: True if the inputs are valid, False otherwise
+
+        """
+        valid = True
+        if len(inputs) != len(self.inputs):
+            valid = False
+        return valid
+
+    def _post_execute(self, result: str = "") -> str:
         """
             This method is called inside **execute** method after calling **_execute**. The result of **_execute** will be passed to this method
             in case the **output_type** attribute is True, the result will be stored inside the datapipe and the datapipe key is returned to
@@ -148,17 +165,19 @@ class BaseTask(BaseModel):
                 json.dumps(
                     {
                         "data": result,
-                        "description": ",".join(self.outputs),
+                        "description": "\n".join(self.outputs),
                     }
                 )
             )
-            return (
-                f"The result of the tool {self.name} is stored in the datapipe with key: $datapipe:{key}$"
-                " pass this key to other tools to access to the result or call read_from_datapipe to get the raw data."
-            )
+            return f"datapipe:{key}"
         return result
 
-    def execute(self, input_args: str) -> str:
+    def _get_input_format(self):
+        return "\n".join(
+            f"  {i+1}-{word}\n" for i, word in enumerate(self.inputs)
+        )
+
+    def execute(self, input_args: List[str]) -> str:
         """
             This method is called by the **Orchestrator** which provides the planner provided inputs.
             This method first calls **_parse_input** to parse the inputs and retrieve needed data from the **DataPipe**
@@ -172,6 +191,12 @@ class BaseTask(BaseModel):
 
         """
         inputs = self._parse_input(input_args)
+        if not self._validate_inputs(inputs):
+            inputs_format = self._get_input_format()
+            raise ValueError(
+                "Wrong inputs are provided."
+                f"The inputs should follow the descriptions: {inputs_format}"
+            )
         result = self._execute(inputs)
         return self._post_execute(result)
 
@@ -184,21 +209,23 @@ class BaseTask(BaseModel):
 
 
         """
-        inputs = ",".join(
-            f"input{i+1}-{word}" for i, word in enumerate(self.inputs)
-        )
         dependencies = ",".join(
             f"{i+1}-{word}"
             for i, word in enumerate(self.dependencies)
         )
-        prompt = (
-            f"tool name:{self.name}, description: {self.description}."
-        )
+        prompt = f"**{self.name}**: {self.description}"
         if len(self.inputs) > 0:
-            prompt += f"The input to this tool should be comma separated list of data representing: {inputs}"
+            inputs = self._get_input_format()
+            prompt += f"\n  The input to this tool should be a list of data representing:\n {inputs}"
         if len(self.dependencies) > 0:
-            prompt += f"\nThis tool is dependent on the following tools. make sure these tools are called first: '{dependencies}'"
-        # prompt += "\n"
+            prompt += f"\n  This tool is dependent on the following tools. make sure these tools are called first: {dependencies}"
+        if len(self.outputs) > 0:
+            prompt += (
+                "\n   This tool will return the following data:\n- "
+                + "\n- ".join(self.outputs)
+            )
+        if self.output_type:
+            prompt += "\n The result will be stored in datapipe."
         return prompt
 
     def explain(

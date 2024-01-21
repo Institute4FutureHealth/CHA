@@ -17,12 +17,13 @@ class ReadDataPipe(BaseTask):
     name: str = "read_from_datapipe"
     chat_name: str = "DataPipeReader"
     description: str = (
-        "Get the stored information from datapipe to be used to answer user query accurately. "
-        "This should be called when the final answer is in datapipe."
+        "Returns the requested datapipe key data. This tool can be called after other tools are executed."
+        "This tool should have the lowest priority calling."
+        "You should always try to priorities passing the datapipe key to other tool rather than calling this tool."
     )
     dependencies: List[str] = []
     inputs: List[str] = [
-        "the datapipe key in the format $datapipe:key$"
+        "the datapipe key in the format datapipe:datapipe_key"
     ]
     outputs: List[str] = []
     output_type: bool = False
