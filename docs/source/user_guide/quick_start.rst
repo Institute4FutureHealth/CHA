@@ -18,22 +18,37 @@ This command only installs the based requirements and later you need to install 
 
 .. code-block:: bash
 
-  pip install CHA
+  git clone https://github.com/Institute4FutureHealth/CHA.git
+  cd CHA
+  pip install '.[all]'
 
 To make it easier, you can use the following command to install the minimum requirments and ready to go. This will \
 install openai, react planner, as well as serpapi (search), and playwright (browser) tasks.
 
 .. code-block:: bash
 
-  pip install 'CHA[minimum]'
+  pip install '.[minimum]'
 
 If you want to install all requirements for all tasks and other components, use the following command:
 
 .. code-block:: bash
 
-  pip install 'CHA[all]'
+  pip install '.[minimum]'
 
-After installing the package, you can start running our framework with simple code:
+After installing the package, based on what tasks you want to use, you may need to acquire some api_keys. For example, to get started using openAI GPT3.5 model as LLM in CHA, you need to signup
+in their website and get the api_key. Then you should add openAI api_key as environment vairable in your terminal:
+
+.. code-block:: bash
+
+  export OPENAI_API_KEY="your api_key"
+
+The same goes for using tasks like SerpAPI:
+
+.. code-block:: bash
+
+  export SERPAPI_API_KEY="your api_key"
+
+Finally, you can start running our framework with the following simple code:
 
 .. code-block:: python
 
