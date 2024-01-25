@@ -1,12 +1,14 @@
+import json
 from typing import Any
+from typing import Dict
 from typing import List
+
+import requests
+from pydantic import model_validator
 
 from tasks.task import BaseTask
 from utils import get_from_dict_or_env
-from pydantic import model_validator
-from typing import Dict
-import requests
-import json
+
 
 class QueryNutritionix(BaseTask):
     """
@@ -67,20 +69,24 @@ class QueryNutritionix(BaseTask):
         nutritionix_api_key = get_from_dict_or_env(
             values, "nutritionix_api_key", "NUTRITIONIX_API_KEY"
         )
-        
+
         nutritionix_app_id = get_from_dict_or_env(
             values, "nutritionix_app_id", "NUTRITIONIX_APP_ID"
         )
-        
+
         if nutritionix_api_key is None:
-            raise ValueError("The nutritionx_api_key or NUTRITIONIX_API_KEY is not provided!")
+            raise ValueError(
+                "The nutritionx_api_key or NUTRITIONIX_API_KEY is not provided!"
+            )
         if nutritionix_app_id is None:
-            raise ValueError("The nutritionix_app_id or NUTRITIONIX_APP_ID is not provided!")
-        
+            raise ValueError(
+                "The nutritionix_app_id or NUTRITIONIX_APP_ID is not provided!"
+            )
+
         values["headers"] = {
-            'Content-Type': 'application/json',
-            'x-app-id': nutritionix_app_id,
-            'x-app-key': nutritionix_api_key
+            "Content-Type": "application/json",
+            "x-app-id": nutritionix_app_id,
+            "x-app-key": nutritionix_api_key,
         }
         return values
 
@@ -90,7 +96,9 @@ class QueryNutritionix(BaseTask):
     ) -> str:
         query = inputs[0]
         body = {"query": query}
-        response = requests.post(self.url, json=body, headers=self.headers)
+        response = requests.post(
+            self.url, json=body, headers=self.headers
+        )
 
         foods = response.json()
         print(foods)

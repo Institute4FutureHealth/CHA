@@ -47,5 +47,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.PPG_GET: PPGGet,
     TaskType.PPG_ANALYSIS: PPGAnalysis,
     TaskType.STRESS_ANALYSIS: StressAnalysis,
-    TaskType.QUERY_NUTRITIONIX: QueryNutritionix
+    TaskType.QUERY_NUTRITIONIX: QueryNutritionix,
 }
