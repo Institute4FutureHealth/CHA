@@ -1,5 +1,5 @@
 """
-Sress Recommendation - Physical activity analysis
+Sress Recommendation - HR and HRV extraction
 """
 import json
 from typing import Any
@@ -43,23 +43,11 @@ class SRHRHRVExtraction(Stress_Recom):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        ppg = json.loads(inputs[0]["data"])
+        ppg = pd.read_json(inputs[0]["data"])
         sampling_rate = 1000
-        df = None
 
-        ppg_signals, info = nk.ppg_process(ppg, sampling_rate=sampling_rate)
+        ppg_signals, info = nk.ppg_process(ppg['ppg'], sampling_rate=sampling_rate)
         df = nk.ppg_analyze(ppg_signals, sampling_rate=sampling_rate)
-        if df is None:
-            df = nk.ppg_analyze(ppg_signals, sampling_rate=sampling_rate)
-        else:
-            df = pd.concat(
-                [
-                    df,
-                    nk.ppg_analyze(ppg_signals, sampling_rate=sampling_rate),
-                ],
-                axis=0,
-                ignore_index=True,
-            )
         df.dropna(how="all", axis=1, inplace=True)
         df = df[
             [

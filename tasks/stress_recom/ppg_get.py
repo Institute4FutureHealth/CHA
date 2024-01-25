@@ -16,6 +16,7 @@ class SRPPGGet(Stress_Recom):
     chat_name: str = "StressRecomPPGGet"
     description: str = (
         "Returns the most recent ppg data. "
+        "The input is always an empy list. Just run it when most recent ppg data are required."
         "This will return the detailed raw data and stores it in the datapipe."
     )
     dependencies: List[str] = []
@@ -29,7 +30,7 @@ class SRPPGGet(Stress_Recom):
     output_type: bool = True
     #
     file_name: str = "data.csv"
-    local_dir: str = "data/stres_recom"
+    local_dir: str = "data/stress_recom"
     columns_to_keep: List[str] = [
         "PPG_Raw",
     ]
