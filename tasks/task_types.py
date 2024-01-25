@@ -24,3 +24,4 @@ class TaskType(str, Enum):
     STRESS_ANALYSIS = "affect_stress_analysis"
     STRESS_RECOM_PPG_GET = "stress_recom_ppg_get"
     STRESS_RECOM_HR_HRV_EXTRACTION = "stress_recom_hr_hrv_extraction"
+    STRESS_STRESS_EXTRACTION = "stress_stress_estimation"

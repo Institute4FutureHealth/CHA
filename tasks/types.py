@@ -25,6 +25,7 @@ from tasks.task_types import TaskType
 from tasks.test_file import TestFile
 from tasks.stress_recom import SRPPGGet
 from tasks.stress_recom import SRHRHRVExtraction
+from tasks.stress_recom import SRStressExtraction
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
@@ -50,4 +51,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.STRESS_ANALYSIS: StressAnalysis,
     TaskType.STRESS_RECOM_PPG_GET: SRPPGGet,
     TaskType.STRESS_RECOM_HR_HRV_EXTRACTION: SRHRHRVExtraction,
+    TaskType.STRESS_STRESS_EXTRACTION: SRStressExtraction,
 }
