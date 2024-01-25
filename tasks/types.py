@@ -23,6 +23,8 @@ from tasks.serpapi import SerpAPI
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
 from tasks.test_file import TestFile
+from tasks.stress_recom import SRPPGGet
+from tasks.stress_recom import SRHRHRVExtraction
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
@@ -46,4 +48,6 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.PPG_GET: PPGGet,
     TaskType.PPG_ANALYSIS: PPGAnalysis,
     TaskType.STRESS_ANALYSIS: StressAnalysis,
+    TaskType.STRESS_RECOM_PPG_GET: SRPPGGet,
+    TaskType.STRESS_RECOM_HR_HRV_EXTRACTION: SRHRHRVExtraction,
 }
