@@ -37,26 +37,25 @@ class SRStressExtraction(Stress_Recom):
     # True if it should be stored in datapipe
     output_type: bool = True
 
-    def stress_level_calculator(rmssd: float) -> str:
-        if rmssd < 20:
-            stress_level = "Very High"
-        elif rmssd < 100:
-            stress_level = "High"
-        elif rmssd < 150:
-            stress_level = "Normal"
-        elif rmssd < 200:
-            stress_level = "Low"
-        else:
-            stress_level = "Very Low"
-        return stress_level
 
     def _execute(
         self,
         inputs: List[Any] = None,
     ) -> str:
         hr_hrv = pd.read_json(inputs[0]["data"])
+
         rmssd = hr_hrv.at[0, 'HRV_RMSSD']
-        stress_level = self.stress_level_calculator(rmssd=rmssd)
+        if rmssd < 50:
+            stress_level = "Very High"
+        elif rmssd < 150:
+            stress_level = "High"
+        elif rmssd < 200:
+            stress_level = "Normal"
+        elif rmssd < 250:
+            stress_level = "Low"
+        else:
+            stress_level = "Very Low"
+
         df = pd.DataFrame([stress_level], columns=["Stress_Level"])
         json_out = df.to_json(orient="columns")
         return json_out
