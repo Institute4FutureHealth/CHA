@@ -10,6 +10,7 @@ from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
 from tasks.ask_user import AskUser
 from tasks.google_translator import GoogleTranslate
+from tasks.nutritionix.query_nutritionix import QueryNutritionix
 from tasks.playwright import Click
 from tasks.playwright import CurrentWebPage
 from tasks.playwright import ExtractHyperlinks
@@ -46,4 +47,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.PPG_GET: PPGGet,
     TaskType.PPG_ANALYSIS: PPGAnalysis,
     TaskType.STRESS_ANALYSIS: StressAnalysis,
+    TaskType.QUERY_NUTRITIONIX: QueryNutritionix
 }

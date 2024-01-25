@@ -323,7 +323,7 @@ class Orchestrator(BaseModel):
         final_response = ""
         for action in self.current_actions:
             final_response += action.dict(
-                not self.runtime[action.task_response]
+                (action.output_type and not self.runtime[action.task_response])
             )
         return final_response
 
