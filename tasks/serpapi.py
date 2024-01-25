@@ -110,8 +110,9 @@ class SerpAPI(BaseTask):
 
 
         """
-
-        params = self.get_params(query)
+        revised_query = ' '.join(
+            ["sites: mindfulnessexercises.com", query])
+        params = self.get_params(revised_query)
         search = self.search_engine(params)
         res = search.get_dict()
         return res
