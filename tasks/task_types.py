@@ -22,3 +22,4 @@ class TaskType(str, Enum):
     PPG_GET = "affect_ppg_get"
     PPG_ANALYSIS = "affect_ppg_analysis"
     STRESS_ANALYSIS = "affect_stress_analysis"
+    QUERY_NUTRITIONIX = "query_nutritionix"
