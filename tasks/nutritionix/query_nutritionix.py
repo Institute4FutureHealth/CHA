@@ -1,4 +1,3 @@
-import json
 from typing import Any
 from typing import Dict
 from typing import List
@@ -24,9 +23,11 @@ class QueryNutritionix(BaseTask):
     description: str = "Queries the nutrition contents of a meal or multiple meals and returns the details nutritions values."
     dependencies: List[str] = []
     inputs: List[str] = [
-        "The query that contains the foods, their portion, restaurant and other information regarding the food. You can query all together"
+        "The query that contains the daily foods, their portion, restaurant and other information regarding the food. You can query all together"
         "A query example is: "
-        "**Every morning, I starts my day with a cheeseburger, a bottle of milk, and two eggs for breakfast.** or **cheeseburger, bottle, milk, 2 eggs**"
+        "**Every morning, I starts my day with a cheeseburger, a bottle of milk, and two eggs for breakfast.** "
+        "or **cheeseburger, bottle, milk, 2 eggs**"
+        "This tool will calculate all the foods all at once. no need to separately query them."
     ]
     outputs: List[str] = [
         "Returns a JSON object containing **foods** key. The **foods** is an array of the food objects with the following information: "
@@ -45,6 +46,7 @@ class QueryNutritionix(BaseTask):
         "**nf_sugars**: The total sugars of the food for the serving size.\n"
         "**nf_protein**: The total protein of the food for the serving size.\n"
         "**nf_potassium**: The total potassium of the food for the serving size.\n"
+        "**nf_p**: The total phosphorus of the food for the serving size.\n"
         "**full_nutrients**: The detailed list of the nutrients.\n"
     ]
     output_type: bool = True
@@ -101,8 +103,7 @@ class QueryNutritionix(BaseTask):
         )
 
         foods = response.json()
-        print(foods)
-        return json.dumps(foods)
+        return foods
 
     def explain(
         self,

@@ -9,4 +9,5 @@ def test_query_nutritionix_execute():
     query_nutritionix_task = QueryNutritionix()
 
     result = query_nutritionix_task._execute([query])
+    print(result)
     assert isinstance(result, str)

@@ -115,6 +115,8 @@ The output variables should directly passed as inputs with no changes in the wor
 If the tool input is a datapipe only put the variable as the input. \
 For each tool, include necessary parameters directly without any names and assume each will return an output. \
 The outputs' description are provided for each Tool individually. Make sure you use the directives when passing the outputs.
+
+Question: {input}
 """,
         ]
 
@@ -250,6 +252,7 @@ The outputs' description are provided for each Tool individually. Make sure you 
             )
             .replace("{tool_names}", self.get_available_tasks())
             .replace("{previous_actions}", previous_actions_prompt)
+            .replace("{input}", query)
         )
         print("prompt2", prompt)
         kwargs["stop"] = self._stop
