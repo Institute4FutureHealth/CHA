@@ -13,8 +13,7 @@ class CalculateFoodRiskFactor(BaseTask):
     """
     **Description:**
 
-            This task is asking question back to the user and stops planning. When needed, the planner will decide to ask question from user
-            and use the user's answer to proceed to the planning.
+            This task calculates the daily foods risk factor for diabetes using evidence based nutritional method.
 
     """
 

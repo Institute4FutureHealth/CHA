@@ -13,8 +13,7 @@ class QueryNutritionix(BaseTask):
     """
     **Description:**
 
-        This task is asking question back to the user and stops planning. When needed, the planner will decide to ask question from user
-        and use the user's answer to proceed to the planning.
+        This task queries the nutrition contents from nutritionix of a meal or multiple meals and returns the details nutritions values.
 
     """
 
