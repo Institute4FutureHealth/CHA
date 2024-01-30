@@ -377,7 +377,7 @@ class Orchestrator(BaseModel):
             query, history, meta, self.previous_actions, use_history
         )
 
-    def generate_final_answer(self, query, thinker) -> str:
+    def generate_final_answer(self, query, thinker, **kwargs) -> str:
         """
             Generate the final answer using the response generator.
             This method generates the final answer based on the provided query and thinker.
@@ -394,8 +394,16 @@ class Orchestrator(BaseModel):
         retries = 0
         while retries < self.max_final_answer_execute_retries:
             try:
+                prefix = (
+                    kwargs["response_generator_prefix_prompt"]
+                    if "response_generator_prefix_prompt" in kwargs
+                    else ""
+                )
                 return self.response_generator.generate(
-                    query=query, thinker=thinker
+                    query=query,
+                    thinker=thinker,
+                    prefix=prefix,
+                    **kwargs,
                 )
             except Exception as e:
                 print(e)
@@ -498,7 +506,7 @@ class Orchestrator(BaseModel):
             f"Final Answer Generation Started...\nInput Prompt: \n\n{final_response}",
         )
         final_response = self.generate_final_answer(
-            query=query, thinker=final_response
+            query=query, thinker=final_response, **kwargs
         )
         self.print_log(
             "response_generator",

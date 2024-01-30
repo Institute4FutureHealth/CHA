@@ -86,6 +86,7 @@ class CHA(BaseModel):
             meta=self.meta,
             history=history,
             use_history=use_history,
+            **kwargs,
         )
 
         return response
@@ -139,6 +140,7 @@ class CHA(BaseModel):
         chat_history: List[Tuple[str, str]] = None,
         available_tasks: List[str] = None,
         use_history: bool = False,
+        **kwargs,
     ) -> str:
         if chat_history is None:
             chat_history = []
@@ -150,4 +152,5 @@ class CHA(BaseModel):
             chat_history=chat_history,
             tasks_list=available_tasks,
             use_history=use_history,
+            **kwargs,
         )

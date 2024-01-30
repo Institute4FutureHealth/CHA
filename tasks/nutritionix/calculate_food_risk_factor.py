@@ -104,11 +104,11 @@ class CalculateFoodRiskFactor(BaseTask):
             "Sodium_Risk": "No Risk"
             if not is_sodium_risk
             else f"The total consumed sodium is {total_intake['Sodium']}mg "
-            "which is more than recommended threshold of 2300",
+            "which is more than recommended threshold of 2300mg",
             "Sugars_Risk": "No Risk"
             if not is_sugars_risk
             else f"The total consumed sugar is {total_intake['Sugars']}g "
-            "which is more than recommended threshold of 25",
+            "which is more than recommended threshold of 25g",
             "Dietary_Fiber_Risk": "No Risk"
             if not is_fiber_risk
             else f"The total consumed fiber is {total_intake['Dietary_Fiber']}g "
@@ -132,49 +132,69 @@ class CalculateFoodRiskFactor(BaseTask):
 
         for food in nutrition_json["foods"]:
             total_nutrients["Calories"] += (
-                food["nf_calories"] if ("nf_calories" in food) else 0
+                food["nf_calories"]
+                if ("nf_calories" in food)
+                and (food["nf_calories"] is not None)
+                else 0
             )
             total_nutrients["Total_Fat"] += (
                 food["nf_total_fat"]
                 if ("nf_total_fat" in food)
+                and (food["nf_total_fat"] is not None)
                 else 0
             )
             total_nutrients["Saturated_Fat"] += (
                 food["nf_saturated_fat"]
                 if ("nf_saturated_fat" in food)
+                and (food["nf_saturated_fat"] is not None)
                 else 0
             )
             total_nutrients["Cholesterol"] += (
                 food["nf_cholesterol"]
                 if ("nf_cholesterol" in food)
+                and (food["nf_cholesterol"] is not None)
                 else 0
             )
             total_nutrients["Sodium"] += (
-                food["nf_sodium"] if ("nf_sodium" in food) else 0
+                food["nf_sodium"]
+                if ("nf_sodium" in food)
+                and (food["nf_sodium"] is not None)
+                else 0
             )
             total_nutrients["Total_Carbohydrate"] += (
                 food["nf_total_carbohydrate"]
                 if ("nf_total_carbohydrate" in food)
+                and (food["nf_total_carbohydrate"] is not None)
                 else 0
             )
             total_nutrients["Dietary_Fiber"] += (
                 food["nf_dietary_fiber"]
                 if ("nf_dietary_fiber" in food)
+                and (food["nf_dietary_fiber"] is not None)
                 else 0
             )
             total_nutrients["Sugars"] += (
-                food["nf_sugars"] if ("nf_sugars" in food) else 0
+                food["nf_sugars"]
+                if ("nf_sugars" in food)
+                and (food["nf_sugars"] is not None)
+                else 0
             )
             total_nutrients["Protein"] += (
-                food["nf_protein"] if ("nf_protein" in food) else 0
+                food["nf_protein"]
+                if ("nf_protein" in food)
+                and (food["nf_protein"] is not None)
+                else 0
             )
             total_nutrients["Potassium"] += (
                 food["nf_potassium"]
                 if ("nf_potassium" in food)
+                and (food["nf_potassium"] is not None)
                 else 0
             )
             total_nutrients["Phosphorus"] += (
-                food["nf_p"] if ("nf_p" in food) else 0
+                food["nf_p"]
+                if ("nf_p" in food) and (food["nf_p"] is not None)
+                else 0
             )
 
         risks = self.check_rules(total_nutrients)
