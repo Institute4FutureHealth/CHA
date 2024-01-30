@@ -53,7 +53,7 @@ export SERPAPI_API_KEY="your api_key"
 Finally, you can start running our framework with the following simple code:
 
 ```python
-from CHA import CHA
+from src.CHA import CHA
 
 cha = CHA()
 cha.run_with_interface()

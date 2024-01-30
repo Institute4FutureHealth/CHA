@@ -1,5 +1,5 @@
-from CHA import CHA
-from tasks.playwright.utils import create_sync_playwright_browser
+from src.CHA import CHA
+from src.tasks.playwright.utils import create_sync_playwright_browser
 
 sync_browser = create_sync_playwright_browser()
 available_tasks = ["serpapi", "extract_text", "ask_user"]

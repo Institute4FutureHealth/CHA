@@ -1,12 +1,10 @@
 import os
 
 import pytest
-from pydantic import create_model
 
-from datapipes.datapipe import DataPipe
-from datapipes.datapipe_types import DatapipeType
-from datapipes.initialize_datapipe import initialize_datapipe
-from tasks.run_python_code import RunPythonCode
+from src.datapipes.datapipe_types import DatapipeType
+from src.datapipes import initialize_datapipe
+from src.tasks import RunPythonCode
 
 
 @pytest.fixture

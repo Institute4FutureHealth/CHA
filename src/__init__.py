@@ -1,4 +1,4 @@
-from llms import BaseLLM
+from llms.llm import BaseLLM
 
 
 __all__ = [

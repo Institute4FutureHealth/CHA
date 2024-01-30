@@ -10,7 +10,7 @@ from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
 from tasks.ask_user import AskUser
 from tasks.google_translator import GoogleTranslate
-from tasks.playwright import Click
+from tasks.playwright.click import Click
 from tasks.playwright import CurrentWebPage
 from tasks.playwright import ExtractHyperlinks
 from tasks.playwright import ExtractText

@@ -1,6 +1,4 @@
-import pytest
-
-from tasks.affect.ppg_get import PPGGet
+from src.tasks.affect.ppg_get import PPGGet
 
 
 def test_ppg_get_execute():
