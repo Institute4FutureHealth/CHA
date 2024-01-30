@@ -25,7 +25,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Institute4FutureHealth/CHA.git",
-    download_url = 'https://github.com/user/reponame/archive/v_01.tar.gz',
+    download_url='https://github.com/user/reponame/archive/v_01.tar.gz',
     install_requires=[
         "httpcore==1.0.2",
         "requests",
