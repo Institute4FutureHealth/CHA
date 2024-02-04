@@ -9,6 +9,7 @@ from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
 from tasks.ask_user import AskUser
+from tasks.google_search import GoogleSearch
 from tasks.google_translator import GoogleTranslate
 from tasks.nutritionix.calculate_food_risk_factor import (
     CalculateFoodRiskFactor,
@@ -52,4 +53,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.STRESS_ANALYSIS: StressAnalysis,
     TaskType.QUERY_NUTRITIONIX: QueryNutritionix,
     TaskType.CALCULATE_FOOD_RISK_FACTOR: CalculateFoodRiskFactor,
+    TaskType.GOOGLE_SEARCH: GoogleSearch,
 }

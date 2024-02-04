@@ -24,3 +24,4 @@ class TaskType(str, Enum):
     STRESS_ANALYSIS = "affect_stress_analysis"
     QUERY_NUTRITIONIX = "query_nutritionix"
     CALCULATE_FOOD_RISK_FACTOR = "calculate_food_risk_factor"
+    GOOGLE_SEARCH = "google_search"
