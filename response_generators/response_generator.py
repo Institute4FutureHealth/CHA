@@ -86,7 +86,6 @@ class BaseResponseGenerator(BaseModel):
             input_text=thinker, max_tokens=self.max_tokens_allowed
         )
         thinker = ""
-        print("summerizing")
         kwargs["max_tokens"] = min(
             2000, int(self.max_tokens_allowed / len(chunks))
         )
