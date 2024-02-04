@@ -350,7 +350,9 @@ class Orchestrator(BaseModel):
         )
         return prompt
 
-    def plan(self, query, history, meta, use_history) -> str:
+    def plan(
+        self, query, history, meta, use_history, **kwargs
+    ) -> str:
         """
             Plan actions based on the query, history, and previous actions using the selected planner type.
             This method generates a plan of actions based on the provided query, history, previous actions, and use_history flag.
@@ -374,7 +376,12 @@ class Orchestrator(BaseModel):
 
         """
         return self.planner.plan(
-            query, history, meta, self.previous_actions, use_history
+            query,
+            history,
+            meta,
+            self.previous_actions,
+            use_history,
+            **kwargs,
         )
 
     def generate_final_answer(self, query, thinker, **kwargs) -> str:
@@ -469,6 +476,7 @@ class Orchestrator(BaseModel):
                     history=history,
                     meta=meta_infos,
                     use_history=use_history,
+                    **kwargs,
                 )
                 vars = {}
                 exec(actions, locals(), vars)
