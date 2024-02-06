@@ -1,7 +1,9 @@
+import io
 from typing import Any
 from typing import List
 from urllib.parse import urlparse
 
+import requests
 from pydantic import model_validator
 
 from tasks.playwright.base import BaseBrowser
@@ -20,9 +22,13 @@ class ExtractText(BaseBrowser):
     name: str = "extract_text"
     chat_name: str = "ExtractText"
     description: str = "Extract all the text on the current webpage"
-    dependencies: List[str] = ["navigate"]
-    inputs: List[str] = ["url to navigate to"]
-    outputs: List[str] = []
+    dependencies: List[str] = []
+    inputs: List[str] = [
+        "url to extract the text from. It requires links which is gathered from other tools. Never provide urls on your own."
+    ]
+    outputs: List[str] = [
+        "An string containing the text of the scraped webpage."
+    ]
     output_type: bool = False
 
     @model_validator(mode="before")
@@ -35,7 +41,7 @@ class ExtractText(BaseBrowser):
         Return:
             Dict: The updated attribute values.
         Raise:
-            ImportError: If 'beautifulsoup4' or 'lxml' packages are not installed.
+            ImportError: If 'beautifulsoup4', 'lxml', or 'pdfminer' packages are not installed.
 
         """
 
@@ -54,6 +60,15 @@ class ExtractText(BaseBrowser):
                 "The 'lxml' package is required to use this tool."
                 " Please install it with 'pip install lxml'."
             )
+
+        try:
+            from pdfminer import high_level  # noqa: F401
+        except ImportError:
+            raise ImportError(
+                "The 'pdfminer' package is required to use this tool."
+                " Please install it with 'pip install pdfminer.six'."
+            )
+
         return values
 
     def validate_url(self, url):
@@ -91,6 +106,7 @@ class ExtractText(BaseBrowser):
 
         """
         from bs4 import BeautifulSoup
+        from pdfminer import high_level
 
         self.validate_url(inputs[0].strip())
 
@@ -99,20 +115,41 @@ class ExtractText(BaseBrowser):
                 f"Synchronous browser not provided to {self.name}"
             )
 
-        page = get_current_page(self.sync_browser)
-        response = page.goto(inputs[0])
-        status = response.status if response else "unknown"
-
-        if status == 200:
-            html_content = page.content()
-            # Parse the HTML content with BeautifulSoup
-            soup = BeautifulSoup(html_content, "lxml")
-
-            return " ".join(text for text in soup.stripped_strings)
+        if inputs[0].lower().endswith(".pdf"):
+            # Request the PDF content from the URL
+            response = requests.get(inputs[0])
+            if response.status_code == 200:
+                # Use BytesIO to create an in-memory stream
+                pdf_stream = io.BytesIO(response.content)
+                # Extract text from the PDF stream
+                text = high_level.extract_text(pdf_stream)
+                # Wrap text in basic HTML tags
+                html_content = (
+                    f"<html><body><p>{text}</p></body></html>"
+                )
+                # Parse the HTML content with BeautifulSoup
+                soup = BeautifulSoup(html_content, "lxml")
+                return " ".join(
+                    text for text in soup.stripped_strings
+                )
+            else:
+                return "Error extracting text. The url is wrong. Try again."
         else:
-            return (
-                "Error extracting text. The url is wrong. Try again."
-            )
+            page = get_current_page(self.sync_browser)
+            response = page.goto(inputs[0])
+            status = response.status if response else "unknown"
+
+            if status == 200:
+                html_content = page.content()
+                # Parse the HTML content with BeautifulSoup
+                soup = BeautifulSoup(html_content, "lxml")
+                page.close()
+                return " ".join(
+                    text for text in soup.stripped_strings
+                )
+            else:
+                page.close()
+                return "Error extracting text. The url is wrong. Try again."
 
     def explain(
         self,

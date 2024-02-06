@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -31,3 +32,12 @@ def get_from_env(
             f" `{env_key}` which contains it, or pass"
             f"  `{key}` as a named parameter."
         )
+
+
+def parse_addresses(input_string: str):
+    pattern = r"address:([a-zA-Z0-9/_-]+\.(?:png|csv|json))"
+    matches = [
+        (match.group(1), match.start(), match.end())
+        for match in re.finditer(pattern, input_string)
+    ]
+    return matches

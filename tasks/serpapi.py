@@ -34,7 +34,9 @@ class SerpAPI(BaseTask):
     )
     dependencies: List[str] = []
     inputs: List[str] = ["It should be a search query."]
-    outputs: List[str] = []
+    outputs: List[str] = [
+        "It returns a json object containing key: **url**. For example: {'url': 'http://google.com'}"
+    ]
     output_type: bool = False
 
     search_engine: Any = None  #: :meta private:
@@ -128,19 +130,15 @@ class SerpAPI(BaseTask):
 
         try:
             if "answer_box" in res:
-                toret = (
-                    "url: "
-                    + res["answer_box"]["link"]
-                    + "\nmetadata: "
-                    + res["answer_box"]["snippet"]
-                )
+                toret = {
+                    "url": res["answer_box"]["link"],
+                    # "metadata": res["answer_box"]["snippet"]
+                }
             else:
-                toret = (
-                    "url: "
-                    + res["organic_results"][0]["link"]
-                    + "\nmetadata: "
-                    + res["organic_results"][0]["snippet"]
-                )
+                toret = {
+                    "url": res["organic_results"][0]["link"],
+                    # "metadata": res["organic_results"][0]["snippet"]
+                }
         except KeyError:
             return "Could not get the proper response from the search. Try another search query."
         return toret

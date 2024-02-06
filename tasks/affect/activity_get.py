@@ -17,28 +17,24 @@ class ActivityGet(Affect):
 
     name: str = "affect_activity_get"
     chat_name: str = "AffectActivityGet"
-    description: str = (
-        "Get the physical activity parameters for a specific date or "
-        "a period (if two dates are provided). "
-        "You must Call $affect_analysis$ whenever physical activity "
-        "analysis (e.g., 'average', 'sum', or 'trend') is needed. DON'T rely on your analysis"
-    )
+    description: str = "Gathers physical activity data for a patient over a certain period."
     dependencies: List[str] = []
     inputs: List[str] = [
-        "user ID in string. It can be refered as user, patient, individual, etc. Start with 'par_' following with a number (e.g., 'par_1').",
-        "start date of the physical activity data in string with the following format: '%Y-%m-%d'",
         (
-            "end date of the physical activity data in string with the following format: '%Y-%m-%d'."
-            "If there is no end date, the value should be an empty string (i.e., '')"
+            "user ID in string. It can be refered as user, patient, individual, etc. The input format should be: "
+            "par_<user_id> for example for user 1 it will be par_1."
         ),
+        "start date of the physical activity data with the following format: '%Y-%m-%d'",
+        "end date of the physical activity data with the following format: '%Y-%m-%d'.",
     ]
     outputs: List[str] = [
-        "steps_count is the total number of steps registered during the day.",
-        "rest_time is the time (in minutes) during the day spent resting, i.e. sleeping or lying down.",
-        "inactive_time is the time (in minutes) during the day spent resting, i.e. sitting or standing still.",
-        "low_acitivity_time is the (in minutes) during the day with low intensity activity (e.g. household work).",
-        "medimum_acitivity_time is the (in minutes) during the day with medium intensity activity (e.g. walking).",
-        "high_acitivity_time is the (in minutes) during the day with high intensity activity (e.g. running).",
+        "returns an array of json objects which contains the following keys:"
+        "\n**steps_count**: is the total number of steps registered during the day."
+        "\n**rest_time**: is the time (in minutes) during the day spent resting, i.e. sleeping or lying down.",
+        "\n**inactive_time**: is the time (in minutes) during the day spent resting, i.e. sitting or standing still.",
+        "\n**low_acitivity_time** is the (in minutes) during the day with low intensity activity (e.g. household work).",
+        "\n**medimum_acitivity_time** is the (in minutes) during the day with medium intensity activity (e.g. walking).",
+        "\n**high_acitivity_time** is the (in minutes) during the day with high intensity activity (e.g. running).",
     ]
 
     # False if the output should directly passed back to the planner.

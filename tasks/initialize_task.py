@@ -22,8 +22,7 @@ def initialize_task(task: str = "serpapi", **kwargs: Any) -> BaseTask:
     Example:
         .. code-block:: python
 
-            from langchain import ReActChain, OpenAI
-            react = ReAct(llm=OpenAI())
+
 
     """
 

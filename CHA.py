@@ -16,6 +16,7 @@ from response_generators.response_generator_types import (
 from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 from tasks.types import TASK_TO_CLASS
+from utils import parse_addresses
 
 
 class CHA(BaseModel):
@@ -24,7 +25,7 @@ class CHA(BaseModel):
     orchestrator: Orchestrator = None
     sync_browser: Any = None
     planner_llm: str = LLMType.OPENAI
-    planner: str = PlannerType.ZERO_SHOT_REACT_PLANNER
+    planner: str = PlannerType.TREE_OF_THOUGHT
     datapipe: str = DatapipeType.MEMORY
     promptist: str = ""
     response_generator_llm: str = LLMType.OPENAI
@@ -37,21 +38,13 @@ class CHA(BaseModel):
     ) -> str:
         if chat_history is None:
             chat_history = []
-        print("chat history", chat_history)
+
         history = "".join(
             [
                 f"\n------------\nUser: {chat[0]}\nCHA: {chat[1]}\n------------\n"
                 for chat in chat_history
             ]
         )
-        if len(self.previous_actions) > 0:
-            history += "Previous Actions: " + "".join(
-                [
-                    f"\n------------\naction: {action.task}\naction_response: {action.task_response}\n------------\n"
-                    for action in self.previous_actions
-                    if action.task != "Exception"
-                ]
-            )
         return history
 
     def _run(
@@ -83,17 +76,18 @@ class CHA(BaseModel):
                 response_generator_name=self.response_generator,
                 available_tasks=tasks_list,
                 sync_browser=self.sync_browser,
+                previous_actions=self.previous_actions,
                 verbose=self.verbose,
                 **kwargs,
             )
 
-        response, actions = self.orchestrator.run(
+        response = self.orchestrator.run(
             query=query,
-            history=history,
             meta=self.meta,
+            history=history,
             use_history=use_history,
+            **kwargs,
         )
-        self.previous_actions += actions
 
         return response
 
@@ -104,7 +98,22 @@ class CHA(BaseModel):
             tasks_list=tasks_list,
             use_history=check_box,
         )
-        chat_history.append((message, response))
+
+        files = parse_addresses(response)
+        print("files", files)
+        if len(files) == 0:
+            chat_history.append((message, response))
+        else:
+            for i in range(len(files)):
+                chat_history.append(
+                    (
+                        message if i == 0 else None,
+                        response[: files[i][1]],
+                    )
+                )
+                chat_history.append((None, (files[i][0],)))
+                response = response[files[i][2] :]
+
         return "", chat_history
 
     def reset(self):
@@ -131,6 +140,7 @@ class CHA(BaseModel):
         chat_history: List[Tuple[str, str]] = None,
         available_tasks: List[str] = None,
         use_history: bool = False,
+        **kwargs,
     ) -> str:
         if chat_history is None:
             chat_history = []
@@ -142,4 +152,5 @@ class CHA(BaseModel):
             chat_history=chat_history,
             tasks_list=available_tasks,
             use_history=use_history,
+            **kwargs,
         )

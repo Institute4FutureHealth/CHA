@@ -44,6 +44,7 @@ class BasePlanner(BaseModel):
 
     llm_model: BaseLLM = None
     available_tasks: Optional[List[BaseTask]] = []
+    use_previous_action: bool = False
 
     @property
     def _planner_type(self):
@@ -73,7 +74,10 @@ class BasePlanner(BaseModel):
         """
 
         return "\n".join(
-            [f"[{task.get_dict()}]" for task in self.available_tasks]
+            [
+                f"\n-----------------------------------\n{task.get_dict()}\n-----------------------------------\n"
+                for task in self.available_tasks
+            ]
         )
 
     def get_available_tasks_list(self) -> List[str]:

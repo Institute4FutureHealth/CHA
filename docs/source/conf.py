@@ -46,7 +46,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/Mahyar12/CHA/tree/main",
+            "url": "https://github.com/Institute4FutureHealth/CHA",
             "icon": "fa-brands fa-github",
         },
     ],
