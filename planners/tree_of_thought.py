@@ -86,12 +86,11 @@ Begin!
 MetaData:
 {meta}
 =========================
-History:
-{history}
-=========================
 {previous_actions}
 =========================
-Question: {input}
+{history}
+=========================
+USER: {input} \n CHA:
 """,
             """
 {strategy}
