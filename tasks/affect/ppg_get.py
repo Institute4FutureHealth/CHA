@@ -55,6 +55,17 @@ class PPGGet(Affect):
         self,
         inputs: List[Any],
     ) -> str:
+        """
+            Reads the PPG file for the requested patient id and the duration.
+
+        Args:
+            input (str): Input data for the task.
+        Return:
+            str: Result of the task execution.
+        Raise:
+            NotImplementedError: Subclasses must implement the execute method.
+
+        """
         user_id = inputs[0].strip()
         full_dir = os.path.join(
             self.local_dir, user_id, self.device_name

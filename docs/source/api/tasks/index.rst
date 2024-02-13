@@ -28,5 +28,4 @@ help understanding how to add new tasks.
    ask_user
    google_translator
    serpapi
-   read_from_datapipe
    playwright/index
