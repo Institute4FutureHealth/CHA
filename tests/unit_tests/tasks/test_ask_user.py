@@ -1,6 +1,6 @@
 import pytest
 
-from tasks.ask_user import AskUser
+from tasks.internals.ask_user import AskUser
 
 
 def test_ask_user_execute():

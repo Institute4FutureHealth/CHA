@@ -15,11 +15,12 @@ class AskUser(BaseTask):
 
     name: str = "ask_user"
     chat_name: str = "AskUser"
-    description: str = "This task can be used when there is ambiguity in the users' query or more information is needed to be gathered from user."
+    description: str = (
+        "This task can be used when there is ambiguity in the users' query or more information is needed to be gathered from user. "
+        "When there is no task to call, you should call this task."
+    )
     dependencies: List[str] = []
-    inputs: List[str] = [
-        "The text returned to user. It should be relevant and very detailed based on the latest user's Question."
-    ]
+    inputs: List[str] = ["The text returned to user."]
     outputs: List[str] = []
     output_type: bool = False
     return_direct: bool = True

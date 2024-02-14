@@ -8,9 +8,9 @@ from tasks.affect import PPGGet
 from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
-from tasks.ask_user import AskUser
 from tasks.google_search import GoogleSearch
 from tasks.google_translator import GoogleTranslate
+from tasks.internals.ask_user import AskUser
 from tasks.nutritionix.calculate_food_risk_factor import (
     CalculateFoodRiskFactor,
 )
@@ -31,7 +31,6 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.AFFECT_SLEEP_ANALYSIS: SleepAnalysis,
     TaskType.AFFECT_ACTIVITY_ANALYSIS: ActivityAnalysis,
     TaskType.GOOGLE_TRANSLATE: GoogleTranslate,
-    TaskType.ASK_USER: AskUser,
     TaskType.TEST_FILE: TestFile,
     TaskType.RUN_PYTHON_CODE: RunPythonCode,
     TaskType.PPG_GET: PPGGet,
@@ -40,4 +39,8 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.QUERY_NUTRITIONIX: QueryNutritionix,
     TaskType.CALCULATE_FOOD_RISK_FACTOR: CalculateFoodRiskFactor,
     TaskType.GOOGLE_SEARCH: GoogleSearch,
+}
+
+INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
+    TaskType.ASK_USER: AskUser,
 }

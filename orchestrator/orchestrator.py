@@ -31,6 +31,7 @@ from response_generators.response_generator_types import (
 from tasks.initialize_task import initialize_task
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
+from tasks.types import INTERNAL_TASK_TO_CLASS
 
 
 class Orchestrator(BaseModel):
@@ -148,7 +149,10 @@ class Orchestrator(BaseModel):
 
         """
         if available_tasks is None:
-            available_tasks = []
+            available_tasks = INTERNAL_TASK_TO_CLASS.keys()
+        else:
+            available_tasks += INTERNAL_TASK_TO_CLASS.keys()
+
         if previous_actions is None:
             previous_actions = []
 
@@ -494,7 +498,7 @@ class Orchestrator(BaseModel):
                 break
             except ReturnDirectException as e:
                 final_response = e.message
-                break
+                return final_response
             except (Exception, SystemExit) as error:
                 self.print_log(
                     "error", f"Planning Error:\n{error}\n\n"

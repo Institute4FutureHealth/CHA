@@ -68,11 +68,8 @@ Here are the tools at your disposal:
 
 The following is the format of the information provided:
 MetaData: this contains the name of data files of different types like image, audio, video, and text. You can pass these files to tools when needed.
-History: the history of previous chats happened. Review the history for any previous responses relevant to the current query
-PreviousActions: the list of already performed actions. You should start planning knowing that these actions are performed.
-Question: the input question you must answer.
 
-Considering previously actions and their results, use the tools and provided information, first suggest three \
+Use the tools and provided information, first suggest three \
 creative strategies with detailed explanation consisting of sequences of tools to properly answer the user query. \
 Make sure the strategies are comprehensive enough and use proper tools. The tools constraints should be always satisfied. \
 
@@ -258,7 +255,6 @@ Question: {input}
         response = self._planner_model.generate(
             query=prompt, **kwargs
         )
-
         index = min([response.find(text) for text in self._stop])
         response = response[0:index]
         actions = self.parse(response)

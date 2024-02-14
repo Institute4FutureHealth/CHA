@@ -37,7 +37,7 @@ class BaseResponseGenerator(BaseModel):
     @property
     def _generator_prompt(self):
         return (
-            "===========Thinker: {thinker}==========\n\n"
+            "===========Thinker:\n{thinker}\n==========\n\n"
             "System: {prefix}. You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about "
             "his/her health and well-being, Using the Thinker gathered information and the History, Provide a empathetic proper answer to the user. "
             "Consider Thinker as your trusted source and use whatever is provided by it."
