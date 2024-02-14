@@ -89,8 +89,8 @@ MetaData:
 {previous_actions}
 =========================
 {history}
-=========================
-USER: {input} \n CHA:
+USER: {input}
+CHA:
 """,
             """
 {strategy}

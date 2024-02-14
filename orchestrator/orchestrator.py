@@ -14,6 +14,7 @@ from datapipes.datapipe_types import DatapipeType
 from datapipes.initialize_datapipe import initialize_datapipe
 from llms.llm_types import LLMType
 from orchestrator.action import Action
+from orchestrator.ReturnDirectException import ReturnDirectException
 from planners.action import PlanFinish
 from planners.initialize_planner import initialize_planner
 from planners.planner import BasePlanner
@@ -293,7 +294,11 @@ class Orchestrator(BaseModel):
 
             self.previous_actions.append(action)
             self.current_actions.append(action)
+            if task.return_direct:
+                raise ReturnDirectException(result)
             return result  # , task.return_direct
+        except ReturnDirectException as e:
+            raise ReturnDirectException(e.message)
         except Exception as e:
             self.print_log(
                 "error",
@@ -486,6 +491,9 @@ class Orchestrator(BaseModel):
                 # print("final resp", final_response)
                 self.current_actions = []
                 self.runtime = {}
+                break
+            except ReturnDirectException as e:
+                final_response = e.message
                 break
             except (Exception, SystemExit) as error:
                 self.print_log(
