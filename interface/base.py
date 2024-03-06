@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from pydantic import Extra
 from pydantic import model_validator
 
+from default_prompts import DefaultPrompts
+
 
 class Interface(BaseModel):
     gr: Any = None
@@ -116,12 +118,26 @@ class Interface(BaseModel):
                     label="Tasks List",
                     info="The list of available tasks. Select the ones that you want to use.",
                 )
+
+            with self.gr.Row():
+                response_generator_main_prompt = self.gr.Textbox(
+                    scale=9,
+                    label="Respnose Generator Prompt",
+                    info="Put your prompt for the response generator here.",
+                    value=DefaultPrompts.RESPONSE_GENERATOR_MAIN_PROMPT,
+                )
             clear = self.gr.ClearButton([msg, chatbot])
 
             clear.click(reset)
             msg.submit(
                 respond,
-                [msg, chatbot, check_box, tasks],
+                [
+                    msg,
+                    chatbot,
+                    check_box,
+                    response_generator_main_prompt,
+                    tasks,
+                ],
                 [msg, chatbot],
             )
             btn.upload(

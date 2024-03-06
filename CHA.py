@@ -91,12 +91,24 @@ class CHA(BaseModel):
 
         return response
 
-    def respond(self, message, chat_history, check_box, tasks_list):
+    def respond(
+        self,
+        message,
+        chat_history,
+        check_box,
+        response_generator_main_prompt,
+        tasks_list,
+    ):
+        kwargs = {
+            "response_generator_main_prompt": response_generator_main_prompt
+        }
+
         response = self._run(
             query=message,
             chat_history=chat_history,
             tasks_list=tasks_list,
             use_history=check_box,
+            **kwargs,
         )
 
         files = parse_addresses(response)

@@ -5,6 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
+from default_prompts import DefaultPrompts
 from llms.llm import BaseLLM
 
 
@@ -17,9 +18,10 @@ class BaseResponseGenerator(BaseModel):
     """
 
     llm_model: BaseLLM = None
-    prefix: str = ""
     summarize_prompt: bool = True
     max_tokens_allowed: int = 10000
+
+    main_prompt: str = DefaultPrompts.RESPONSE_GENERATOR_MAIN_PROMPT
 
     class Config:
         """Configuration for this pydantic object."""
@@ -38,16 +40,7 @@ class BaseResponseGenerator(BaseModel):
     def _generator_prompt(self):
         return (
             "===========Thinker:\n{thinker}\n==========\n\n"
-            "System: {prefix}. You are very helpful empathetic health assistant and your goal is to help the user to get accurate information about "
-            "his/her health and well-being, Using the Thinker gathered information and the History, Provide a empathetic proper answer to the user. "
-            "Consider Thinker as your trusted source and use whatever is provided by it."
-            "Make sure that the answer is explanatory enough without repeatition"
-            "Don't change Thinker returned urls or references. "
-            "Also add explanations based on instructions from the "
-            "Thinker don't directly put the instructions in the final answer to the user."
-            "Never answer outside of the Thinker's provided information."
-            "Additionally, refrain from including or using any keys, such as 'datapipe:6d808840-1fbe-45a5-859a-abfbfee93d0e,' in your final response."
-            "Return all `address:[path]` exactly as they are."
+            "System: {main_prompt}"
             "User: {query}"
         )
 
@@ -99,7 +92,6 @@ class BaseResponseGenerator(BaseModel):
 
     def generate(
         self,
-        prefix: str = "",
         query: str = "",
         thinker: str = "",
         **kwargs: Any,
@@ -132,10 +124,16 @@ class BaseResponseGenerator(BaseModel):
         ):
             thinker = self.summarize_thinker_response(thinker)
 
+        main_prompt = (
+            kwargs["response_generator_main_prompt"]
+            if "response_generator_main_prompt" in kwargs
+            else self.main_prompt
+        )
+
         prompt = (
             self._generator_prompt.replace("{query}", query)
             .replace("{thinker}", thinker)
-            .replace("{prefix}", prefix)
+            .replace("{main_prompt}", main_prompt)
         )
         kwargs["max_tokens"] = 2000
         response = self._response_generator_model.generate(

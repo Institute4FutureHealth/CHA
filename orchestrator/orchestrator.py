@@ -410,19 +410,13 @@ class Orchestrator(BaseModel):
         retries = 0
         while retries < self.max_final_answer_execute_retries:
             try:
-                prefix = (
-                    kwargs["response_generator_prefix_prompt"]
-                    if "response_generator_prefix_prompt" in kwargs
-                    else ""
-                )
                 return self.response_generator.generate(
                     query=query,
                     thinker=thinker,
-                    prefix=prefix,
                     **kwargs,
                 )
             except Exception as e:
-                print(e)
+                logging.exception(e)
                 retries += 1
         return "We currently have problem processing your question. Please try again after a while."
 
@@ -525,6 +519,7 @@ class Orchestrator(BaseModel):
             "response_generator",
             f"Final Answer Generation Started...\nInput Prompt: \n\n{final_response}",
         )
+
         final_response = self.generate_final_answer(
             query=query, thinker=final_response, **kwargs
         )
