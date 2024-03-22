@@ -5,14 +5,12 @@ from urllib.parse import urlparse
 
 import requests
 from pydantic import model_validator
+from playwright.sync_api import sync_playwright, Playwright
 
-from tasks.playwright.base import BaseBrowser
-from tasks.playwright.utils import (
-    get_current_page,
-)
+from tasks.task import BaseTask
 
 
-class ExtractText(BaseBrowser):
+class ExtractText(BaseTask):
     """
     **Description:**
 
@@ -110,10 +108,6 @@ class ExtractText(BaseBrowser):
 
         self.validate_url(inputs[0].strip())
 
-        if self.sync_browser is None:
-            raise ValueError(
-                f"Synchronous browser not provided to {self.name}"
-            )
 
         if inputs[0].lower().endswith(".pdf"):
             # Request the PDF content from the URL
@@ -135,21 +129,26 @@ class ExtractText(BaseBrowser):
             else:
                 return "Error extracting text. The url is wrong. Try again."
         else:
-            page = get_current_page(self.sync_browser)
-            response = page.goto(inputs[0])
-            status = response.status if response else "unknown"
+            with sync_playwright() as playwright:
+                chromium = playwright.chromium # or "firefox" or "webkit".
+                browser = chromium.launch()
+                page = browser.new_page()
+                response = page.goto(inputs[0])
+                status = response.status if response else "unknown"
 
-            if status == 200:
-                html_content = page.content()
-                # Parse the HTML content with BeautifulSoup
-                soup = BeautifulSoup(html_content, "lxml")
-                page.close()
-                return " ".join(
-                    text for text in soup.stripped_strings
-                )
-            else:
-                page.close()
-                return "Error extracting text. The url is wrong. Try again."
+                if status == 200:
+                    html_content = page.content()
+                    # Parse the HTML content with BeautifulSoup
+                    soup = BeautifulSoup(html_content, "lxml")
+                    page.close()
+                    browser.close()
+                    return " ".join(
+                        text for text in soup.stripped_strings
+                    )
+                else:
+                    page.close()
+                    browser.close()
+                    return "Error extracting text. The url is wrong. Try again."
 
     def explain(
         self,

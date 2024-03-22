@@ -43,7 +43,8 @@ def create_sync_playwright_browser(
 
     """
 
-    from playwright.sync_api import sync_playwright
+    #from playwright.sync_api import sync_playwright
 
-    browser = sync_playwright().start()
-    return browser.chromium.launch(headless=headless)
+    #browser = sync_playwright().start()
+    #return browser.chromium.launch(headless=headless)
+    return None
