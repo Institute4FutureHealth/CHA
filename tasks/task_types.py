@@ -18,3 +18,4 @@ class TaskType(str, Enum):
     QUERY_NUTRITIONIX = "query_nutritionix"
     CALCULATE_FOOD_RISK_FACTOR = "calculate_food_risk_factor"
     GOOGLE_SEARCH = "google_search"
+    AUDIO_TO_TEXT = "audio_to_text"

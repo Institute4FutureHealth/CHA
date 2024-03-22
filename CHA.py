@@ -16,7 +16,6 @@ from response_generators.response_generator_types import (
 from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 from tasks.types import TASK_TO_CLASS
-from utils import parse_addresses
 
 
 class CHA(BaseModel):
@@ -50,6 +49,7 @@ class CHA(BaseModel):
     def _run(
         self,
         query: str,
+        meta: List[str] = None,
         chat_history: List[Tuple[str, str]] = None,
         tasks_list: List[str] = None,
         use_history: bool = False,
@@ -59,7 +59,10 @@ class CHA(BaseModel):
             chat_history = []
         if tasks_list is None:
             tasks_list = []
+        if meta is None:
+            meta = []
 
+        self.meta += meta
         history = self._generate_history(chat_history=chat_history)
         # query += f"User: {message}"
         # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
@@ -91,64 +94,21 @@ class CHA(BaseModel):
 
         return response
 
-    def respond(
-        self,
-        message,
-        chat_history,
-        check_box,
-        response_generator_main_prompt,
-        tasks_list,
-    ):
-        kwargs = {
-            "response_generator_main_prompt": response_generator_main_prompt
-        }
-
-        response = self._run(
-            query=message,
-            chat_history=chat_history,
-            tasks_list=tasks_list,
-            use_history=check_box,
-            **kwargs,
-        )
-
-        files = parse_addresses(response)
-        print("files", files)
-        if len(files) == 0:
-            chat_history.append((message, response))
-        else:
-            for i in range(len(files)):
-                chat_history.append(
-                    (
-                        message if i == 0 else None,
-                        response[: files[i][1]],
-                    )
-                )
-                chat_history.append((None, (files[i][0],)))
-                response = response[files[i][2] :]
-
-        return "", chat_history
-
     def reset(self):
         self.previous_actions = []
 
     def run_with_interface(self):
         available_tasks = [key.value for key in TASK_TO_CLASS.keys()]
-        interface = Interface()
+        interface = Interface(run_query=self.run)
         interface.prepare_interface(
-            respond=self.respond,
             reset=self.reset,
-            upload_meta=self.upload_meta,
             available_tasks=available_tasks,
         )
-
-    def upload_meta(self, history, file):
-        history = history + [((file.name,), None)]
-        self.meta.append(file.name)
-        return history
 
     def run(
         self,
         query: str,
+        meta: List[str] = None,
         chat_history: List[Tuple[str, str]] = None,
         available_tasks: List[str] = None,
         use_history: bool = False,
@@ -158,9 +118,12 @@ class CHA(BaseModel):
             chat_history = []
         if available_tasks is None:
             available_tasks = []
+        if meta is None:
+            meta = []
 
         return self._run(
             query=query,
+            meta=meta,
             chat_history=chat_history,
             tasks_list=available_tasks,
             use_history=use_history,

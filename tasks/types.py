@@ -11,6 +11,7 @@ from tasks.affect import StressAnalysis
 from tasks.google_search import GoogleSearch
 from tasks.google_translator import GoogleTranslate
 from tasks.internals.ask_user import AskUser
+from tasks.internals.audio_to_text import AudioToText
 from tasks.nutritionix.calculate_food_risk_factor import (
     CalculateFoodRiskFactor,
 )
@@ -43,4 +44,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.ASK_USER: AskUser,
+    TaskType.AUDIO_TO_TEXT: AudioToText,
 }

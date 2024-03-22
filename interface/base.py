@@ -1,16 +1,24 @@
+import shutil
+import uuid
 from typing import Any
 from typing import Dict
 
+import numpy as np
+from gradio.data_classes import FileData
+from gradio_multimodalchatbot import MultimodalChatbot
 from pydantic import BaseModel
 from pydantic import Extra
 from pydantic import model_validator
 
 from default_prompts import DefaultPrompts
+from utils import parse_addresses
 
 
 class Interface(BaseModel):
     gr: Any = None
     interface: Any = None
+    run_query: Any = None
+    meta_data: Any = None
 
     @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
@@ -54,11 +62,86 @@ class Interface(BaseModel):
         extra = Extra.forbid
         arbitrary_types_allowed = True
 
+    def copy_file(self, file_path):
+        dest_path = (
+            f"./data/{str(uuid.uuid4())}.{file_path.split('.')[-1]}"
+        )
+        shutil.copy(file_path, dest_path)
+        return dest_path
+
+    def add_meta(
+        self,
+        meta_message,
+        metabot_history,
+        mic,
+    ):
+        if self.meta_data is None:
+            self.meta_data = []
+
+        new_metas = []
+        for file in meta_message["files"]:
+            dest_path = self.copy_file(file["path"])
+            new_metas.append({"file": FileData(path=dest_path)})
+
+        if mic is not None:
+            dest_path = self.copy_file(mic)
+            new_metas.append({"file": FileData(path=dest_path)})
+
+        self.meta_data += [
+            {
+                "description": meta_message["text"],
+                "path": meta["file"].path,
+            }
+            for meta in new_metas
+        ]
+
+        metabot_history.append(
+            [
+                {"text": meta_message["text"], "files": new_metas},
+                {"text": "", "files": []},
+            ]
+        )
+        return metabot_history, {"text": "", "files": []}, None
+
+    def respond(
+        self,
+        message,
+        chat_history,
+        check_box,
+        response_generator_main_prompt,
+        tasks_list,
+    ):
+        kwargs = {
+            "response_generator_main_prompt": response_generator_main_prompt
+        }
+        response = self.run_query(
+            query=message,
+            meta=self.meta_data,
+            chat_history=chat_history,
+            available_tasks=tasks_list,
+            use_history=check_box,
+            **kwargs,
+        )
+
+        answer, files = parse_addresses(response)
+        chat_history.append(
+            [
+                {"text": message, "files": []},
+                {
+                    "text": answer,
+                    "files": [
+                        {"file": FileData(path=file)}
+                        for file in files
+                    ],
+                },
+            ]
+        )
+
+        return "", chat_history
+
     def prepare_interface(
         self,
-        respond,
         reset,
-        upload_meta,
         available_tasks,
         share=False,
     ):
@@ -91,33 +174,49 @@ class Interface(BaseModel):
         """
 
         with self.gr.Blocks() as demo:
-            chatbot = self.gr.Chatbot(bubble_full_width=False)
             with self.gr.Row():
-                msg = self.gr.Textbox(
-                    scale=9,
-                    label="Question",
-                    info="Put your query here and press enter.",
-                )
-                btn = self.gr.UploadButton(
-                    "📁",
-                    scale=1,
-                    file_types=["image", "video", "audio", "text"],
-                )
-                check_box = self.gr.Checkbox(
-                    scale=1,
-                    value=True,
-                    label="Use History",
-                    info="If checked, the chat history will be sent over along with the next query.",
-                )
+                with self.gr.Column(scale=9):
+                    chatbot = MultimodalChatbot()
+                    with self.gr.Row():
+                        msg = self.gr.Textbox(
+                            scale=9,
+                            label="Question",
+                            info="Put your query here and press enter.",
+                        )
+                        check_box = self.gr.Checkbox(
+                            scale=1,
+                            value=True,
+                            label="Use History",
+                            info="If checked, the chat history will be used for answering.",
+                        )
+                    with self.gr.Row():
+                        tasks = self.gr.Dropdown(
+                            scale=9,
+                            value=[],
+                            choices=available_tasks,
+                            multiselect=True,
+                            label="Tasks List",
+                            info="The list of available tasks. Select the ones that you want to use.",
+                        )
 
-            with self.gr.Row():
-                tasks = self.gr.Dropdown(
-                    value=[],
-                    choices=available_tasks,
-                    multiselect=True,
-                    label="Tasks List",
-                    info="The list of available tasks. Select the ones that you want to use.",
-                )
+                with self.gr.Column(scale=4):
+                    with self.gr.Row():
+                        metabot = MultimodalChatbot(label="Meta Data")
+                    with self.gr.Row():
+                        meta_msg = self.gr.MultimodalTextbox(
+                            scale=9,
+                            interactive=True,
+                            file_types=["image"],
+                            label="Question",
+                            info="Put your query here and press enter.",
+                            placeholder="Enter message or upload file...",
+                        )
+                    with self.gr.Row():
+                        mic = self.gr.Audio(
+                            scale=4,
+                            sources=["microphone"],
+                            type="filepath",
+                        )
 
             with self.gr.Row():
                 response_generator_main_prompt = self.gr.Textbox(
@@ -126,11 +225,12 @@ class Interface(BaseModel):
                     info="Put your prompt for the response generator here.",
                     value=DefaultPrompts.RESPONSE_GENERATOR_MAIN_PROMPT,
                 )
-            clear = self.gr.ClearButton([msg, chatbot])
+
+            clear = self.gr.ClearButton([msg, chatbot, mic, meta_msg])
 
             clear.click(reset)
             msg.submit(
-                respond,
+                self.respond,
                 [
                     msg,
                     chatbot,
@@ -140,10 +240,25 @@ class Interface(BaseModel):
                 ],
                 [msg, chatbot],
             )
-            btn.upload(
-                upload_meta, [chatbot, btn], [chatbot], queue=False
+            meta_msg.submit(
+                self.add_meta,
+                [
+                    meta_msg,
+                    metabot,
+                    mic,
+                ],
+                [metabot, meta_msg, mic],
             )
 
+            mic.stop_recording(
+                self.add_meta,
+                [
+                    meta_msg,
+                    metabot,
+                    mic,
+                ],
+                [metabot, meta_msg, mic],
+            )
         demo.launch(share=share)
         self.interface = demo
 

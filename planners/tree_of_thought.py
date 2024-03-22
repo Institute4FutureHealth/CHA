@@ -225,7 +225,7 @@ Question: {input}
         prompt = (
             self._planner_prompt[0]
             .replace("{input}", query)
-            .replace("{meta}", ", ".join(meta))
+            .replace("{meta}", meta)
             .replace(
                 "{history}", history if use_history else "No History"
             )

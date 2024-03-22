@@ -354,8 +354,7 @@ class Orchestrator(BaseModel):
             prompt = prompt.replace("{history}", history)
 
         prompt = (
-            prompt.replace("{meta}", ", ".join(meta))
-            + f"\n{final_response}"
+            prompt.replace("{meta}", meta) + f"\n{final_response}"
         )
         return prompt
 

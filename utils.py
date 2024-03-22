@@ -35,9 +35,7 @@ def get_from_env(
 
 
 def parse_addresses(input_string: str):
-    pattern = r"address:([a-zA-Z0-9/_-]+\.(?:png|csv|json))"
-    matches = [
-        (match.group(1), match.start(), match.end())
-        for match in re.finditer(pattern, input_string)
-    ]
-    return matches
+    pattern = r"address:([a-zA-Z0-9/_-]+\.(?:png|csv|json|wav))"
+    cleaned_text = re.sub(pattern, "", input_string)
+    addresses = re.findall(pattern, input_string)
+    return cleaned_text, addresses

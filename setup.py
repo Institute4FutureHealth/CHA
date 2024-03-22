@@ -46,6 +46,10 @@ setup(
             "torchvision",
             "torchdata",
             "googlesearch-python",
+            "torchaudio",
+            "gradio_multimodalchatbot",
+            "transformers",
+            "numpy",
         ],
         "minimum": [
             # minimum requirements for running the codes
