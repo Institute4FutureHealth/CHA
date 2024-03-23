@@ -31,6 +31,7 @@ class GoogleTranslate(BaseTask):
     ]
     outputs: List[str] = []
     output_type: bool = False
+    executor_task: bool = True
 
     translator: Any = None  #: :meta private:
 

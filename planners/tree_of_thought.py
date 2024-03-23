@@ -97,6 +97,11 @@ CHA:
 Tools:
 {tool_names}
 =========================
+MetaData:
+{meta}
+=========================
+{history}
+USER: {input}
 
 You are skilled python programmer that can solve problems and convert them into python codes. \
 Using the selected final strategy mentioned in the 'Decision:
@@ -131,6 +136,8 @@ Question: {input}
                     )
                     + "\n-----------------------------------\n"
                 )
+                if not task.executor_task
+                else ""
                 for task in self.available_tasks
             ]
         )
@@ -249,6 +256,10 @@ Question: {input}
             .replace("{tool_names}", self.get_available_tasks())
             .replace("{previous_actions}", previous_actions_prompt)
             .replace("{input}", query)
+            .replace("{meta}", meta)
+            .replace(
+                "{history}", history if use_history else "No History"
+            )
         )
         print("prompt2", prompt)
         kwargs["stop"] = self._stop

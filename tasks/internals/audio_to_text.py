@@ -25,11 +25,12 @@ class AudioToText(BaseTask):
         "You should use this task only if inside the Meta Data there are some audio files with .wav suffix."
     )
     dependencies: List[str] = []
-    inputs: List[str] = ["The datapipe address of the audio path."]
+    inputs: List[str] = ["The meta data id of the audio path."]
     outputs: List[str] = []
     output_type: bool = False
     return_direct: bool = False
     transcriber: Any = None
+    executor_task: bool = True
 
     @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
@@ -71,7 +72,9 @@ class AudioToText(BaseTask):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        sample_rate, data = wavfile.read(inputs[0])
+        print("input", inputs[0])
+        path = self.datapipe.retrieve(inputs[0])
+        sample_rate, data = wavfile.read(path)
         return self.transcribe(sample_rate, data)
 
     def explain(

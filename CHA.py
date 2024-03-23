@@ -29,7 +29,6 @@ class CHA(BaseModel):
     promptist: str = ""
     response_generator_llm: str = LLMType.OPENAI
     response_generator: str = ResponseGeneratorType.BASE_GENERATOR
-    meta: List[str] = []
     verbose: bool = False
 
     def _generate_history(
@@ -62,7 +61,6 @@ class CHA(BaseModel):
         if meta is None:
             meta = []
 
-        self.meta += meta
         history = self._generate_history(chat_history=chat_history)
         # query += f"User: {message}"
         # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
@@ -86,7 +84,7 @@ class CHA(BaseModel):
 
         response = self.orchestrator.run(
             query=query,
-            meta=self.meta,
+            meta=meta,
             history=history,
             use_history=use_history,
             **kwargs,

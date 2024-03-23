@@ -83,14 +83,22 @@ class Interface(BaseModel):
             dest_path = self.copy_file(file["path"])
             new_metas.append({"file": FileData(path=dest_path)})
 
+        mic_dest_path = ""
         if mic is not None:
             dest_path = self.copy_file(mic)
             new_metas.append({"file": FileData(path=dest_path)})
+            mic_dest_path = dest_path
+            meta_message[
+                "text"
+            ] = "This file is the user audio that contains user question or important information."
 
         self.meta_data += [
             {
                 "description": meta_message["text"],
                 "path": meta["file"].path,
+                "tag": "user_audio"
+                if meta["file"].path == mic_dest_path
+                else "other",
             }
             for meta in new_metas
         ]
@@ -103,6 +111,42 @@ class Interface(BaseModel):
         )
         return metabot_history, {"text": "", "files": []}, None
 
+    def prepare_chat_history(self, chat_history):
+        chat = []
+        for c in chat_history:
+            chat.append([c[0].text, c[1].text])
+        return chat
+
+    def respond_audio(
+        self,
+        message,
+        chat_history,
+        check_box,
+        response_generator_main_prompt,
+        tasks_list,
+        meta_message,
+        metabot_history,
+        mic,
+    ):
+        metabot_history, meta_message, mic = self.add_meta(
+            meta_message, metabot_history, mic
+        )
+        message, chat_history = self.respond(
+            message,
+            chat_history,
+            check_box,
+            response_generator_main_prompt,
+            tasks_list,
+        )
+
+        return (
+            metabot_history,
+            chat_history,
+            message,
+            meta_message,
+            mic,
+        )
+
     def respond(
         self,
         message,
@@ -114,10 +158,11 @@ class Interface(BaseModel):
         kwargs = {
             "response_generator_main_prompt": response_generator_main_prompt
         }
-        response = self.run_query(
+        print("self meta", self.meta_data)
+        query, response = self.run_query(
             query=message,
             meta=self.meta_data,
-            chat_history=chat_history,
+            chat_history=self.prepare_chat_history(chat_history),
             available_tasks=tasks_list,
             use_history=check_box,
             **kwargs,
@@ -126,7 +171,7 @@ class Interface(BaseModel):
         answer, files = parse_addresses(response)
         chat_history.append(
             [
-                {"text": message, "files": []},
+                {"text": query, "files": []},
                 {
                     "text": answer,
                     "files": [
@@ -137,6 +182,7 @@ class Interface(BaseModel):
             ]
         )
 
+        self.meta_data = []
         return "", chat_history
 
     def prepare_interface(
@@ -251,13 +297,18 @@ class Interface(BaseModel):
             )
 
             mic.stop_recording(
-                self.add_meta,
+                self.respond_audio,
                 [
+                    msg,
+                    chatbot,
+                    check_box,
+                    response_generator_main_prompt,
+                    tasks,
                     meta_msg,
                     metabot,
                     mic,
                 ],
-                [metabot, meta_msg, mic],
+                [metabot, chatbot, msg, meta_msg, mic],
             )
         demo.launch(share=share)
         self.interface = demo

@@ -41,6 +41,6 @@ def initialize_task(task: str = "serpapi", **kwargs: Any) -> BaseTask:
         if task in TASK_TO_CLASS
         else INTERNAL_TASK_TO_CLASS[task]
     )
-    print("kwargs", kwargs)
+
     task = task_cls(**kwargs)
     return task

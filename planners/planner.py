@@ -76,6 +76,8 @@ class BasePlanner(BaseModel):
         return "\n".join(
             [
                 f"\n-----------------------------------\n{task.get_dict()}\n-----------------------------------\n"
+                if not task.executor_task
+                else ""
                 for task in self.available_tasks
             ]
         )

@@ -9,6 +9,7 @@ from typing import List
 from pydantic import BaseModel
 
 from datapipes.datapipe import DataPipe
+from orchestrator.meta import Meta
 
 
 class BaseTask(BaseModel):
@@ -47,12 +48,14 @@ class BaseTask(BaseModel):
     inputs: List[str] = []
     outputs: List[str] = []
     datapipe: DataPipe = None
+    meta_data: List[Meta] = []
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
     output_type: bool = False
     # False if planner should continue. True if after this task the planning should be
     # on pause or stop. examples are when you have a task that asks user to provide more information
     return_direct: bool = False
+    executor_task: bool = False
 
     class Config:
         """Configuration for this pydantic object."""

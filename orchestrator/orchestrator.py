@@ -14,6 +14,7 @@ from datapipes.datapipe_types import DatapipeType
 from datapipes.initialize_datapipe import initialize_datapipe
 from llms.llm_types import LLMType
 from orchestrator.action import Action
+from orchestrator.meta import Meta
 from orchestrator.ReturnDirectException import ReturnDirectException
 from planners.action import PlanFinish
 from planners.initialize_planner import initialize_planner
@@ -64,6 +65,7 @@ class Orchestrator(BaseModel):
     error_logger: Optional[logging.Logger] = None
     previous_actions: List[str] = []
     current_actions: List[str] = []
+    meta_data: List[Meta] = []
     runtime: Dict[str, bool] = {}
 
     class Config:
@@ -156,6 +158,7 @@ class Orchestrator(BaseModel):
         if previous_actions is None:
             previous_actions = []
 
+        meta_data = []
         planner_logger = (
             tasks_logger
         ) = (
@@ -226,6 +229,7 @@ class Orchestrator(BaseModel):
         return self(
             planner=planner,
             datapipe=datapipe,
+            meta_data=meta_data,
             promptist=None,
             response_generator=response_generator,
             available_tasks=tasks,
@@ -339,11 +343,14 @@ class Orchestrator(BaseModel):
             )
         return final_response
 
+    def generate_metas_prompt(self):
+        return "\n\n".join([meta.dict() for meta in self.meta_data])
+
     def response_generator_generate_prompt(
         self,
         final_response: str = "",
         history: str = "",
-        meta: List[str] = None,
+        meta: str = "",
         use_history: bool = False,
     ) -> str:
         if meta is None:
@@ -421,7 +428,7 @@ class Orchestrator(BaseModel):
 
     def run(
         self,
-        query: str,
+        query: str = "",
         meta: List[str] = None,
         history: str = "",
         use_history: bool = False,
@@ -448,14 +455,26 @@ class Orchestrator(BaseModel):
         """
         if meta is None:
             meta = []
-        i = 0
-        meta_infos = ""
-        for meta_data in meta:
-            key = self.datapipe.store(meta_data)
-            meta_infos += (
-                f"The file with the name ${meta_data.split('/')[-1]}$ is stored with the key $datapipe:{key}$."
-                "Pass this key to the tools when you want to send them over to the tool\n"
+
+        print("metas", meta)
+        for m in meta:
+            key = self.datapipe.store(m["path"])
+            self.meta_data.append(
+                Meta(
+                    id=key,
+                    path=m["path"],
+                    type=m["path"].split(".")[-1],
+                    description=m["description"],
+                    tag=m["tag"],
+                )
             )
+            if m["tag"] == "user_audio":
+                query += self.available_tasks[
+                    "audio_to_text"
+                ].execute([key])
+                self.meta_data[-1].add_task("audio_to_text")
+        i = 0
+
         prompt = self.planner_generate_prompt(query)
         if "google_translate" in self.available_tasks:
             prompt = self.available_tasks["google_translate"].execute(
@@ -473,10 +492,11 @@ class Orchestrator(BaseModel):
                     "planner",
                     f"Continueing Planning... Try number {i}\n\n",
                 )
+
                 actions = self.plan(
                     query=prompt,
                     history=history,
-                    meta=meta_infos,
+                    meta=self.generate_metas_prompt(),
                     use_history=use_history,
                     **kwargs,
                 )
@@ -491,7 +511,8 @@ class Orchestrator(BaseModel):
                 break
             except ReturnDirectException as e:
                 final_response = e.message
-                return final_response
+                # return query, final_response
+                break
             except (Exception, SystemExit) as error:
                 self.print_log(
                     "error", f"Planning Error:\n{error}\n\n"
@@ -510,7 +531,7 @@ class Orchestrator(BaseModel):
         final_response = self.response_generator_generate_prompt(
             final_response=final_response,
             history=history,
-            meta=meta_infos,
+            meta=self.generate_metas_prompt(),
             use_history=use_history,
         )
 
@@ -532,4 +553,4 @@ class Orchestrator(BaseModel):
                 "google_translate"
             ].execute([final_response, source_language])[0]
 
-        return final_response
+        return query, final_response

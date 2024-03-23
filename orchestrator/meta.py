@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import List
 
 from pydantic import BaseModel
 
@@ -19,19 +20,25 @@ class Meta(BaseModel):
     path: str = ""
     type: str = ""
     description: str = ""
-    datapipe: DataPipe = None
+    tag: str = ""
+    tasks_already_run: List[str] = []
 
     class Config:
         """Configuration for this pydantic object."""
 
         arbitrary_types_allowed = True
 
-    def dict(self):
-        response = self.task_response
+    def add_task(self, task_name):
+        self.tasks_already_run.append(task_name)
 
+    def dict(self):
         return (
             "\n------------------\n"
-            f"{self.task_name}: {self.task_inputs}\n"
-            f"{response}"
+            f"id: {self.id}\n"
+            f"filename: {self.path.split('/')[-1]}\n"
+            f"file_type: {self.type}\n"
+            f"tag: {self.tag}\n"
+            f"description: {self.description}\n"
+            f"The following tasks are already performed. You should not call them again for this meta data: {self.tasks_already_run}"
             "\n------------------\n"
         )
