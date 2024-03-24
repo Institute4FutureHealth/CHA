@@ -7,6 +7,7 @@ import requests
 from pydantic import model_validator
 
 from tasks.task import BaseTask
+from tasks.task import OutputType
 
 
 class CalculateFoodRiskFactor(BaseTask):
@@ -49,7 +50,7 @@ class CalculateFoodRiskFactor(BaseTask):
         "**Phosphorus**: The total phosphorus of the food for the serving size.\n"
         "**Phosphorus_Risk**: The risk of the total consumed phosphorus based on the guidelines.\n"
     ]
-    output_type: bool = True
+    output_type: OutputType = OutputType.DATAPIPE
 
     def check_rules(self, total_intake):
         fat_calorie_ratio = 9

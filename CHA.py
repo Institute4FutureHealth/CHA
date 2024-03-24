@@ -82,7 +82,7 @@ class CHA(BaseModel):
                 **kwargs,
             )
 
-        response = self.orchestrator.run(
+        query, response, meta_data = self.orchestrator.run(
             query=query,
             meta=meta,
             history=history,
@@ -90,7 +90,7 @@ class CHA(BaseModel):
             **kwargs,
         )
 
-        return response
+        return query, response, meta_data
 
     def reset(self):
         self.previous_actions = []

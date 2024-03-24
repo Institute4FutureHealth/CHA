@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 from typing import Any
 from typing import Dict
@@ -31,6 +32,7 @@ from response_generators.response_generator_types import (
 )
 from tasks.initialize_task import initialize_task
 from tasks.task import BaseTask
+from tasks.task import OutputType
 from tasks.task_types import TaskType
 from tasks.types import INTERNAL_TASK_TO_CLASS
 
@@ -66,6 +68,7 @@ class Orchestrator(BaseModel):
     previous_actions: List[str] = []
     current_actions: List[str] = []
     meta_data: List[Meta] = []
+    current_meta_data: List[Meta] = []
     runtime: Dict[str, bool] = {}
 
     class Config:
@@ -255,7 +258,7 @@ class Orchestrator(BaseModel):
         return False
 
     def _update_runtime(self, action: Action = None):
-        if action.output_type:
+        if action.output_type == OutputType.DATAPIPE:
             self.runtime[action.task_response] = False
         for task_input in action.task_inputs:
             if task_input in self.runtime:
@@ -290,18 +293,43 @@ class Orchestrator(BaseModel):
                 "task",
                 f"Task is executed successfully\nResult: {result}\n---------------\n",
             )
-            action = Action(
-                task_name=task_name,
-                task_inputs=task_inputs,
-                task_response=result,
-                output_type=task.output_type,
-                datapipe=self.datapipe,
-            )
 
-            self._update_runtime(action)
+            if task.output_type == OutputType.METADATA:
+                key = self.datapipe.store(
+                    json.dumps(
+                        {
+                            "path": result,
+                            "description": "\n".join(task.outputs)
+                            + "\n"
+                            + "\n".join(task_inputs),
+                        }
+                    )
+                )
+                meta = Meta(
+                    id=f"meta:{key}",
+                    path=result,
+                    type=result.split(".")[-1],
+                    description="\n".join(task.outputs)
+                    + "\n".join(task.outputs)
+                    + "\n"
+                    + "\n".join(task_inputs),
+                    tag="task_output",
+                )
+                self.meta_data.append(meta)
+                self.current_meta_data.append(meta)
+            elif not task.executor_task:
+                action = Action(
+                    task_name=task_name,
+                    task_inputs=task_inputs,
+                    task_response=result,
+                    output_type=task.output_type,
+                    datapipe=self.datapipe,
+                )
 
-            self.previous_actions.append(action)
-            self.current_actions.append(action)
+                self._update_runtime(action)
+
+                self.previous_actions.append(action)
+                self.current_actions.append(action)
             if task.return_direct:
                 raise ReturnDirectException(result)
             return result  # , task.return_direct
@@ -337,7 +365,7 @@ class Orchestrator(BaseModel):
         for action in self.current_actions:
             final_response += action.dict(
                 (
-                    action.output_type
+                    action.output_type == OutputType.DATAPIPE
                     and not self.runtime[action.task_response]
                 )
             )
@@ -456,12 +484,20 @@ class Orchestrator(BaseModel):
         if meta is None:
             meta = []
 
-        print("metas", meta)
+        self.current_meta_data = []
+
         for m in meta:
-            key = self.datapipe.store(m["path"])
+            key = self.datapipe.store(
+                json.dumps(
+                    {
+                        "path": m["path"],
+                        "description": m["description"],
+                    }
+                )
+            )
             self.meta_data.append(
                 Meta(
-                    id=key,
+                    id=f"meta:{key}",
                     path=m["path"],
                     type=m["path"].split(".")[-1],
                     description=m["description"],
@@ -469,16 +505,17 @@ class Orchestrator(BaseModel):
                 )
             )
             if m["tag"] == "user_audio":
-                query += self.available_tasks[
-                    "audio_to_text"
-                ].execute([key])
+                query += self.execute_task(
+                    "audio_to_text", [self.meta_data[-1].id]
+                )
                 self.meta_data[-1].add_task("audio_to_text")
         i = 0
 
         prompt = self.planner_generate_prompt(query)
+        source_language = "en"
         if "google_translate" in self.available_tasks:
-            prompt = self.available_tasks["google_translate"].execute(
-                [prompt, "en"]
+            prompt = self.execute_task(
+                "google_translate", [prompt, "en"]
             )
             source_language = prompt[1]
             prompt = prompt[0]
@@ -517,6 +554,7 @@ class Orchestrator(BaseModel):
                 self.print_log(
                     "error", f"Planning Error:\n{error}\n\n"
                 )
+                logging.exception(error)
                 self.current_actions = []
                 i += 1
                 if i > self.max_retries:
@@ -549,8 +587,13 @@ class Orchestrator(BaseModel):
         )
 
         if "google_translate" in self.available_tasks:
-            final_response = self.available_tasks[
-                "google_translate"
-            ].execute([final_response, source_language])[0]
+            final_response = self.execute_task(
+                "google_translate", [final_response, source_language]
+            )[0]
 
-        return query, final_response
+        if "text_to_speech" in self.available_tasks:
+            result = self.execute_task(
+                "text_to_speech", [final_response, source_language]
+            )
+
+        return query, final_response, self.current_meta_data

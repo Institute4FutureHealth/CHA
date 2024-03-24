@@ -50,6 +50,7 @@ setup(
             "gradio_multimodalchatbot",
             "transformers",
             "numpy",
+            "gtts",
         ],
         "minimum": [
             # minimum requirements for running the codes

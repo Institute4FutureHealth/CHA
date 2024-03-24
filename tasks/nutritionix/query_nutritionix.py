@@ -6,6 +6,7 @@ import requests
 from pydantic import model_validator
 
 from tasks.task import BaseTask
+from tasks.task import OutputType
 from utils import get_from_dict_or_env
 
 
@@ -48,7 +49,7 @@ class QueryNutritionix(BaseTask):
         "**nf_p**: The total phosphorus of the food for the serving size.\n"
         "**full_nutrients**: The detailed list of the nutrients.\n"
     ]
-    output_type: bool = True
+    output_type: OutputType = OutputType.DATAPIPE
 
     url: str = "https://trackapi.nutritionix.com/v2/natural/nutrients"
     headers: object = {}

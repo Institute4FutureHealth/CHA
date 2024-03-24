@@ -8,10 +8,10 @@ from tasks.affect import PPGGet
 from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
+from tasks.audio_to_text import AudioToText
 from tasks.google_search import GoogleSearch
 from tasks.google_translator import GoogleTranslate
 from tasks.internals.ask_user import AskUser
-from tasks.internals.audio_to_text import AudioToText
 from tasks.nutritionix.calculate_food_risk_factor import (
     CalculateFoodRiskFactor,
 )
@@ -22,6 +22,7 @@ from tasks.serpapi import SerpAPI
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
 from tasks.test_file import TestFile
+from tasks.text_to_speech import TextToSpeech
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
@@ -40,9 +41,10 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.QUERY_NUTRITIONIX: QueryNutritionix,
     TaskType.CALCULATE_FOOD_RISK_FACTOR: CalculateFoodRiskFactor,
     TaskType.GOOGLE_SEARCH: GoogleSearch,
+    TaskType.TEXT_TO_SPEECH: TextToSpeech,
+    TaskType.AUDIO_TO_TEXT: AudioToText,
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.ASK_USER: AskUser,
-    TaskType.AUDIO_TO_TEXT: AudioToText,
 }

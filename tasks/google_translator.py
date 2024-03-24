@@ -9,6 +9,7 @@ from typing import List
 from pydantic import model_validator
 
 from tasks.task import BaseTask
+from tasks.task import OutputType
 
 
 class GoogleTranslate(BaseTask):
@@ -30,7 +31,6 @@ class GoogleTranslate(BaseTask):
         "destination language",
     ]
     outputs: List[str] = []
-    output_type: bool = False
     executor_task: bool = True
 
     translator: Any = None  #: :meta private:

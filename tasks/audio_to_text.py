@@ -8,6 +8,7 @@ from pydantic import model_validator
 from scipy.io import wavfile
 
 from tasks.task import BaseTask
+from tasks.task import OutputType
 
 
 class AudioToText(BaseTask):
@@ -27,7 +28,6 @@ class AudioToText(BaseTask):
     dependencies: List[str] = []
     inputs: List[str] = ["The meta data id of the audio path."]
     outputs: List[str] = []
-    output_type: bool = False
     return_direct: bool = False
     transcriber: Any = None
     executor_task: bool = True
@@ -72,8 +72,7 @@ class AudioToText(BaseTask):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        print("input", inputs[0])
-        path = self.datapipe.retrieve(inputs[0])
+        path = inputs[0]["path"]
         sample_rate, data = wavfile.read(path)
         return self.transcribe(sample_rate, data)
 

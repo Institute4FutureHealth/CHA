@@ -7,6 +7,7 @@ from typing import List
 from pydantic import BaseModel
 
 from datapipes.datapipe import DataPipe
+from tasks.task import OutputType
 
 
 class Action(BaseModel):
@@ -21,7 +22,7 @@ class Action(BaseModel):
     task_name: str = ""
     task_inputs: List[str] = None
     task_response: Any = None
-    output_type: bool = False
+    output_type: OutputType = OutputType.LLM_TEXT
     datapipe: DataPipe = None
 
     class Config:
@@ -31,7 +32,9 @@ class Action(BaseModel):
 
     def dict(self, return_result: bool = False):
         response = self.task_response
-        if self.output_type and return_result:
+        if (
+            self.output_type == OutputType.DATAPIPE
+        ) and return_result:
             response = self.datapipe.retrieve(
                 response.split("datapipe:")[-1]
             )

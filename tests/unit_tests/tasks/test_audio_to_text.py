@@ -1,6 +1,6 @@
 import pytest
 
-from tasks.internals.audio_to_text import AudioToText
+from tasks.audio_to_text import AudioToText
 
 
 def test_ask_user_execute():

@@ -8,6 +8,7 @@ from typing import List
 from planners.action import Action
 from planners.action import PlanFinish
 from planners.planner import BasePlanner
+from tasks.task import OutputType
 
 
 class TreeOfThoughtPlanner(BasePlanner):
@@ -131,7 +132,7 @@ Question: {input}
                     + "\n".join(task.outputs)
                     + (
                         "\n- The result of this tool will be stored in the datapipe."
-                        if task.output_type
+                        if task.output_type == OutputType.DATAPIPE
                         else ""
                     )
                     + "\n-----------------------------------\n"

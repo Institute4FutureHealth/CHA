@@ -158,8 +158,8 @@ class Interface(BaseModel):
         kwargs = {
             "response_generator_main_prompt": response_generator_main_prompt
         }
-        print("self meta", self.meta_data)
-        query, response = self.run_query(
+
+        query, response, meta_data = self.run_query(
             query=message,
             meta=self.meta_data,
             chat_history=self.prepare_chat_history(chat_history),
@@ -168,16 +168,15 @@ class Interface(BaseModel):
             **kwargs,
         )
 
-        answer, files = parse_addresses(response)
+        files = [
+            {"file": FileData(path=meta.path)} for meta in meta_data
+        ]
         chat_history.append(
             [
                 {"text": query, "files": []},
                 {
-                    "text": answer,
-                    "files": [
-                        {"file": FileData(path=file)}
-                        for file in files
-                    ],
+                    "text": response,
+                    "files": files,
                 },
             ]
         )

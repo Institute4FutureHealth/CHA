@@ -3,6 +3,7 @@ from typing import Any
 from typing import List
 
 from tasks.affect.base import Affect
+from tasks.task import OutputType
 
 
 class SleepGet(Affect):
@@ -47,7 +48,7 @@ class SleepGet(Affect):
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
-    output_type: bool = True
+    output_type: OutputType = OutputType.DATAPIPE
     #
     file_name: str = "sleep.csv"
     device_name: str = "oura"

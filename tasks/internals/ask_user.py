@@ -2,6 +2,7 @@ from typing import Any
 from typing import List
 
 from tasks.task import BaseTask
+from tasks.task import OutputType
 
 
 class AskUser(BaseTask):
@@ -22,7 +23,6 @@ class AskUser(BaseTask):
     dependencies: List[str] = []
     inputs: List[str] = ["The text returned to user."]
     outputs: List[str] = []
-    output_type: bool = False
     return_direct: bool = True
 
     def _execute(
@@ -32,10 +32,7 @@ class AskUser(BaseTask):
         """Translate query"""
         if inputs is None:
             return ""
-        return (
-            "Rephrase the following question and ask user:\n"
-            + inputs[0]
-        )
+        return f"Rephrase the following question and ask user in a more engagnig way:\nquestion: {inputs[0]}"
 
     def explain(
         self,

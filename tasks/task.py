@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 from abc import abstractmethod
+from enum import Enum
 from typing import Any
 from typing import List
 
@@ -10,6 +11,12 @@ from pydantic import BaseModel
 
 from datapipes.datapipe import DataPipe
 from orchestrator.meta import Meta
+
+
+class OutputType(str, Enum):
+    LLM_TEXT = 0
+    DATAPIPE = 1
+    METADATA = 2
 
 
 class BaseTask(BaseModel):
@@ -48,10 +55,9 @@ class BaseTask(BaseModel):
     inputs: List[str] = []
     outputs: List[str] = []
     datapipe: DataPipe = None
-    meta_data: List[Meta] = []
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
-    output_type: bool = False
+    output_type: OutputType = OutputType.LLM_TEXT
     # False if planner should continue. True if after this task the planning should be
     # on pause or stop. examples are when you have a task that asks user to provide more information
     return_direct: bool = False
@@ -112,19 +118,33 @@ class BaseTask(BaseModel):
 
 
         """
-        return [
-            json.loads(
-                self.datapipe.retrieve(
-                    re.search(r"datapipe:[0-9a-f\-]{36}", arg)
-                    .group()
-                    .strip()
-                    .split(":")[-1]
+        inputs = []
+        for inp in input_args:
+            if "datapipe" in inp.strip():
+                inputs.append(
+                    json.loads(
+                        self.datapipe.retrieve(
+                            re.search(r"datapipe:[0-9a-f\-]{36}", inp)
+                            .group()
+                            .strip()
+                            .split(":")[-1]
+                        )
+                    )
                 )
-            )
-            if "datapipe" in arg
-            else arg.strip()
-            for arg in input_args
-        ]
+            elif "meta" in inp.strip():
+                inputs.append(
+                    json.loads(
+                        self.datapipe.retrieve(
+                            re.search(r"meta:[0-9a-f\-]{36}", inp)
+                            .group()
+                            .strip()
+                            .split(":")[-1]
+                        )
+                    )
+                )
+            else:
+                inputs.append(inp.strip())
+        return inputs
 
     def _validate_inputs(self, inputs: List[str]) -> bool:
         """
@@ -163,7 +183,7 @@ class BaseTask(BaseModel):
             List[str]: List of parsed strings.
 
         """
-        if self.output_type:
+        if self.output_type == OutputType.DATAPIPE:
             key = self.datapipe.store(
                 json.dumps(
                     {
@@ -227,7 +247,7 @@ class BaseTask(BaseModel):
                 "\n   This tool will return the following data:\n- "
                 + "\n- ".join(self.outputs)
             )
-        if self.output_type:
+        if self.output_type == OutputType.DATAPIPE:
             prompt += "\n The result will be stored in datapipe."
         return prompt
 

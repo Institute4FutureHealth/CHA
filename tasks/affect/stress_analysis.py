@@ -10,6 +10,7 @@ import torch
 from tasks.affect.AE import AE
 from tasks.affect.base import Affect
 from tasks.affect.Predictor import Predictor
+from tasks.task import OutputType
 
 
 class StressAnalysis(Affect):
@@ -35,7 +36,7 @@ class StressAnalysis(Affect):
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
-    output_type: bool = True
+    output_type: OutputType = OutputType.DATAPIPE
 
     def _execute(
         self,

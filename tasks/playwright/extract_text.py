@@ -10,6 +10,7 @@ from tasks.playwright.base import BaseBrowser
 from tasks.playwright.utils import (
     get_current_page,
 )
+from tasks.task import OutputType
 
 
 class ExtractText(BaseBrowser):
@@ -29,7 +30,6 @@ class ExtractText(BaseBrowser):
     outputs: List[str] = [
         "An string containing the text of the scraped webpage."
     ]
-    output_type: bool = False
 
     @model_validator(mode="before")
     def check_acheck_bs_importrgs(cls, values: dict) -> dict:

@@ -34,7 +34,6 @@ class RunPythonCode(BaseTask):
         "best way possible.",
     ]
     outputs: List[str] = []
-    output_type: bool = False
     llm_model: BaseLLM = None
     max_retrie: int = 3
 

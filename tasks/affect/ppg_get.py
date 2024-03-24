@@ -3,6 +3,7 @@ from typing import Any
 from typing import List
 
 from tasks.affect.base import Affect
+from tasks.task import OutputType
 
 
 class PPGGet(Affect):
@@ -35,7 +36,7 @@ class PPGGet(Affect):
     ]
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
-    output_type: bool = True
+    output_type: OutputType = OutputType.DATAPIPE
     #
     file_name: str = "ppg.csv"
     device_name: str = "samsung"

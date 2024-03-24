@@ -23,7 +23,6 @@ class GoogleSearch(BaseTask):
     outputs: List[str] = [
         "It returns a json object containing key: **url**. For example: {'url': 'http://google.com'}"
     ]
-    output_type: bool = False
     search_engine: Any = None
 
     @model_validator(mode="before")
