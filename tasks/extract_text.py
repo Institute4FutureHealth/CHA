@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 
 import requests
 from pydantic import model_validator
-from playwright.sync_api import sync_playwright, Playwright
 
 from tasks.task import BaseTask
 
@@ -28,6 +27,9 @@ class ExtractText(BaseTask):
         "An string containing the text of the scraped webpage."
     ]
     output_type: bool = False
+    sync_playwright: Any = None
+    high_level: Any = None
+    bs4: Any = None
 
     @model_validator(mode="before")
     def check_acheck_bs_importrgs(cls, values: dict) -> dict:
@@ -45,6 +47,8 @@ class ExtractText(BaseTask):
 
         try:
             from bs4 import BeautifulSoup  # noqa: F401
+
+            values["bs4"] = BeautifulSoup
         except ImportError:
             raise ImportError(
                 "The 'beautifulsoup4' package is required to use this tool."
@@ -61,12 +65,24 @@ class ExtractText(BaseTask):
 
         try:
             from pdfminer import high_level  # noqa: F401
+
+            values["high_level"] = high_level
         except ImportError:
             raise ImportError(
                 "The 'pdfminer' package is required to use this tool."
                 " Please install it with 'pip install pdfminer.six'."
             )
 
+        try:
+            from playwright.sync_api import sync_playwright
+
+            values["sync_playwright"] = sync_playwright
+
+        except ImportError:
+            raise ImportError(
+                "The 'playwright' package is required to use this tool."
+                " Please install it with 'pip install playwright'."
+            )
         return values
 
     def validate_url(self, url):
@@ -103,11 +119,8 @@ class ExtractText(BaseTask):
             ValueError: If the synchronous browser is not provided.
 
         """
-        from bs4 import BeautifulSoup
-        from pdfminer import high_level
 
         self.validate_url(inputs[0].strip())
-
 
         if inputs[0].lower().endswith(".pdf"):
             # Request the PDF content from the URL
@@ -116,21 +129,23 @@ class ExtractText(BaseTask):
                 # Use BytesIO to create an in-memory stream
                 pdf_stream = io.BytesIO(response.content)
                 # Extract text from the PDF stream
-                text = high_level.extract_text(pdf_stream)
+                text = self.high_level.extract_text(pdf_stream)
                 # Wrap text in basic HTML tags
                 html_content = (
                     f"<html><body><p>{text}</p></body></html>"
                 )
                 # Parse the HTML content with BeautifulSoup
-                soup = BeautifulSoup(html_content, "lxml")
+                soup = self.bs4(html_content, "lxml")
                 return " ".join(
                     text for text in soup.stripped_strings
                 )
             else:
                 return "Error extracting text. The url is wrong. Try again."
         else:
-            with sync_playwright() as playwright:
-                chromium = playwright.chromium # or "firefox" or "webkit".
+            with self.sync_playwright() as playwright:
+                chromium = (
+                    playwright.chromium
+                )  # or "firefox" or "webkit".
                 browser = chromium.launch()
                 page = browser.new_page()
                 response = page.goto(inputs[0])
@@ -139,7 +154,7 @@ class ExtractText(BaseTask):
                 if status == 200:
                     html_content = page.content()
                     # Parse the HTML content with BeautifulSoup
-                    soup = BeautifulSoup(html_content, "lxml")
+                    soup = self.bs4(html_content, "lxml")
                     page.close()
                     browser.close()
                     return " ".join(

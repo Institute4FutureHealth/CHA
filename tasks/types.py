@@ -9,13 +9,13 @@ from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
 from tasks.ask_user import AskUser
+from tasks.extract_text import ExtractText
 from tasks.google_search import GoogleSearch
 from tasks.google_translator import GoogleTranslate
 from tasks.nutritionix.calculate_food_risk_factor import (
     CalculateFoodRiskFactor,
 )
 from tasks.nutritionix.query_nutritionix import QueryNutritionix
-from tasks.playwright import ExtractText
 from tasks.run_python_code import RunPythonCode
 from tasks.serpapi import SerpAPI
 from tasks.task import BaseTask
