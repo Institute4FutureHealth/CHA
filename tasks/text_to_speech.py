@@ -70,4 +70,4 @@ class TextToSpeech(BaseTask):
     def explain(
         self,
     ) -> str:
-        return "This task uses Whisper as speech to text module."
+        return "This task uses Google text to speech."

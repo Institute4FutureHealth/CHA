@@ -19,6 +19,7 @@ from tasks.nutritionix.query_nutritionix import QueryNutritionix
 from tasks.playwright import ExtractText
 from tasks.run_python_code import RunPythonCode
 from tasks.serpapi import SerpAPI
+from tasks.speech_emotion_recognition import SpeechEmotionRecognition
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
 from tasks.test_file import TestFile
@@ -43,6 +44,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.GOOGLE_SEARCH: GoogleSearch,
     TaskType.TEXT_TO_SPEECH: TextToSpeech,
     TaskType.AUDIO_TO_TEXT: AudioToText,
+    TaskType.SPEECH_EMOTION_RECOGNITION: SpeechEmotionRecognition,
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {

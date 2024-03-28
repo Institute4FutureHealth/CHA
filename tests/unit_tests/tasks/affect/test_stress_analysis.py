@@ -42,7 +42,7 @@ def test_ppg_analysis_execute():
     stress_analysis_task = StressAnalysis()
 
     result = stress_analysis_task._execute(
-        [{"data": json.dumps(data)}]
+        [{"data": json.dumps(data)}],
     )
     print("result/////", result)
     assert isinstance(result, int)

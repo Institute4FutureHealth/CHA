@@ -51,6 +51,7 @@ setup(
             "transformers",
             "numpy",
             "gtts",
+            "git+https://github.com/speechbrain/speechbrain.git@develop",
         ],
         "minimum": [
             # minimum requirements for running the codes

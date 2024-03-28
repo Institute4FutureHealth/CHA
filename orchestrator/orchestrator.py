@@ -539,12 +539,7 @@ class Orchestrator(BaseModel):
                 )
                 vars = {}
                 exec(actions, locals(), vars)
-                final_response = (
-                    self._prepare_planner_response_for_response_generator()
-                )
-                # print("final resp", final_response)
-                self.current_actions = []
-                self.runtime = {}
+
                 break
             except ReturnDirectException as e:
                 final_response = e.message
@@ -560,7 +555,11 @@ class Orchestrator(BaseModel):
                 if i > self.max_retries:
                     final_response = "Problem preparing the answer. Please try again."
                     break
-
+        final_response = (
+            self._prepare_planner_response_for_response_generator()
+        )
+        self.current_actions = []
+        self.runtime = {}
         self.print_log(
             "planner",
             f"Planner final response: {final_response}\nPlanning Ended...\n\n",
