@@ -6,7 +6,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-import torch
 from pydantic import model_validator
 
 from tasks.affect.base import Affect
@@ -38,6 +37,7 @@ class StressAnalysis(Affect):
     # True if it should be stored in datapipe
     output_type: bool = True
     AE: Any = None
+    torch: Any = None
 
     @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
@@ -55,8 +55,10 @@ class StressAnalysis(Affect):
 
         try:
             from tasks.affect.AE import AE
+            import torch
 
             values["AE"] = AE
+            values["torch"] = torch
         except ImportError:
             raise ValueError(
                 "Could not import torch python package. "
@@ -72,16 +74,16 @@ class StressAnalysis(Affect):
         del hrv["Heart_Rate"]
         hrv = list(hrv.values())
         mAE = self.AE()
-        mAE.load_state_dict(torch.load("models/AE_1.dict"))
+        mAE.load_state_dict(self.torch.load("models/AE_1.dict"))
         mAE.eval()
 
         mPredictor = Predictor()
         mPredictor.load_state_dict(
-            torch.load("models/Predict_1.dict")
+            self.torch.load("models/Predict_1.dict")
         )
         mPredictor.eval()
 
-        encoded = mAE.encode(torch.FloatTensor(hrv))
+        encoded = mAE.encode(self.torch.FloatTensor(hrv))
         prediction = mPredictor(encoded)
-        stress = torch.argmax(prediction, dim=0)
+        stress = self.torch.argmax(prediction, dim=0)
         return int(stress.detach())
