@@ -3,10 +3,11 @@ Affect - Physical activity analysis
 """
 import json
 from typing import Any
+from typing import Dict
 from typing import List
 
-import neurokit2 as nk
 import pandas as pd
+from pydantic import model_validator
 
 from tasks.affect.base import Affect
 
@@ -66,6 +67,32 @@ class PPGAnalysis(Affect):
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
     output_type: bool = True
+    nk: Any = None
+
+    @model_validator(mode="before")
+    def validate_environment(cls, values: Dict) -> Dict:
+        """
+            Validate that api key and python package exists in environment.
+
+        Args:
+            values (Dict): The dictionary of attribute values.
+        Return:
+            Dict: The updated dictionary of attribute values.
+        Raise:
+            ValueError: If the SerpAPI python package is not installed.
+
+        """
+
+        try:
+            import neurokit2 as nk
+
+            values["nk"] = nk
+        except ImportError:
+            raise ValueError(
+                "Could not import neurokit2 python package. "
+                "Please install it with `pip install neurokit2`."
+            )
+        return values
 
     def _execute(
         self,
@@ -75,14 +102,20 @@ class PPGAnalysis(Affect):
         df = None
         for i in range(0, len(ppg), 60 * 20):
             ppgs = [p["ppg"] for p in ppg[i : i + 60 * 20]]
-            ppg_signals, info = nk.ppg_process(ppgs, sampling_rate=20)
+            ppg_signals, info = self.nk.ppg_process(
+                ppgs, sampling_rate=20
+            )
             if df is None:
-                df = nk.ppg_analyze(ppg_signals, sampling_rate=20)
+                df = self.nk.ppg_analyze(
+                    ppg_signals, sampling_rate=20
+                )
             else:
                 df = pd.concat(
                     [
                         df,
-                        nk.ppg_analyze(ppg_signals, sampling_rate=20),
+                        self.nk.ppg_analyze(
+                            ppg_signals, sampling_rate=20
+                        ),
                     ],
                     axis=0,
                     ignore_index=True,

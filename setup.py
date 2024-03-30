@@ -46,6 +46,8 @@ setup(
             "torchvision",
             "torchdata",
             "googlesearch-python",
+            "numpy",
+            "pandas",
         ],
         "minimum": [
             # minimum requirements for running the codes

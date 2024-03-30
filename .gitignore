@@ -11,3 +11,6 @@ CHA.egg-info/
 build
 dist
 models
+*.wav
+wav2vec2_checkpoints
+pretrained_models
