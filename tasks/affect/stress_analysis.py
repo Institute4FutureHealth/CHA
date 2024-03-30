@@ -9,7 +9,6 @@ from typing import List
 from pydantic import model_validator
 
 from tasks.affect.base import Affect
-from tasks.affect.Predictor import Predictor
 
 
 class StressAnalysis(Affect):
@@ -38,6 +37,7 @@ class StressAnalysis(Affect):
     output_type: bool = True
     AE: Any = None
     torch: Any = None
+    Predictor: Any = None
 
     @model_validator(mode="before")
     def validate_environment(cls, values: Dict) -> Dict:
@@ -55,10 +55,12 @@ class StressAnalysis(Affect):
 
         try:
             from tasks.affect.AE import AE
+            from tasks.affect.Predictor import Predictor
             import torch
 
             values["AE"] = AE
             values["torch"] = torch
+            values["Predictor"] = Predictor
         except ImportError:
             raise ValueError(
                 "Could not import torch python package. "
@@ -77,7 +79,7 @@ class StressAnalysis(Affect):
         mAE.load_state_dict(self.torch.load("models/AE_1.dict"))
         mAE.eval()
 
-        mPredictor = Predictor()
+        mPredictor = self.Predictor()
         mPredictor.load_state_dict(
             self.torch.load("models/Predict_1.dict")
         )
