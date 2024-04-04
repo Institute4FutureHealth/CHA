@@ -24,6 +24,7 @@ from tasks.task import BaseTask
 from tasks.task_types import TaskType
 from tasks.test_file import TestFile
 from tasks.text_to_speech import TextToSpeech
+from tasks.plot import PlotTask
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
@@ -45,6 +46,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.TEXT_TO_SPEECH: TextToSpeech,
     TaskType.AUDIO_TO_TEXT: AudioToText,
     TaskType.SPEECH_EMOTION_RECOGNITION: SpeechEmotionRecognition,
+    TaskType.PLOT: PlotTask,
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
