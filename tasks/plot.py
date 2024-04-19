@@ -1,4 +1,5 @@
 from typing import List, Any
+from io import StringIO
 import matplotlib.pyplot as plt
 import pandas as pd
 import uuid
@@ -57,7 +58,13 @@ class PlotTask(BaseTask):
     output_type: OutputType = OutputType.METADATA
 
     def _execute(self, inputs: List[Any] = None) -> str:
-        df = pd.read_json(inputs[0])
+        print(inputs[0])
+        df = pd.read_json(
+            StringIO(inputs[0]["data"]), orient="records"
+        )
+        # df = pd.DataFrame.from_dict(inputs[0]['data'])
+        # df = pd.DataFrame([inputs[0]['data']], index=[0])
+        plot_type = inputs[1]
         plot_type = inputs[1]
         x_axis = inputs[2]
         y_axis = inputs[3]
