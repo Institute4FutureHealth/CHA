@@ -62,9 +62,11 @@ class PlotTask(BaseTask):
         df = pd.read_json(
             StringIO(inputs[0]["data"]), orient="records"
         )
+        # if data does not exist, don't call it, add checks: 1) array? 2) inputs[2] and inputs[3] are in the
+
+
         # df = pd.DataFrame.from_dict(inputs[0]['data'])
         # df = pd.DataFrame([inputs[0]['data']], index=[0])
-        plot_type = inputs[1]
         plot_type = inputs[1]
         x_axis = inputs[2]
         y_axis = inputs[3]
