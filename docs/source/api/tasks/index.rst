@@ -30,3 +30,4 @@ help understanding how to add new tasks.
    serpapi
    read_from_datapipe
    playwright/index
+   plot

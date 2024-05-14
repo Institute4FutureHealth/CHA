@@ -70,6 +70,7 @@ setup(
             "pytest",
             "pytest-mock",
             "pytest-asyncio",
+            "pre-commit",
         ],
     },
     classifiers=[
