@@ -322,6 +322,7 @@ class Orchestrator(BaseModel):
                     task_name=task_name,
                     task_inputs=task_inputs,
                     task_response=result,
+                    task_outputs=task.outputs,
                     output_type=task.output_type,
                     datapipe=self.datapipe,
                 )

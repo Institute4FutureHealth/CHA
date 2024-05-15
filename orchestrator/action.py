@@ -22,6 +22,7 @@ class Action(BaseModel):
     task_name: str = ""
     task_inputs: List[str] = None
     task_response: Any = None
+    task_outputs: List[str] = None
     output_type: OutputType = OutputType.LLM_TEXT
     datapipe: DataPipe = None
 
@@ -42,6 +43,7 @@ class Action(BaseModel):
         return (
             "\n------------------\n"
             f"{self.task_name}: {self.task_inputs}\n"
+            f"Output: {self.task_outputs}\n"
             f"{response}"
             "\n------------------\n"
         )

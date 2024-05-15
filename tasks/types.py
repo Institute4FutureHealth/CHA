@@ -48,5 +48,5 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
-    TaskType.ASK_USER: AskUser,
+    # TaskType.ASK_USER: AskUser,
 }

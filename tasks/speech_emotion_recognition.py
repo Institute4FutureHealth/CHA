@@ -18,14 +18,14 @@ class SpeechEmotionRecognition(BaseTask):
     name: str = "speech_emotion_recognition"
     chat_name: str = "SpeechEmotionRecognition"
     description: str = (
-        "This task converts audio into text. It support wav and mp3 file extention. "
-        "You should use this task only if inside the Meta Data there are some audio files with .wav suffix."
+        "This tasks extracts emotion from the provided audio file."
+        "You should use the extracted emotion to find the most suitable information accordingly. "
+        "For example, search in the internet according to the detected emotion."
     )
     dependencies: List[str] = []
     inputs: List[str] = ["The meta data id of the audio path."]
     outputs: List[str] = [
-        "It returns the emotion state in following format: "
-        "**The emotion detected for the audio file: [filename] is [one of the four emotions: Happy, Angry, Neutral, Sad]}**"
+        "It returns one the following emotion states: **Happy**, **Angry**, **Neutral**, or **Sad**"
     ]
     return_direct: bool = False
     classifier: Any = None
