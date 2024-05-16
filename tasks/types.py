@@ -17,6 +17,7 @@ from tasks.nutritionix.calculate_food_risk_factor import (
 )
 from tasks.nutritionix.query_nutritionix import QueryNutritionix
 from tasks.playwright import ExtractText
+from tasks.plot import PlotTask
 from tasks.run_python_code import RunPythonCode
 from tasks.serpapi import SerpAPI
 from tasks.speech_emotion_recognition import SpeechEmotionRecognition
@@ -45,6 +46,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.TEXT_TO_SPEECH: TextToSpeech,
     TaskType.AUDIO_TO_TEXT: AudioToText,
     TaskType.SPEECH_EMOTION_RECOGNITION: SpeechEmotionRecognition,
+    TaskType.PLOT: PlotTask,
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {

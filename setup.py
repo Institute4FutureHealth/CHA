@@ -52,6 +52,7 @@ setup(
             "numpy",
             "gtts",
             "git+https://github.com/speechbrain/speechbrain.git@develop",
+            "pandas",
         ],
         "minimum": [
             # minimum requirements for running the codes
@@ -74,6 +75,7 @@ setup(
             "pytest",
             "pytest-mock",
             "pytest-asyncio",
+            "pre-commit",
         ],
     },
     classifiers=[
