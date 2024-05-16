@@ -46,7 +46,12 @@ setup(
             "torchvision",
             "torchdata",
             "googlesearch-python",
+            "torchaudio",
+            "gradio_multimodalchatbot",
+            "transformers",
             "numpy",
+            "gtts",
+            "git+https://github.com/speechbrain/speechbrain.git@develop",
             "pandas",
         ],
         "minimum": [
