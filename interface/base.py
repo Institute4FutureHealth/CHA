@@ -79,8 +79,9 @@ class Interface(BaseModel):
             self.meta_data = []
 
         new_metas = []
+        print(meta_message)
         for file in meta_message["files"]:
-            dest_path = self.copy_file(file["path"])
+            dest_path = self.copy_file(file)
             new_metas.append({"file": FileData(path=dest_path)})
 
         mic_dest_path = ""
@@ -251,7 +252,9 @@ class Interface(BaseModel):
                         meta_msg = self.gr.MultimodalTextbox(
                             scale=9,
                             interactive=True,
-                            file_types=["image"],
+                            file_types=[
+                                "file"
+                            ],  # all files should be supported
                             label="Question",
                             info="Put your query here and press enter.",
                             placeholder="Enter message or upload file...",

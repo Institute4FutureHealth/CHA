@@ -89,6 +89,9 @@ class PlotTask(BaseTask):
         return self._create_plot(df, plot_type, x_axis, y_axis)
 
     def _create_plot(self, df, plot_type, x_axis, y_axis):
+        # accommodate long x-axis pixels
+        plt.figure(figsize=(10, 10))
+
         if plot_type == "empty":
             plt.figure()
             plt.text(
@@ -115,6 +118,9 @@ class PlotTask(BaseTask):
             if plot_type != "empty"
             else "Empty Plot"
         )
+
+        # rotate x-axis labels to prevent overlap
+        plt.xticks(rotation=45, ha="right")
 
         filename = f"./data/{str(uuid.uuid4())}.png"
         plt.savefig(filename)

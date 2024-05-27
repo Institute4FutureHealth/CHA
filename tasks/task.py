@@ -120,7 +120,11 @@ class BaseTask(BaseModel):
         """
         inputs = []
         for inp in input_args:
-            if "datapipe" in inp.strip():
+            inp = inp.strip() if type(inp) == str else inp
+            
+            if (type(inp) != str) or (("datapipe" not in inp) and ("meta" not in inp)):
+                inputs.append(inp)
+            elif "datapipe" in inp:
                 inputs.append(
                     json.loads(
                         self.datapipe.retrieve(
@@ -131,7 +135,7 @@ class BaseTask(BaseModel):
                         )
                     )
                 )
-            elif "meta" in inp.strip():
+            elif "meta" in inp:
                 inputs.append(
                     json.loads(
                         self.datapipe.retrieve(
@@ -142,8 +146,6 @@ class BaseTask(BaseModel):
                         )
                     )
                 )
-            else:
-                inputs.append(inp.strip())
         return inputs
 
     def _validate_inputs(self, inputs: List[str]) -> bool:

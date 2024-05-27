@@ -22,3 +22,4 @@ class TaskType(str, Enum):
     TEXT_TO_SPEECH = "text_to_speech"
     SPEECH_EMOTION_RECOGNITION = "speech_emotion_recognition"
     PLOT = "plot_task"
+    ANALYSIS = "statistical_analysis"
