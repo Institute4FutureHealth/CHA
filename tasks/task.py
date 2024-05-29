@@ -121,8 +121,10 @@ class BaseTask(BaseModel):
         inputs = []
         for inp in input_args:
             inp = inp.strip() if type(inp) == str else inp
-            
-            if (type(inp) != str) or (("datapipe" not in inp) and ("meta" not in inp)):
+
+            if (type(inp) != str) or (
+                ("datapipe" not in inp) and ("meta" not in inp)
+            ):
                 inputs.append(inp)
             elif "datapipe" in inp:
                 inputs.append(
