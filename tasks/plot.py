@@ -30,7 +30,7 @@ class PlotTask(BaseTask):
     )
     dependencies: List[str] = []  # uncertain, no dependencies?
     inputs: List[str] = [
-        "You should provide the data source, which is in form of datapipe: datapipe_key."
+        "You should provide the data source. It can be 'datapipe:key' or 'meta:key'"
         "The datapipe_key should be extracted from one of the existing datapipe_key."
         "Data should be derived from an uploaded file that contains the data needed to be ploted.",
         "Plot_type can be chosen based on what the user requires or the context implies, which can be among the following options"
@@ -89,6 +89,9 @@ class PlotTask(BaseTask):
         return self._create_plot(df, plot_type, x_axis, y_axis)
 
     def _create_plot(self, df, plot_type, x_axis, y_axis):
+        # accommodate long x-axis pixels
+        plt.figure(figsize=(10, 10))
+
         if plot_type == "empty":
             plt.figure()
             plt.text(
@@ -115,6 +118,9 @@ class PlotTask(BaseTask):
             if plot_type != "empty"
             else "Empty Plot"
         )
+
+        # rotate x-axis labels to prevent overlap
+        plt.xticks(rotation=45, ha="right")
 
         filename = f"./data/{str(uuid.uuid4())}.png"
         plt.savefig(filename)

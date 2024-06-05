@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Any
 from typing import List
 
+import pandas as pd
 from pydantic import BaseModel
 
 from datapipes.datapipe import DataPipe
@@ -103,6 +104,16 @@ class BaseTask(BaseModel):
 
         """
 
+    def _process_meta(self, meta_path):
+        if meta_path.split(".")[-1] == "csv":
+            file = pd.read_csv(f"data/{meta_path}")
+            return file.to_json(orient="records")
+        elif meta_path.split(".")[-1] == "json":
+            file = json.loads(f"data/{meta_path}")
+            return file
+        else:
+            return {"path": f"data/{meta_path}"}
+
     def _parse_input(
         self,
         input_args: List[str],
@@ -120,7 +131,13 @@ class BaseTask(BaseModel):
         """
         inputs = []
         for inp in input_args:
-            if "datapipe" in inp.strip():
+            inp = inp.strip() if type(inp) == str else inp
+
+            if (type(inp) != str) or (
+                ("datapipe" not in inp) and ("meta" not in inp)
+            ):
+                inputs.append(inp)
+            elif "datapipe" in inp:
                 inputs.append(
                     json.loads(
                         self.datapipe.retrieve(
@@ -131,19 +148,19 @@ class BaseTask(BaseModel):
                         )
                     )
                 )
-            elif "meta" in inp.strip():
+            elif "meta" in inp:
                 inputs.append(
-                    json.loads(
-                        self.datapipe.retrieve(
-                            re.search(r"meta:[0-9a-f\-]{36}", inp)
+                    {
+                        "data": self._process_meta(
+                            re.search(
+                                r"meta:[0-9a-f\-]{36}\.[a-z0-9]+", inp
+                            )
                             .group()
                             .strip()
                             .split(":")[-1]
                         )
-                    )
+                    }
                 )
-            else:
-                inputs.append(inp.strip())
         return inputs
 
     def _validate_inputs(self, inputs: List[str]) -> bool:

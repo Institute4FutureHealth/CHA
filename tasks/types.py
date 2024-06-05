@@ -21,6 +21,7 @@ from tasks.plot import PlotTask
 from tasks.run_python_code import RunPythonCode
 from tasks.serpapi import SerpAPI
 from tasks.speech_emotion_recognition import SpeechEmotionRecognition
+from tasks.statistical_analysis import StatisticalAnalysis
 from tasks.task import BaseTask
 from tasks.task_types import TaskType
 from tasks.test_file import TestFile
@@ -47,6 +48,7 @@ TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {
     TaskType.AUDIO_TO_TEXT: AudioToText,
     TaskType.SPEECH_EMOTION_RECOGNITION: SpeechEmotionRecognition,
     TaskType.PLOT: PlotTask,
+    TaskType.ANALYSIS: StatisticalAnalysis,
 }
 
 INTERNAL_TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {

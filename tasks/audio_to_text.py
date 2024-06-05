@@ -72,7 +72,7 @@ class AudioToText(BaseTask):
         self,
         inputs: List[Any] = None,
     ) -> str:
-        path = inputs[0]["path"]
+        path = inputs[0]["data"]["path"]
         sample_rate, data = wavfile.read(path)
         return self.transcribe(sample_rate, data)
 

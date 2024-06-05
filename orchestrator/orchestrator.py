@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any
 from typing import Dict
@@ -295,18 +294,7 @@ class Orchestrator(BaseModel):
             )
 
             if task.output_type == OutputType.METADATA:
-                key = self.datapipe.store(
-                    json.dumps(
-                        {
-                            "path": result,
-                            "description": "\n".join(task.outputs)
-                            + "\n"
-                            + "\n".join(task_inputs),
-                        }
-                    )
-                )
                 meta = Meta(
-                    id=f"meta:{key}",
                     path=result,
                     type=result.split(".")[-1],
                     description="\n".join(task.outputs)
@@ -488,17 +476,8 @@ class Orchestrator(BaseModel):
         self.current_meta_data = []
 
         for m in meta:
-            key = self.datapipe.store(
-                json.dumps(
-                    {
-                        "path": m["path"],
-                        "description": m["description"],
-                    }
-                )
-            )
             self.meta_data.append(
                 Meta(
-                    id=f"meta:{key}",
                     path=m["path"],
                     type=m["path"].split(".")[-1],
                     description=m["description"],
@@ -507,7 +486,7 @@ class Orchestrator(BaseModel):
             )
             if m["tag"] == "user_audio":
                 query += self.execute_task(
-                    "audio_to_text", [self.meta_data[-1].id]
+                    "audio_to_text", [self.meta_data[-1].get_id()]
                 )
                 self.meta_data[-1].add_task("audio_to_text")
         i = 0
