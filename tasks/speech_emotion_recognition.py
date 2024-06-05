@@ -25,7 +25,9 @@ class SpeechEmotionRecognition(BaseTask):
     dependencies: List[str] = []
     inputs: List[str] = ["The meta data id of the audio path."]
     outputs: List[str] = [
-        "It returns one the following emotion states: **Happy**, **Angry**, **Neutral**, or **Sad**"
+        "It returns one the emotion states in the following format: "
+        "The emotion detected for the audio file: [audio file name] is [**Happy**, **Angry**, **Neutral**, or **Sad**]"
+        " You should extract the emotion (e.g. Happy, Angry, etc) to be passed to other tasks if necessary."
     ]
     return_direct: bool = False
     classifier: Any = None
@@ -75,9 +77,9 @@ class SpeechEmotionRecognition(BaseTask):
             classname="CustomEncoderWav2vec2Classifier",
         )
         out_prob, score, index, text_lab = classifier.classify_file(
-            inputs[0]["path"]
+            inputs[0]["data"]["path"]
         )
-        return f"The emotion detected for the audio file: {inputs[0]['path'].split('/')[-1]} is {self.get_emotion(text_lab)}"
+        return f"The emotion detected for the audio file: {inputs[0]['data']['path'].split('/')[-1]} is {self.get_emotion(text_lab)}"
 
     def explain(
         self,

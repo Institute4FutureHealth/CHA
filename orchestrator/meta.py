@@ -28,13 +28,16 @@ class Meta(BaseModel):
 
         arbitrary_types_allowed = True
 
+    def get_id(self):
+        return f"meta:{self.path.split('/')[-1]}"
+
     def add_task(self, task_name):
         self.tasks_already_run.append(task_name)
 
     def dict(self):
         return (
             "\n------------------\n"
-            f"id: {self.id}\n"
+            f"id: meta:{self.path.split('/')[-1]}\n"
             f"filename: {self.path.split('/')[-1]}\n"
             f"file_type: {self.type}\n"
             f"tag: {self.tag}\n"

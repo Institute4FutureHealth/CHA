@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Any
 from typing import List
 
+import pandas as pd
 from pydantic import BaseModel
 
 from datapipes.datapipe import DataPipe
@@ -103,6 +104,16 @@ class BaseTask(BaseModel):
 
         """
 
+    def _process_meta(self, meta_path):
+        if meta_path.split(".")[-1] == "csv":
+            file = pd.read_csv(f"data/{meta_path}")
+            return file.to_json(orient="records")
+        elif meta_path.split(".")[-1] == "json":
+            file = json.loads(f"data/{meta_path}")
+            return file
+        else:
+            return {"path": f"data/{meta_path}"}
+
     def _parse_input(
         self,
         input_args: List[str],
@@ -139,14 +150,16 @@ class BaseTask(BaseModel):
                 )
             elif "meta" in inp:
                 inputs.append(
-                    json.loads(
-                        self.datapipe.retrieve(
-                            re.search(r"meta:[0-9a-f\-]{36}", inp)
+                    {
+                        "data": self._process_meta(
+                            re.search(
+                                r"meta:[0-9a-f\-]{36}\.[a-z0-9]+", inp
+                            )
                             .group()
                             .strip()
                             .split(":")[-1]
                         )
-                    )
+                    }
                 )
         return inputs
 

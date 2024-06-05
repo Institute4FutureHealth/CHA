@@ -73,6 +73,7 @@ MetaData: this contains the name of data files of different types like image, au
 Use the tools and provided information, first suggest three \
 creative strategies with detailed explanation consisting of sequences of tools to properly answer the user query. \
 Make sure the strategies are comprehensive enough and use proper tools. The tools constraints should be always satisfied. \
+**You should stick to the provided tools and never use any other tasks.** Never try to load files as your strategy steps.
 
 After specifying the strategies, mention the pros and cons of each strategy. \
 In the end decide the best strategy and write the detailed tool executions step by step.

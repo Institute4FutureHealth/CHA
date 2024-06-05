@@ -1,3 +1,4 @@
+import os
 import shutil
 import uuid
 from typing import Any
@@ -63,6 +64,7 @@ class Interface(BaseModel):
         arbitrary_types_allowed = True
 
     def copy_file(self, file_path):
+        os.makedirs("./data", exist_ok=True)
         dest_path = (
             f"./data/{str(uuid.uuid4())}.{file_path.split('.')[-1]}"
         )
@@ -81,7 +83,7 @@ class Interface(BaseModel):
         new_metas = []
         print(meta_message)
         for file in meta_message["files"]:
-            dest_path = self.copy_file(file)
+            dest_path = self.copy_file(file["path"])
             new_metas.append({"file": FileData(path=dest_path)})
 
         mic_dest_path = ""

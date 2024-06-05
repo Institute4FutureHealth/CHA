@@ -30,7 +30,7 @@ class PlotTask(BaseTask):
     )
     dependencies: List[str] = []  # uncertain, no dependencies?
     inputs: List[str] = [
-        "You should provide the data source, which is in form of datapipe: datapipe_key."
+        "You should provide the data source. It can be 'datapipe:key' or 'meta:key'"
         "The datapipe_key should be extracted from one of the existing datapipe_key."
         "Data should be derived from an uploaded file that contains the data needed to be ploted.",
         "Plot_type can be chosen based on what the user requires or the context implies, which can be among the following options"
