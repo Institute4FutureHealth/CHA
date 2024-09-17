@@ -96,13 +96,12 @@ class RunPythonCode(BaseTask):
                     previous_attempts, inputs
                 )
 
-                print("code prompt: ", prompt)
                 kwargs = {"max_tokens": 1000}
                 code = self.llm_model.generate(prompt, **kwargs)
                 previous_attempts = f"\n{code}"
                 pattern = r"```python\n(.*?)```"
                 code = re.search(pattern, code, re.DOTALL).group(1)
-                print("generated code", code)
+
                 global result
                 result = ""
                 code += (
@@ -110,7 +109,6 @@ class RunPythonCode(BaseTask):
                 )
                 exec(code, locals())
                 result = locals().get("result")
-                print("result", result)
                 return result
             except Exception:
                 retries += 1

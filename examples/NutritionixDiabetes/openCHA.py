@@ -1,10 +1,8 @@
 import pandas as pd
 
 from CHA import CHA
-from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 
-sync_browser = create_sync_playwright_browser()
 available_tasks = [
     TaskType.QUERY_NUTRITIONIX,
     TaskType.CALCULATE_FOOD_RISK_FACTOR,
@@ -35,7 +33,7 @@ kwargs = {
 
 with open("questions.txt", "r") as file:
     for line in file:
-        cha = CHA(sync_browser=sync_browser)
+        cha = CHA()
         responses.append(
             cha.run(
                 planner_prefix + line,

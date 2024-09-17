@@ -253,7 +253,7 @@ Question: {input}
             .replace("{previous_actions}", previous_actions_prompt)
             .replace("{input}", query)
         )
-        print("prompt2", prompt)
+        print("prompt2\n\n", prompt)
         kwargs["stop"] = self._stop
         response = self._planner_model.generate(
             query=prompt, **kwargs

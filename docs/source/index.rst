@@ -49,6 +49,16 @@ The content of the exposed CHA API.
    api/index
 
 
+Tutorials
+---------
+
+The tutorials on adding new features to openCHA.
+
+.. toctree::
+   :maxdepth: 1
+
+   tutorials/index
+
 
 
 Examples

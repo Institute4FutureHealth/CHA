@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 project = "CHA"
-copyright = "2023, Mahyar"
-author = "Mahyar"
+copyright = "2024, Mahyar Abbasian"
+author = "Mahyar Abbasian"
 doc_version = "version 0.1"
 
 # -- General configuration ---------------------------------------------------
@@ -41,6 +41,9 @@ exclude_patterns = []
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_logo = "_static/logo.png"
+html_css_files = [
+    "custom.css",
+]
 
 html_theme_options = {
     "icon_links": [
