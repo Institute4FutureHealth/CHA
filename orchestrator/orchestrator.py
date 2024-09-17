@@ -361,14 +361,6 @@ class Orchestrator(BaseModel):
         Return:
             str: A python code block will be returnd to be executed by Task Executor.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
         return self.planner.plan(
             query,

@@ -28,14 +28,6 @@ class TestFile(BaseTask):
         Return:
             List[str]: List of parsed strings.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         return input.split("$#")
@@ -55,13 +47,6 @@ class TestFile(BaseTask):
             NotImplementedError: Subclasses must implement the execute method.
 
 
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         self.parse_input(input)
@@ -75,14 +60,6 @@ class TestFile(BaseTask):
 
         Return:
             str: Sample explanation for the task.
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 

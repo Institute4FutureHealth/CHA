@@ -10,7 +10,7 @@ To use the CHA in a safe and stable way make sure you have **python3.10** and hi
   #create the venv
   python -m venv /path/to/new/virtual/environment
   #activate the venv
-  source activate /path/to/new/virtual/environment/bin
+  source /path/to/new/virtual/environment/bin/activate
 
 You should now be able to see the environment showing in your terminal.
 

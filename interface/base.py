@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from typing import Dict
 
@@ -25,13 +26,6 @@ class Interface(BaseModel):
             Dict: The updated `values` dictionary with the `gradio` package imported.
         Raise:
             ValueError: If the `gradio` package is not found in the environment.
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
 
         """
 
@@ -78,15 +72,15 @@ class Interface(BaseModel):
         Return:
             None
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
+
+        def submit_api_keys(openai_api_key, serp_api_key):
+            # Set environment variables
+            os.environ["OPENAI_API_KEY"] = openai_api_key
+            os.environ["SEPR_API_KEY"] = serp_api_key
+
+            print("keys submitted")
+            print(openai_api_key)
 
         with self.gr.Blocks() as demo:
             chatbot = self.gr.Chatbot(bubble_full_width=False)
@@ -116,14 +110,33 @@ class Interface(BaseModel):
                     label="Tasks List",
                     info="The list of available tasks. Select the ones that you want to use.",
                 )
-            clear = self.gr.ClearButton([msg, chatbot])
 
+            with self.gr.Row():
+                openai_api_key_input = self.gr.Textbox(
+                    label="OpenAI API Key",
+                    info="Enter your OpenAI API key here.",
+                )
+                serp_api_key_input = self.gr.Textbox(
+                    label="Serp API Key",
+                    info="Enter your Serp API key here.",
+                )
+
+            clear = self.gr.ClearButton([msg, chatbot])
             clear.click(reset)
+
             msg.submit(
                 respond,
-                [msg, chatbot, check_box, tasks],
+                [
+                    msg,
+                    openai_api_key_input,
+                    serp_api_key_input,
+                    chatbot,
+                    check_box,
+                    tasks,
+                ],
                 [msg, chatbot],
             )
+
             btn.upload(
                 upload_meta, [chatbot, btn], [chatbot], queue=False
             )
@@ -142,15 +155,6 @@ class Interface(BaseModel):
             self (object): The instance of the class.
         Return:
             None
-
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         self.interface.close()
