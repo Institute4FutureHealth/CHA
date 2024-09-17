@@ -48,7 +48,7 @@ class Orchestrator(BaseModel):
     promptist: Any = None
     response_generator: BaseResponseGenerator = None
     available_tasks: Dict[str, BaseTask] = {}
-    max_retries: int = 16
+    max_retries: int = 5
     max_task_execute_retries: int = 3
     max_planner_execute_retries: int = 16
     max_final_answer_execute_retries: int = 3
