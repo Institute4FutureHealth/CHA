@@ -3,13 +3,12 @@ Affect - Physical activity analysis
 """
 import json
 from typing import Any
+from typing import Dict
 from typing import List
 
-import torch
+from pydantic import model_validator
 
-from tasks.affect.AE import AE
 from tasks.affect.base import Affect
-from tasks.affect.Predictor import Predictor
 
 
 class StressAnalysis(Affect):
@@ -36,6 +35,38 @@ class StressAnalysis(Affect):
     # False if the output should directly passed back to the planner.
     # True if it should be stored in datapipe
     output_type: bool = True
+    AE: Any = None
+    torch: Any = None
+    Predictor: Any = None
+
+    @model_validator(mode="before")
+    def validate_environment(cls, values: Dict) -> Dict:
+        """
+            Validate that api key and python package exists in environment.
+
+        Args:
+            values (Dict): The dictionary of attribute values.
+        Return:
+            Dict: The updated dictionary of attribute values.
+        Raise:
+            ValueError: If the SerpAPI python package is not installed.
+
+        """
+
+        try:
+            from tasks.affect.AE import AE
+            from tasks.affect.Predictor import Predictor
+            import torch
+
+            values["AE"] = AE
+            values["torch"] = torch
+            values["Predictor"] = Predictor
+        except ImportError:
+            raise ValueError(
+                "Could not import torch python package. "
+                "Please install it with `pip install torch`."
+            )
+        return values
 
     def _execute(
         self,
@@ -44,17 +75,17 @@ class StressAnalysis(Affect):
         hrv = json.loads(inputs[0]["data"])
         del hrv["Heart_Rate"]
         hrv = list(hrv.values())
-        mAE = AE()
-        mAE.load_state_dict(torch.load("models/AE_1.dict"))
+        mAE = self.AE()
+        mAE.load_state_dict(self.torch.load("models/AE_1.dict"))
         mAE.eval()
 
-        mPredictor = Predictor()
+        mPredictor = self.Predictor()
         mPredictor.load_state_dict(
-            torch.load("models/Predict_1.dict")
+            self.torch.load("models/Predict_1.dict")
         )
         mPredictor.eval()
 
-        encoded = mAE.encode(torch.FloatTensor(hrv))
+        encoded = mAE.encode(self.torch.FloatTensor(hrv))
         prediction = mPredictor(encoded)
-        stress = torch.argmax(prediction, dim=0)
+        stress = self.torch.argmax(prediction, dim=0)
         return int(stress.detach())

@@ -128,10 +128,6 @@ class Orchestrator(BaseModel):
                 from llms.llm_types import LLMType
                 from orchestrator.orchestrator import Orchestrator
 
-                #If you want to use playwright task
-                from tasks.playwright.utils import create_sync_playwright_browser
-                sync_browser = create_sync_playwright_browser()
-                #
                 orchestrator = Orchestrator.initialize(
                     planner_llm=LLMType.OPENAI,
                     planner_name=PlannerType.ZERO_SHOT_REACT_PLANNER,
@@ -140,7 +136,6 @@ class Orchestrator(BaseModel):
                     response_generator_llm=LLMType.OPENAI,
                     response_generator_name=ResponseGeneratorType.BASE_GENERATOR,
                     available_tasks=[TaskType.SERPAPI, TaskType.EXTRACT_TEXT],
-                    sync_browser=sync_browser,
                     verbose=self.verbose,
                     **kwargs
                 )

@@ -1,4 +1,3 @@
-from typing import Any
 from typing import List
 from typing import Tuple
 
@@ -13,7 +12,6 @@ from planners.planner_types import PlannerType
 from response_generators.response_generator_types import (
     ResponseGeneratorType,
 )
-from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 from tasks.types import TASK_TO_CLASS
 from utils import parse_addresses
@@ -23,7 +21,6 @@ class CHA(BaseModel):
     name: str = "CHA"
     previous_actions: List[Action] = []
     orchestrator: Orchestrator = None
-    sync_browser: Any = None
     planner_llm: str = LLMType.OPENAI
     planner: str = PlannerType.TREE_OF_THOUGHT
     datapipe: str = DatapipeType.MEMORY
@@ -63,8 +60,6 @@ class CHA(BaseModel):
         history = self._generate_history(chat_history=chat_history)
         # query += f"User: {message}"
         # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
-        if self.sync_browser is None:
-            self.sync_browser = create_sync_playwright_browser()
 
         if self.orchestrator is None:
             self.orchestrator = Orchestrator.initialize(
@@ -75,7 +70,6 @@ class CHA(BaseModel):
                 response_generator_llm=self.response_generator_llm,
                 response_generator_name=self.response_generator,
                 available_tasks=tasks_list,
-                sync_browser=self.sync_browser,
                 previous_actions=self.previous_actions,
                 verbose=self.verbose,
                 **kwargs,
