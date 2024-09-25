@@ -1,0 +1,20 @@
+/* General style for all tables */
+table.docutils {
+  background-color: #a7a1a1; /* Light grey background */
+}
+
+/* Specific table by adding a custom class in reST */
+/* Suppose you define your table like this in reST:
+.. class:: special-table
+
+.. table::
+ :class: special-table
+
+ +-----------+
+ | Your data |
+ +-----------+
+*/
+
+table.special-table {
+  background-color: #4d4e4d; /* Light green background */
+}

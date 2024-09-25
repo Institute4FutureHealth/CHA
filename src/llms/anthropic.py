@@ -45,14 +45,6 @@ class AntropicLLM(BaseLLM):
         Raise:
             ValueError: If the anthropic python package cannot be imported.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
 
         anthropic_api_key = get_from_dict_or_env(

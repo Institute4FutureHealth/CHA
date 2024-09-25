@@ -1,4 +1,4 @@
-from typing import Any
+import os
 from typing import List
 from typing import Tuple
 
@@ -13,7 +13,6 @@ from planners.planner_types import PlannerType
 from response_generators.response_generator_types import (
     ResponseGeneratorType,
 )
-from tasks.playwright.utils import create_sync_playwright_browser
 from tasks.task_types import TaskType
 from tasks.types import TASK_TO_CLASS
 from utils import parse_addresses
@@ -23,7 +22,6 @@ class CHA(BaseModel):
     name: str = "CHA"
     previous_actions: List[Action] = []
     orchestrator: Orchestrator = None
-    sync_browser: Any = None
     planner_llm: str = LLMType.OPENAI
     planner: str = PlannerType.TREE_OF_THOUGHT
     datapipe: str = DatapipeType.MEMORY
@@ -63,8 +61,6 @@ class CHA(BaseModel):
         history = self._generate_history(chat_history=chat_history)
         # query += f"User: {message}"
         # print(orchestrator.run("what is the name of the girlfriend of Leonardo Dicaperio?"))
-        if self.sync_browser is None:
-            self.sync_browser = create_sync_playwright_browser()
 
         if self.orchestrator is None:
             self.orchestrator = Orchestrator.initialize(
@@ -75,7 +71,6 @@ class CHA(BaseModel):
                 response_generator_llm=self.response_generator_llm,
                 response_generator_name=self.response_generator,
                 available_tasks=tasks_list,
-                sync_browser=self.sync_browser,
                 previous_actions=self.previous_actions,
                 verbose=self.verbose,
                 **kwargs,
@@ -86,11 +81,22 @@ class CHA(BaseModel):
             meta=self.meta,
             history=history,
             use_history=use_history,
+            **kwargs,
         )
 
         return response
 
-    def respond(self, message, chat_history, check_box, tasks_list):
+    def respond(
+        self,
+        message,
+        openai_api_key_input,
+        serp_api_key_input,
+        chat_history,
+        check_box,
+        tasks_list,
+    ):
+        os.environ["OPENAI_API_KEY"] = openai_api_key_input
+        os.environ["SEPR_API_KEY"] = serp_api_key_input
         response = self._run(
             query=message,
             chat_history=chat_history,
@@ -99,7 +105,7 @@ class CHA(BaseModel):
         )
 
         files = parse_addresses(response)
-        print("files", files)
+
         if len(files) == 0:
             chat_history.append((message, response))
         else:
@@ -139,6 +145,7 @@ class CHA(BaseModel):
         chat_history: List[Tuple[str, str]] = None,
         available_tasks: List[str] = None,
         use_history: bool = False,
+        **kwargs,
     ) -> str:
         if chat_history is None:
             chat_history = []
@@ -150,4 +157,5 @@ class CHA(BaseModel):
             chat_history=chat_history,
             tasks_list=available_tasks,
             use_history=use_history,
+            **kwargs,
         )

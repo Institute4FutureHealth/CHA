@@ -53,6 +53,9 @@ setup(
             "torch",
             "torchvision",
             "torchdata",
+            "googlesearch-python",
+            "numpy",
+            "pandas",
         ],
         "minimum": [
             # minimum requirements for running the codes
@@ -64,6 +67,7 @@ setup(
             "lxml",
             "tiktoken",
             "openai~=1.2",
+            "googlesearch-python",
         ],
         "develop": [
             "sphinx",

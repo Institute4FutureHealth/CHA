@@ -48,7 +48,7 @@ class Orchestrator(BaseModel):
     promptist: Any = None
     response_generator: BaseResponseGenerator = None
     available_tasks: Dict[str, BaseTask] = {}
-    max_retries: int = 16
+    max_retries: int = 5
     max_task_execute_retries: int = 3
     max_planner_execute_retries: int = 16
     max_final_answer_execute_retries: int = 3
@@ -128,10 +128,6 @@ class Orchestrator(BaseModel):
                 from llms.llm_types import LLMType
                 from orchestrator.orchestrator import Orchestrator
 
-                #If you want to use playwright task
-                from tasks.playwright.utils import create_sync_playwright_browser
-                sync_browser = create_sync_playwright_browser()
-                #
                 orchestrator = Orchestrator.initialize(
                     planner_llm=LLMType.OPENAI,
                     planner_name=PlannerType.ZERO_SHOT_REACT_PLANNER,
@@ -140,7 +136,6 @@ class Orchestrator(BaseModel):
                     response_generator_llm=LLMType.OPENAI,
                     response_generator_name=ResponseGeneratorType.BASE_GENERATOR,
                     available_tasks=[TaskType.SERPAPI, TaskType.EXTRACT_TEXT],
-                    sync_browser=sync_browser,
                     verbose=self.verbose,
                     **kwargs
                 )
@@ -350,7 +345,9 @@ class Orchestrator(BaseModel):
         )
         return prompt
 
-    def plan(self, query, history, meta, use_history) -> str:
+    def plan(
+        self, query, history, meta, use_history, **kwargs
+    ) -> str:
         """
             Plan actions based on the query, history, and previous actions using the selected planner type.
             This method generates a plan of actions based on the provided query, history, previous actions, and use_history flag.
@@ -364,20 +361,17 @@ class Orchestrator(BaseModel):
         Return:
             str: A python code block will be returnd to be executed by Task Executor.
 
-
-
-        Example:
-            .. code-block:: python
-
-                from langchain import ReActChain, OpenAI
-                react = ReAct(llm=OpenAI())
-
         """
         return self.planner.plan(
-            query, history, meta, self.previous_actions, use_history
+            query,
+            history,
+            meta,
+            self.previous_actions,
+            use_history,
+            **kwargs,
         )
 
-    def generate_final_answer(self, query, thinker) -> str:
+    def generate_final_answer(self, query, thinker, **kwargs) -> str:
         """
             Generate the final answer using the response generator.
             This method generates the final answer based on the provided query and thinker.
@@ -394,8 +388,16 @@ class Orchestrator(BaseModel):
         retries = 0
         while retries < self.max_final_answer_execute_retries:
             try:
+                prefix = (
+                    kwargs["response_generator_prefix_prompt"]
+                    if "response_generator_prefix_prompt" in kwargs
+                    else ""
+                )
                 return self.response_generator.generate(
-                    query=query, thinker=thinker
+                    query=query,
+                    thinker=thinker,
+                    prefix=prefix,
+                    **kwargs,
                 )
             except Exception as e:
                 print(e)
@@ -461,13 +463,14 @@ class Orchestrator(BaseModel):
                     history=history,
                     meta=meta_infos,
                     use_history=use_history,
+                    **kwargs,
                 )
                 vars = {}
                 exec(actions, locals(), vars)
                 final_response = (
                     self._prepare_planner_response_for_response_generator()
                 )
-                print("final resp", final_response)
+                # print("final resp", final_response)
                 self.current_actions = []
                 self.runtime = {}
                 break
@@ -498,7 +501,7 @@ class Orchestrator(BaseModel):
             f"Final Answer Generation Started...\nInput Prompt: \n\n{final_response}",
         )
         final_response = self.generate_final_answer(
-            query=query, thinker=final_response
+            query=query, thinker=final_response, **kwargs
         )
         self.print_log(
             "response_generator",
