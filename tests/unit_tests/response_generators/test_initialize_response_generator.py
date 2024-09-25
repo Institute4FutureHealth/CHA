@@ -1,4 +1,4 @@
-from src.llms import LLMType
+from src.llms.llm_types import LLMType
 from src.response_generators import (
     initialize_response_generator,
 )

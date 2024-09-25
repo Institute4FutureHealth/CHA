@@ -1,7 +1,7 @@
 from typing import Any
 from typing import List
 
-from tasks.task import BaseTask
+from src.tasks.task import BaseTask
 
 
 class TestFile(BaseTask):

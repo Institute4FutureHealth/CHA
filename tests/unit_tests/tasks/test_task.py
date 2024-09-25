@@ -6,7 +6,7 @@ import pytest
 
 from src.datapipes.datapipe_types import DatapipeType
 from src.datapipes import initialize_datapipe
-from src.tasks import BaseTask
+from src.tasks.task import BaseTask
 
 
 class SampleTask(BaseTask):

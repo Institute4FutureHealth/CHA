@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import model_validator
 
-from tasks.task import BaseTask
+from task import BaseTask
 
 
 class GoogleSearch(BaseTask):

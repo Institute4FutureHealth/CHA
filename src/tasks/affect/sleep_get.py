@@ -2,7 +2,7 @@ import os
 from typing import Any
 from typing import List
 
-from tasks.affect.base import Affect
+from base import Affect
 
 
 class SleepGet(Affect):

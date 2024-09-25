@@ -1,3 +1,3 @@
-from llms.llm import BaseLLM
+from llm import BaseLLM
 
 __all__ = ["BaseLLM"]

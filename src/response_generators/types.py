@@ -1,10 +1,10 @@
 from typing import Dict
 from typing import Type
 
-from response_generators.response_generator import (
+from response_generator import (
     BaseResponseGenerator,
 )
-from response_generators.response_generator_types import (
+from response_generator_types import (
     ResponseGeneratorType,
 )
 

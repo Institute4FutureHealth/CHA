@@ -1,9 +1,9 @@
 from pytest import raises
 
-from src.llms import LLMType
+from src.llms.llm_types import LLMType
 from src.planners.initialize_planner import initialize_planner
-from src.planners import BasePlanner
-from src.planners import PlannerType
+from src.planners.planner import BasePlanner
+from src.planners.planner_types import PlannerType
 from src.tasks.initialize_task import initialize_task
 from src.tasks.task_types import TaskType
 

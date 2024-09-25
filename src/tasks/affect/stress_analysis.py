@@ -8,7 +8,7 @@ from typing import List
 
 from pydantic import model_validator
 
-from tasks.affect.base import Affect
+from base import Affect
 
 
 class StressAnalysis(Affect):

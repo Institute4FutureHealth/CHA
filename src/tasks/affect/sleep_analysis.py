@@ -5,7 +5,7 @@ from typing import List
 
 import pandas as pd
 
-from tasks.affect.base import Affect
+from base import Affect
 
 
 class SleepAnalysis(Affect):

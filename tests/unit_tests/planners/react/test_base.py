@@ -1,8 +1,8 @@
 import pytest
 
-from src.llms import LLMType
+from src.llms.llm_types import LLMType
 from src.planners.initialize_planner import initialize_planner
-from src.planners import PlannerType
+from src.planners.planner_types import PlannerType
 from src.planners.react.base import Action
 from src.planners.react.base import PlanFinish
 from src.tasks.initialize_task import initialize_task

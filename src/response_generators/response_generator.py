@@ -5,7 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from llms.llm import BaseLLM
+from src.llms.llm import BaseLLM
 
 
 class BaseResponseGenerator(BaseModel):

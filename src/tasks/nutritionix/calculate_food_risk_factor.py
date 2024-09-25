@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 from pydantic import model_validator
 
-from tasks.task import BaseTask
+from src.tasks.task import BaseTask
 
 
 class CalculateFoodRiskFactor(BaseTask):

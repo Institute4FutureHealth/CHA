@@ -5,8 +5,8 @@ from typing import List
 import requests
 from pydantic import model_validator
 
-from tasks.task import BaseTask
-from utils import get_from_dict_or_env
+from src.tasks.task import BaseTask
+from src.utils import get_from_dict_or_env
 
 
 class QueryNutritionix(BaseTask):

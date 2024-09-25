@@ -2,8 +2,8 @@ import time
 
 import pandas as pd
 
-from tasks.initialize_task import initialize_task
-from tasks.task_types import TaskType
+from src.tasks.initialize_task import initialize_task
+from src.tasks.task_types import TaskType
 
 query_nutritionix = initialize_task(task=TaskType.QUERY_NUTRITIONIX)
 calculate_food_risk_factor = initialize_task(

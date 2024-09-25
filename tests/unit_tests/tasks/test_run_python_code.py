@@ -4,7 +4,7 @@ import pytest
 
 from src.datapipes.datapipe_types import DatapipeType
 from src.datapipes import initialize_datapipe
-from src.tasks import RunPythonCode
+from src.tasks.run_python_code import RunPythonCode
 
 
 @pytest.fixture

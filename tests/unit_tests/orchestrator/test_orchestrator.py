@@ -1,7 +1,7 @@
 import pytest
 
-from src.orchestrator import Action
-from src.orchestrator import Orchestrator
+from src.orchestrator.action import Action
+from src.orchestrator.orchestrator import Orchestrator
 
 
 @pytest.fixture
