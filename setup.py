@@ -7,17 +7,25 @@ from setuptools import setup
 # pip install --upgrade pip setuptools twine
 # twine upload dist/*
 
+with open("README.md", "r") as f:
+    long_description = f.read()
 
 setup(
     name="CHA",
     version="0.1.0",
     author="Mahyar Abbasian",
+    author_email="example@email.com",
     description=(
         "Conversational Health Agents (CHAs) are interactive systems designed to enhance personal"
         "healthcare services by engaging in empathetic conversations and processing multimodal data. "
     ),
-    packages=find_packages(),
-    url="https://github.com/Mahyar12/CHA",
+    # packages=find_packages(),
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/Institute4FutureHealth/CHA.git",
+    download_url='https://github.com/user/reponame/archive/v_01.tar.gz',
     install_requires=[
         "httpcore==1.0.2",
         "requests",

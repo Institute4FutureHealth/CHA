@@ -1,4 +1,4 @@
-from CHA import CHA
+from src.CHA import CHA
 
 available_tasks = ["serpapi", "extract_text", "ask_user"]
 chat_history = []

@@ -4,9 +4,9 @@ from typing import List
 
 import pytest
 
-from datapipes.datapipe_types import DatapipeType
-from datapipes.initialize_datapipe import initialize_datapipe
-from tasks.task import BaseTask
+from src.datapipes.datapipe_types import DatapipeType
+from src.datapipes import initialize_datapipe
+from src.tasks.task import BaseTask
 
 
 class SampleTask(BaseTask):

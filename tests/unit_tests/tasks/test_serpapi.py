@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from tasks.serpapi import SerpAPI
+from src.tasks.serpapi import SerpAPI
 
 
 @pytest.fixture

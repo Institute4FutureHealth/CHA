@@ -1,6 +1,6 @@
 import pytest
 
-from tasks.google_translator import GoogleTranslate
+from src.tasks.google_translator import GoogleTranslate
 
 
 @pytest.fixture

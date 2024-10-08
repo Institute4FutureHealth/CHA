@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from llms.openai import OpenAILLM
+from src.llms.openai import OpenAILLM
 
 
 @pytest.fixture

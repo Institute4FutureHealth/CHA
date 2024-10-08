@@ -1,8 +1,8 @@
 import pytest
 
-from datapipes.datapipe import DataPipe
-from datapipes.datapipe_types import DatapipeType
-from datapipes.initialize_datapipe import initialize_datapipe
+from src.datapipes.datapipe import DataPipe
+from src.datapipes.datapipe_types import DatapipeType
+from src.datapipes import initialize_datapipe
 
 
 @pytest.fixture

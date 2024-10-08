@@ -1,8 +1,6 @@
 import json
 
-import pytest
-
-from tasks.affect.ppg_analysis import PPGAnalysis
+from src.tasks.affect.ppg_analysis import PPGAnalysis
 
 
 def test_ppg_analysis_execute():

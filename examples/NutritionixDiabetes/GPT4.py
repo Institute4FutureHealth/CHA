@@ -1,6 +1,6 @@
 import pandas as pd
 
-from llms.openai import OpenAILLM
+from src.llms.openai import OpenAILLM
 
 kwargs = {"model_name": "gpt-4", "max_tokens": 5000}
 llm = OpenAILLM()

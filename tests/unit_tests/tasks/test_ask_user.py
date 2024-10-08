@@ -1,6 +1,4 @@
-import pytest
-
-from tasks.ask_user import AskUser
+from src.tasks.ask_user import AskUser
 
 
 def test_ask_user_execute():
