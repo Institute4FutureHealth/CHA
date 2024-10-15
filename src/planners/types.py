@@ -3,8 +3,8 @@ from typing import Type
 
 from planners import BasePlanner
 from planners import PlannerType
-from planners.react import ReActPlanner
 from planners import TreeOfThoughtPlanner
+from planners.react import ReActPlanner
 
 
 PLANNER_TO_CLASS: Dict[PlannerType, Type[BasePlanner]] = {

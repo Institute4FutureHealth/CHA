@@ -6,9 +6,8 @@ from abc import abstractmethod
 from typing import Any
 from typing import List
 
-from pydantic import BaseModel
-
 from datapipes import DataPipe
+from pydantic import BaseModel
 
 
 class BaseTask(BaseModel):

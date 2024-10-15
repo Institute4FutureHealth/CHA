@@ -7,7 +7,6 @@ from typing import Dict
 from typing import List
 
 from pydantic import model_validator
-
 from tasks import BaseTask
 
 

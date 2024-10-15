@@ -4,7 +4,6 @@ from typing import List
 
 import requests
 from pydantic import model_validator
-
 from tasks import BaseTask
 from utils import get_from_dict_or_env
 

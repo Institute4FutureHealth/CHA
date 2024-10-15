@@ -3,5 +3,5 @@ from planners.react.base import ReActPlanner
 
 
 __all__ = [
-    'ReActPlanner',
+    "ReActPlanner",
 ]

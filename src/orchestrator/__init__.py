@@ -3,6 +3,6 @@ from orchestrator.orchestrator import Orchestrator
 
 
 __all__ = [
-    'Orchestrator',
-    'Action',
+    "Orchestrator",
+    "Action",
 ]

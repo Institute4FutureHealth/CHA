@@ -2,9 +2,8 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-from pydantic import model_validator
-
 from llms import BaseLLM
+from pydantic import model_validator
 from utils import get_from_dict_or_env
 
 

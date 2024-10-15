@@ -1,7 +1,6 @@
 import time
 
 import pandas as pd
-
 from tasks import initialize_task
 from tasks import TaskType
 

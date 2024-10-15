@@ -2,11 +2,11 @@ from typing import Any
 from typing import List
 
 from llms import BaseLLM
-from llms import LLMType
 from llms import LLM_TO_CLASS
+from llms import LLMType
 from planners import BasePlanner
-from planners import PlannerType
 from planners import PLANNER_TO_CLASS
+from planners import PlannerType
 from tasks import BaseTask
 
 

@@ -1,8 +1,8 @@
 from typing import Any
 
 from llms import BaseLLM
-from llms import LLMType
 from llms import LLM_TO_CLASS
+from llms import LLMType
 
 
 def initialize_llm(

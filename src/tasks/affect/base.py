@@ -7,7 +7,6 @@ from typing import List
 import pandas as pd
 import requests
 from scipy.stats import linregress
-
 from tasks import BaseTask
 
 

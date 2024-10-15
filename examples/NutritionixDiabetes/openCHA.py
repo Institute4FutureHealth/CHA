@@ -1,5 +1,4 @@
 import pandas as pd
-
 from CHA import CHA
 from tasks import TaskType
 

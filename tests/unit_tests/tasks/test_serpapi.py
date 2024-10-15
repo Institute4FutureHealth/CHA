@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 
 import pytest
-
 from tasks import SerpAPI
 
 

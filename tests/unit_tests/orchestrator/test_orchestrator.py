@@ -1,5 +1,4 @@
 import pytest
-
 from orchestrator import Action
 from orchestrator import Orchestrator
 

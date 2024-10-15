@@ -1,9 +1,9 @@
 from llms import LLMType
 from response_generators import (
-    initialize_response_generator,
+    BaseResponseGenerator,
 )
 from response_generators import (
-    BaseResponseGenerator,
+    initialize_response_generator,
 )
 from response_generators import (
     ResponseGeneratorType,

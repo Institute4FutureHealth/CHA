@@ -7,8 +7,8 @@ from typing import List
 from typing import Union
 
 from planners import Action
-from planners import PlanFinish
 from planners import BasePlanner
+from planners import PlanFinish
 
 
 class ReActPlanner(BasePlanner):

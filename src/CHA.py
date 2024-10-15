@@ -2,19 +2,18 @@ import os
 from typing import List
 from typing import Tuple
 
-from pydantic import BaseModel
-
 from datapipes import DatapipeType
 from interface import Interface
 from llms import LLMType
 from orchestrator import Orchestrator
 from planners import Action
 from planners import PlannerType
+from pydantic import BaseModel
 from response_generators import (
     ResponseGeneratorType,
 )
-from tasks import TaskType
 from tasks import TASK_TO_CLASS
+from tasks import TaskType
 from utils import parse_addresses
 
 

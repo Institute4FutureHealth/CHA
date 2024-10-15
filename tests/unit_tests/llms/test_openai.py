@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from llms import OpenAILLM
 
 

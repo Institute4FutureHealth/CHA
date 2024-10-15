@@ -6,8 +6,8 @@ from typing import Any
 from typing import List
 
 from planners import Action
-from planners import PlanFinish
 from planners import BasePlanner
+from planners import PlanFinish
 
 
 class TreeOfThoughtPlanner(BasePlanner):

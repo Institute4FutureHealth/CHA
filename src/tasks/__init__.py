@@ -12,15 +12,15 @@ from tasks.initialize_task import initialize_task
 
 
 __all__ = [
-    'BaseTask',
-    'AskUser',
-    'ExtractText',
-    'GoogleSearch',
-    'GoogleTranslate',
-    'initialize_task',
-    'RunPythonCode',
-    'SerpAPI',
-    'TaskType',
-    'TestFile',
-    'TASK_TO_CLASS',
+    "BaseTask",
+    "AskUser",
+    "ExtractText",
+    "GoogleSearch",
+    "GoogleTranslate",
+    "initialize_task",
+    "RunPythonCode",
+    "SerpAPI",
+    "TaskType",
+    "TestFile",
+    "TASK_TO_CLASS",
 ]

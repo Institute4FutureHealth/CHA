@@ -8,7 +8,6 @@ from typing import List
 
 import pandas as pd
 from pydantic import model_validator
-
 from tasks.affect import Affect
 
 

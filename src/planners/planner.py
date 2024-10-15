@@ -6,11 +6,10 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from pydantic import BaseModel
-
 from llms import BaseLLM
 from planners import Action
 from planners import PlanFinish
+from pydantic import BaseModel
 from tasks import BaseTask
 
 

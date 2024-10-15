@@ -11,7 +11,6 @@ import aiohttp
 from pydantic import Extra
 from pydantic import Field
 from pydantic import model_validator
-
 from tasks import BaseTask
 from utils import get_from_dict_or_env
 

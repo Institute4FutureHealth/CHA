@@ -7,7 +7,6 @@ from typing import Any
 from typing import List
 
 import pandas as pd
-
 from tasks.affect import Affect
 
 

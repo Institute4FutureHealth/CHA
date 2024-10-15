@@ -3,9 +3,8 @@ from __future__ import annotations
 from typing import Any
 from typing import List
 
-from pydantic import BaseModel
-
 from llms import BaseLLM
+from pydantic import BaseModel
 
 
 class BaseResponseGenerator(BaseModel):

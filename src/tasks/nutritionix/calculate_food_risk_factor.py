@@ -5,7 +5,6 @@ from typing import List
 import pandas as pd
 import requests
 from pydantic import model_validator
-
 from tasks import BaseTask
 
 

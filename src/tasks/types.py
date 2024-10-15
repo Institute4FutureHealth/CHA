@@ -1,6 +1,15 @@
 from typing import Dict
 from typing import Type
 
+from tasks import AskUser
+from tasks import BaseTask
+from tasks import ExtractText
+from tasks import GoogleSearch
+from tasks import GoogleTranslate
+from tasks import RunPythonCode
+from tasks import SerpAPI
+from tasks import TaskType
+from tasks import TestFile
 from tasks.affect import ActivityAnalysis
 from tasks.affect import ActivityGet
 from tasks.affect import PPGAnalysis
@@ -8,19 +17,10 @@ from tasks.affect import PPGGet
 from tasks.affect import SleepAnalysis
 from tasks.affect import SleepGet
 from tasks.affect import StressAnalysis
-from tasks import AskUser
-from tasks import ExtractText
-from tasks import GoogleSearch
-from tasks import GoogleTranslate
 from tasks.nutritionix import (
     CalculateFoodRiskFactor,
 )
 from tasks.nutritionix import QueryNutritionix
-from tasks import RunPythonCode
-from tasks import SerpAPI
-from tasks import BaseTask
-from tasks import TaskType
-from tasks import TestFile
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {

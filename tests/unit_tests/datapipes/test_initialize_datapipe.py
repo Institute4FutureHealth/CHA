@@ -1,5 +1,4 @@
 import pytest
-
 from datapipes import DataPipe
 from datapipes import DatapipeType
 from datapipes import initialize_datapipe

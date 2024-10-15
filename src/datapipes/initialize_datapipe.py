@@ -1,8 +1,8 @@
 from typing import Any
 
 from datapipes import DataPipe
-from datapipes import DatapipeType
 from datapipes import DATAPIPE_TO_CLASS
+from datapipes import DatapipeType
 
 
 def initialize_datapipe(
