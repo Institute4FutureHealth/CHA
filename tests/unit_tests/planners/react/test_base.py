@@ -1,12 +1,12 @@
 import pytest
 
-from src.llms.llm_types import LLMType
-from src.planners.initialize_planner import initialize_planner
-from src.planners.planner_types import PlannerType
-from src.planners.react.base import Action
-from src.planners.react.base import PlanFinish
-from src.tasks.initialize_task import initialize_task
-from src.tasks.task_types import TaskType
+from llms import LLMType
+from planners import initialize_planner
+from planners import PlannerType
+from planners import Action
+from planners import PlanFinish
+from tasks import initialize_task
+from tasks import TaskType
 
 
 @pytest.fixture

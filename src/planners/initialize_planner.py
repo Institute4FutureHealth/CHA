@@ -1,13 +1,13 @@
 from typing import Any
 from typing import List
 
-from src.llms.llm import BaseLLM
-from src.llms.llm_types import LLMType
-from src.llms.types import LLM_TO_CLASS
-from src.planners.planner import BasePlanner
-from src.planners.planner_types import PlannerType
-from src.planners.types import PLANNER_TO_CLASS
-from src.tasks.task import BaseTask
+from llms import BaseLLM
+from llms import LLMType
+from llms import LLM_TO_CLASS
+from planners import BasePlanner
+from planners import PlannerType
+from planners import PLANNER_TO_CLASS
+from tasks import BaseTask
 
 
 def initialize_planner(
@@ -34,9 +34,9 @@ def initialize_planner(
     Example:
         .. code-block:: python
 
-            from planners.planner_types import PlannerType
-            from llms.llm_types import LLMType
-            from tasks.task_types import TaskType
+            from planners import PlannerType
+            from llms import LLMType
+            from tasks import TaskType
             planner = initialize_planner(tasks=[TaskType.SERPAPI], llm=LLMType.OPENAI, planner=PlannerType.ZERO_SHOT_REACT_PLANNER)
 
     """

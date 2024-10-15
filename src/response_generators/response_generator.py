@@ -5,7 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.llms.llm import BaseLLM
+from llms import BaseLLM
 
 
 class BaseResponseGenerator(BaseModel):
@@ -120,8 +120,8 @@ class BaseResponseGenerator(BaseModel):
         Example:
             .. code-block:: python
 
-                from llms.llm_types import LLMType
-                from response_generators.response_generator_types import ResponseGeneratorType
+                from llms import LLMType
+                from response_generators import ResponseGeneratorType
                 response_generator = initialize_planner(llm=LLMType.OPENAI, response_generator=ResponseGeneratorType.BASE_GENERATOR)
                 response_generator.generate(query="How can I improve my sleep?", thinker="Based on data found on the internet there are several ...")
         """

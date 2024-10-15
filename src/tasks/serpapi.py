@@ -12,8 +12,8 @@ from pydantic import Extra
 from pydantic import Field
 from pydantic import model_validator
 
-from task import BaseTask
-from src.utils import get_from_dict_or_env
+from tasks import BaseTask
+from utils import get_from_dict_or_env
 
 
 class SerpAPI(BaseTask):

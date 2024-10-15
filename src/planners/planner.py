@@ -8,10 +8,10 @@ from typing import Union
 
 from pydantic import BaseModel
 
-from src.llms.llm import BaseLLM
-from src.planners.action import Action
-from src.planners.action import PlanFinish
-from src.tasks.task import BaseTask
+from llms import BaseLLM
+from planners import Action
+from planners import PlanFinish
+from tasks import BaseTask
 
 
 class BasePlanner(BaseModel):

@@ -1,7 +1,7 @@
 from typing import Any
 from typing import List
 
-from task import BaseTask
+from tasks import BaseTask
 
 
 class AskUser(BaseTask):

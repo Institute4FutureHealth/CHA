@@ -1,11 +1,11 @@
-from src.llms.llm_types import LLMType
-from src.response_generators import (
+from llms import LLMType
+from response_generators import (
     initialize_response_generator,
 )
-from src.response_generators.response_generator import (
+from response_generators import (
     BaseResponseGenerator,
 )
-from src.response_generators.response_generator_types import (
+from response_generators import (
     ResponseGeneratorType,
 )
 

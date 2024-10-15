@@ -6,10 +6,10 @@ from typing import List
 
 from pydantic import model_validator
 
-from src.llms.initialize_llm import initialize_llm
-from src.llms.llm import BaseLLM
-from src.llms.llm_types import LLMType
-from src.tasks.task import BaseTask
+from llms import initialize_llm
+from llms import BaseLLM
+from llms import LLMType
+from tasks import BaseTask
 
 
 class RunPythonCode(BaseTask):

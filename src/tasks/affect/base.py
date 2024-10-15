@@ -8,7 +8,7 @@ import pandas as pd
 import requests
 from scipy.stats import linregress
 
-from src.tasks.task import BaseTask
+from tasks import BaseTask
 
 
 class Affect(BaseTask):

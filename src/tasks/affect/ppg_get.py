@@ -2,7 +2,7 @@ import os
 from typing import Any
 from typing import List
 
-from base import Affect
+from tasks.affect import Affect
 
 
 class PPGGet(Affect):

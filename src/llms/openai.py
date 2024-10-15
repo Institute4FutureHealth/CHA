@@ -4,8 +4,8 @@ from typing import List
 
 from pydantic import model_validator
 
-from llm import BaseLLM
-from src.utils import get_from_dict_or_env
+from llms import BaseLLM
+from utils import get_from_dict_or_env
 
 
 class OpenAILLM(BaseLLM):

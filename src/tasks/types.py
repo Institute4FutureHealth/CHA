@@ -1,26 +1,26 @@
 from typing import Dict
 from typing import Type
 
-from affect import ActivityAnalysis
-from affect import ActivityGet
-from affect import PPGAnalysis
-from affect import PPGGet
-from affect import SleepAnalysis
-from affect import SleepGet
-from affect import StressAnalysis
-from ask_user import AskUser
-from extract_text import ExtractText
-from google_search import GoogleSearch
-from google_translator import GoogleTranslate
-from nutritionix.calculate_food_risk_factor import (
+from tasks.affect import ActivityAnalysis
+from tasks.affect import ActivityGet
+from tasks.affect import PPGAnalysis
+from tasks.affect import PPGGet
+from tasks.affect import SleepAnalysis
+from tasks.affect import SleepGet
+from tasks.affect import StressAnalysis
+from tasks import AskUser
+from tasks import ExtractText
+from tasks import GoogleSearch
+from tasks import GoogleTranslate
+from tasks.nutritionix import (
     CalculateFoodRiskFactor,
 )
-from nutritionix.query_nutritionix import QueryNutritionix
-from run_python_code import RunPythonCode
-from serpapi import SerpAPI
-from task import BaseTask
-from task_types import TaskType
-from test_file import TestFile
+from tasks.nutritionix import QueryNutritionix
+from tasks import RunPythonCode
+from tasks import SerpAPI
+from tasks import BaseTask
+from tasks import TaskType
+from tasks import TestFile
 
 
 TASK_TO_CLASS: Dict[TaskType, Type[BaseTask]] = {

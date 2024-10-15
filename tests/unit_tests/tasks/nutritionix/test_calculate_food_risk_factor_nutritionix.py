@@ -1,6 +1,6 @@
 import pytest
 
-from src.tasks.nutritionix.calculate_food_risk_factor import (
+from tasks.nutritionix import (
     CalculateFoodRiskFactor,
 )
 

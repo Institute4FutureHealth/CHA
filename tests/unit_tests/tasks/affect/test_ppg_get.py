@@ -1,4 +1,4 @@
-from src.tasks.affect.ppg_get import PPGGet
+from tasks.affect import PPGGet
 
 
 def test_ppg_get_execute():

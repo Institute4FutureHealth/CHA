@@ -8,7 +8,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.datapipes.datapipe import DataPipe
+from datapipes import DataPipe
 
 
 class BaseTask(BaseModel):

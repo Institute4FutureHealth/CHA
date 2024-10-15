@@ -4,17 +4,17 @@ from typing import Tuple
 
 from pydantic import BaseModel
 
-from datapipes.datapipe_types import DatapipeType
-from interface.base import Interface
-from llms.llm_types import LLMType
-from orchestrator.orchestrator import Orchestrator
-from planners.action import Action
-from planners.planner_types import PlannerType
-from response_generators.response_generator_types import (
+from datapipes import DatapipeType
+from interface import Interface
+from llms import LLMType
+from orchestrator import Orchestrator
+from planners import Action
+from planners import PlannerType
+from response_generators import (
     ResponseGeneratorType,
 )
-from tasks.task_types import TaskType
-from tasks.types import TASK_TO_CLASS
+from tasks import TaskType
+from tasks import TASK_TO_CLASS
 from utils import parse_addresses
 
 

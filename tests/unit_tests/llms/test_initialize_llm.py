@@ -3,9 +3,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.llms import initialize_llm
-from src.llms.llm_types import LLMType
-from src.llms.types import LLM_TO_CLASS
+from llms import initialize_llm
+from llms import LLMType
+from llms import LLM_TO_CLASS
 
 
 def test_initialize_llm_valid_type():

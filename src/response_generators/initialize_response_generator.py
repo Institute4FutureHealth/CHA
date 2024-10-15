@@ -1,15 +1,15 @@
 from typing import Any
 
-from src.llms.llm import BaseLLM
-from src.llms.llm_types import LLMType
-from src.llms.types import LLM_TO_CLASS
-from response_generator import (
+from llms import BaseLLM
+from llms import LLMType
+from llms import LLM_TO_CLASS
+from response_generators import (
     BaseResponseGenerator,
 )
-from response_generator_types import (
+from response_generators import (
     ResponseGeneratorType,
 )
-from src.response_generators.types import RESPONSE_GENERATOR_TO_CLASS
+from response_generators import RESPONSE_GENERATOR_TO_CLASS
 
 
 def initialize_response_generator(
@@ -35,8 +35,8 @@ def initialize_response_generator(
     Example:
         .. code-block:: python
 
-            from llms.llm_types import LLMType
-            from response_generators.response_generator_types import ResponseGeneratorType
+            from llms import LLMType
+            from response_generators import ResponseGeneratorType
             response_generators = initialize_planner(llm=LLMType.OPENAI, response_generator=ResponseGeneratorType.BASE_GENERATOR)
 
     """

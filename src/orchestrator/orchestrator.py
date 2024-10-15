@@ -8,28 +8,28 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.CustomDebugFormatter import CustomDebugFormatter
-from src.datapipes.datapipe import DataPipe
-from src.datapipes.datapipe_types import DatapipeType
-from src.datapipes.initialize_datapipe import initialize_datapipe
-from src.llms.llm_types import LLMType
-from action import Action
-from src.planners.action import PlanFinish
-from src.planners.initialize_planner import initialize_planner
-from src.planners.planner import BasePlanner
-from src.planners.planner_types import PlannerType
-from src.response_generators.initialize_response_generator import (
+from CustomDebugFormatter import CustomDebugFormatter
+from datapipes import DataPipe
+from datapipes import DatapipeType
+from datapipes import initialize_datapipe
+from llms import LLMType
+from orchestrator import Action
+from planners import PlanFinish
+from planners import initialize_planner
+from planners import BasePlanner
+from planners import PlannerType
+from response_generators import (
     initialize_response_generator,
 )
-from src.response_generators.response_generator import (
+from response_generators import (
     BaseResponseGenerator,
 )
-from src.response_generators.response_generator_types import (
+from response_generators import (
     ResponseGeneratorType,
 )
-from src.tasks.initialize_task import initialize_task
-from src.tasks.task import BaseTask
-from src.tasks.task_types import TaskType
+from tasks import initialize_task
+from tasks import BaseTask
+from tasks import TaskType
 
 
 class Orchestrator(BaseModel):
@@ -121,12 +121,12 @@ class Orchestrator(BaseModel):
         Example:
             .. code-block:: python
 
-                from datapipes.datapipe_types import DatapipeType
-                from planners.planner_types import PlannerType
-                from response_generators.response_generator_types import ResponseGeneratorType
-                from tasks.task_types import TaskType
-                from llms.llm_types import LLMType
-                from orchestrator.orchestrator import Orchestrator
+                from datapipes import DatapipeType
+                from planners import PlannerType
+                from response_generators import ResponseGeneratorType
+                from tasks import TaskType
+                from llms import LLMType
+                from orchestrator import Orchestrator
 
                 orchestrator = Orchestrator.initialize(
                     planner_llm=LLMType.OPENAI,

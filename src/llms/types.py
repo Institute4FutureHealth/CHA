@@ -1,10 +1,10 @@
 from typing import Dict
 from typing import Type
 
-from anthropic import AntropicLLM
-from llm import BaseLLM
-from llm_types import LLMType
-from openai import OpenAILLM
+from llms import AntropicLLM
+from llms import BaseLLM
+from llms import LLMType
+from llms import OpenAILLM
 
 LLM_TO_CLASS: Dict[LLMType, Type[BaseLLM]] = {
     LLMType.OPENAI: OpenAILLM,

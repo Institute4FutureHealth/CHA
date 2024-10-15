@@ -1,8 +1,8 @@
 import pytest
 
-from src.tasks.initialize_task import initialize_task
-from src.tasks.task_types import TaskType
-from src.tasks.types import TASK_TO_CLASS
+from tasks import initialize_task
+from tasks import TaskType
+from tasks import TASK_TO_CLASS
 
 
 def test_initialize_task_with_known_task():

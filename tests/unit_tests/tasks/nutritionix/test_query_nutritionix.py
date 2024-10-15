@@ -1,6 +1,6 @@
 import pytest
 
-from src.tasks.nutritionix.query_nutritionix import QueryNutritionix
+from tasks.nutritionix import QueryNutritionix
 
 
 def test_query_nutritionix_execute():
