@@ -1,8 +1,8 @@
 from typing import Any
 
-from src.datapipes.datapipe import DataPipe
-from task import BaseTask
-from types import TASK_TO_CLASS
+from datapipes import DataPipe
+from tasks import BaseTask
+from tasks import TASK_TO_CLASS
 
 
 def initialize_task(task: str = "serpapi", **kwargs: Any) -> BaseTask:

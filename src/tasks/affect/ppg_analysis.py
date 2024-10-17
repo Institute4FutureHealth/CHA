@@ -8,8 +8,7 @@ from typing import List
 
 import pandas as pd
 from pydantic import model_validator
-
-from base import Affect
+from tasks.affect import Affect
 
 
 class PPGAnalysis(Affect):

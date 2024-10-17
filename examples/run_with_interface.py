@@ -1,4 +1,4 @@
-from src.CHA import CHA
+from CHA import CHA
 
 cha = CHA()
 cha.run_with_interface()

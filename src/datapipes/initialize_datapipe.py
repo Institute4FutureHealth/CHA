@@ -1,8 +1,8 @@
 from typing import Any
 
-from datapipe import DataPipe
-from datapipe_types import DatapipeType
-from src.datapipes.types import DATAPIPE_TO_CLASS
+from datapipes import DataPipe
+from datapipes import DATAPIPE_TO_CLASS
+from datapipes import DatapipeType
 
 
 def initialize_datapipe(
@@ -25,7 +25,7 @@ def initialize_datapipe(
     Example:
         .. code-block:: python
 
-            from datapipes.datapipe_types import DatapipeType
+            from datapipes import DatapipeType
             memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
 
     """

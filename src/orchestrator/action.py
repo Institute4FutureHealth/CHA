@@ -4,9 +4,8 @@ import uuid
 from typing import Any
 from typing import List
 
+from datapipes import DataPipe
 from pydantic import BaseModel
-
-from src.datapipes.datapipe import DataPipe
 
 
 class Action(BaseModel):

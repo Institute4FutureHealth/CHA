@@ -1,7 +1,6 @@
 import pandas as pd
-
-from src.CHA import CHA
-from src.tasks.task_types import TaskType
+from CHA import CHA
+from tasks import TaskType
 
 available_tasks = [
     TaskType.QUERY_NUTRITIONIX,

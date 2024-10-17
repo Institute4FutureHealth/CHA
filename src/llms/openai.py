@@ -2,10 +2,9 @@ from typing import Any
 from typing import Dict
 from typing import List
 
+from llms import BaseLLM
 from pydantic import model_validator
-
-from llm import BaseLLM
-from src.utils import get_from_dict_or_env
+from utils import get_from_dict_or_env
 
 
 class OpenAILLM(BaseLLM):

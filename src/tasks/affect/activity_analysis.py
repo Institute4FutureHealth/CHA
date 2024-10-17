@@ -7,8 +7,7 @@ from typing import Any
 from typing import List
 
 import pandas as pd
-
-from base import Affect
+from tasks.affect import Affect
 
 
 class ActivityAnalysis(Affect):

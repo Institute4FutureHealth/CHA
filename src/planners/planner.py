@@ -6,12 +6,11 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+from llms import BaseLLM
+from planners import Action
+from planners import PlanFinish
 from pydantic import BaseModel
-
-from src.llms.llm import BaseLLM
-from src.planners.action import Action
-from src.planners.action import PlanFinish
-from src.tasks.task import BaseTask
+from tasks import BaseTask
 
 
 class BasePlanner(BaseModel):

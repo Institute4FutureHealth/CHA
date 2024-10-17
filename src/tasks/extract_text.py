@@ -5,8 +5,7 @@ from urllib.parse import urlparse
 
 import requests
 from pydantic import model_validator
-
-from task import BaseTask
+from tasks import BaseTask
 
 
 class ExtractText(BaseTask):

@@ -1,8 +1,8 @@
 from typing import Any
 
-from llm import BaseLLM
-from llm_types import LLMType
-from src.llms.types import LLM_TO_CLASS
+from llms import BaseLLM
+from llms import LLM_TO_CLASS
+from llms import LLMType
 
 
 def initialize_llm(
@@ -24,7 +24,7 @@ def initialize_llm(
     Example:
         .. code-block:: python
 
-            from llms.llm_types import LLMType
+            from llms import LLMType
             llm = initialize_llm(llm=LLMType.OPENAI)
 
     """

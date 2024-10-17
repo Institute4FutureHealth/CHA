@@ -3,7 +3,7 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
-from datapipe import DataPipe
+from datapipes import DataPipe
 
 
 class Memory(DataPipe):
@@ -34,7 +34,7 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from datapipes.datapipe_types import DatapipeType
+                from datapipes import DatapipeType
                 memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
                 key = memory.store("this is sample string to be stored")
 
@@ -64,7 +64,7 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from datapipes.datapipe_types import DatapipeType
+                from datapipes import DatapipeType
                 memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
                 memory.retrieve("UUID key returned from store")
 

@@ -1,8 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
-
-from src.tasks.serpapi import SerpAPI
+from tasks import SerpAPI
 
 
 @pytest.fixture

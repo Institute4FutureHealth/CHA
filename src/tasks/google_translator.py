@@ -7,8 +7,7 @@ from typing import Dict
 from typing import List
 
 from pydantic import model_validator
-
-from task import BaseTask
+from tasks import BaseTask
 
 
 class GoogleTranslate(BaseTask):

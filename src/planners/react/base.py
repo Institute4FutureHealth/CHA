@@ -6,9 +6,9 @@ from typing import Any
 from typing import List
 from typing import Union
 
-from src.planners.action import Action
-from src.planners.action import PlanFinish
-from src.planners.planner import BasePlanner
+from planners import Action
+from planners import BasePlanner
+from planners import PlanFinish
 
 
 class ReActPlanner(BasePlanner):
