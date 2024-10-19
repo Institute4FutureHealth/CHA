@@ -56,6 +56,8 @@ setup(
             "googlesearch-python",
             "numpy",
             "pandas",
+            "uvicorn",
+            "h11",
         ],
         "minimum": [
             # minimum requirements for running the codes
@@ -68,6 +70,8 @@ setup(
             "tiktoken",
             "openai~=1.2",
             "googlesearch-python",
+            "uvicorn",
+            "h11",
         ],
         "develop": [
             "sphinx",
