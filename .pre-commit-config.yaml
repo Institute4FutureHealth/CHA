@@ -9,6 +9,7 @@ repos:
     hooks:
       - id: reorder-python-imports
         name: Reorder Python imports (src, tests)
+        exclude: '__init__.py'
         files: ""
         args: []
 #  - repo: https://github.com/pycqa/isort

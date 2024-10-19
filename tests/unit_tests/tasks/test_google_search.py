@@ -1,6 +1,5 @@
 import pytest
-
-from tasks.google_search import GoogleSearch
+from tasks import GoogleSearch
 
 
 def test_query_nutritionix_execute():

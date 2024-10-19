@@ -1,8 +1,7 @@
 import os
 
 import pytest
-
-from llms.openai import OpenAILLM
+from llms import OpenAILLM
 
 
 @pytest.fixture
