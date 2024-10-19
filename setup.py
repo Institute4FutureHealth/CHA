@@ -14,7 +14,6 @@ setup(
     name="CHA",
     version="0.1.0",
     author="Mahyar Abbasian",
-    author_email="example@email.com",
     description=(
         "Conversational Health Agents (CHAs) are interactive systems designed to enhance personal"
         "healthcare services by engaging in empathetic conversations and processing multimodal data. "
