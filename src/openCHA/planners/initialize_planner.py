@@ -34,9 +34,9 @@ def initialize_planner(
     Example:
         .. code-block:: python
 
-            from planners import PlannerType
-            from llms import LLMType
-            from tasks import TaskType
+            from openCHA.planners import PlannerType
+            from openCHA.llms import LLMType
+            from openCHA.tasks import TaskType
             planner = initialize_planner(tasks=[TaskType.SERPAPI], llm=LLMType.OPENAI, planner=PlannerType.ZERO_SHOT_REACT_PLANNER)
 
     """

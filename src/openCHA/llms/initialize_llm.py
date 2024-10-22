@@ -24,7 +24,7 @@ def initialize_llm(
     Example:
         .. code-block:: python
 
-            from llms import LLMType
+            from openCHA.llms import LLMType
             llm = initialize_llm(llm=LLMType.OPENAI)
 
     """

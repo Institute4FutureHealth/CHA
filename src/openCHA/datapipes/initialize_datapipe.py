@@ -25,7 +25,7 @@ def initialize_datapipe(
     Example:
         .. code-block:: python
 
-            from datapipes import DatapipeType
+            from openCHA.datapipes import DatapipeType
             memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
 
     """

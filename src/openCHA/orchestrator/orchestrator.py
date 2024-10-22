@@ -120,12 +120,12 @@ class Orchestrator(BaseModel):
         Example:
             .. code-block:: python
 
-                from datapipes import DatapipeType
-                from planners import PlannerType
-                from response_generators import ResponseGeneratorType
-                from tasks import TaskType
-                from llms import LLMType
-                from orchestrator import Orchestrator
+                from openCHA.datapipes import DatapipeType
+                from openCHA.planners import PlannerType
+                from openCHA.response_generators import ResponseGeneratorType
+                from openCHA.tasks import TaskType
+                from openCHA.llms import LLMType
+                from openCHA.orchestrator import Orchestrator
 
                 orchestrator = Orchestrator.initialize(
                     planner_llm=LLMType.OPENAI,

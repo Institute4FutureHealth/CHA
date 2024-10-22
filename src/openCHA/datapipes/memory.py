@@ -34,7 +34,7 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from datapipes import DatapipeType
+                from openCHA.datapipes import DatapipeType
                 memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
                 key = memory.store("this is sample string to be stored")
 
@@ -64,7 +64,7 @@ class Memory(DataPipe):
         Example:
             .. code-block:: python
 
-                from datapipes import DatapipeType
+                from openCHA.datapipes import DatapipeType
                 memory = initialize_datapipe(datapipe=DatapipeType.MEMORY)
                 memory.retrieve("UUID key returned from store")
 

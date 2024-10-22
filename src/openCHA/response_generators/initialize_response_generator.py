@@ -35,8 +35,8 @@ def initialize_response_generator(
     Example:
         .. code-block:: python
 
-            from llms import LLMType
-            from response_generators import ResponseGeneratorType
+            from openCHA.llms import LLMType
+            from openCHA.response_generators import ResponseGeneratorType
             response_generators = initialize_planner(llm=LLMType.OPENAI, response_generator=ResponseGeneratorType.BASE_GENERATOR)
 
     """

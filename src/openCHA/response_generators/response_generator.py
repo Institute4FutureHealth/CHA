@@ -119,8 +119,8 @@ class BaseResponseGenerator(BaseModel):
         Example:
             .. code-block:: python
 
-                from llms import LLMType
-                from response_generators import ResponseGeneratorType
+                from openCHA.llms import LLMType
+                from openCHA.response_generators import ResponseGeneratorType
                 response_generator = initialize_planner(llm=LLMType.OPENAI, response_generator=ResponseGeneratorType.BASE_GENERATOR)
                 response_generator.generate(query="How can I improve my sleep?", thinker="Based on data found on the internet there are several ...")
         """
