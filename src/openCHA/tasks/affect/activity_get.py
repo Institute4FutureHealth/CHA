@@ -6,8 +6,7 @@ from typing import Any
 from typing import List
 
 from openCHA.tasks.affect import Affect
-
-from src.openCHA.utils import get_from_dict_or_env
+from openCHA.utils import get_from_env
 
 
 class ActivityGet(Affect):
@@ -45,7 +44,9 @@ class ActivityGet(Affect):
     #
     file_name: str = "activity.csv"
     device_name: str = "oura"
-    local_dir: str = get_from_dict_or_env("DATA_DIR")
+    local_dir: str = get_from_env(
+        "DATA_DIR", "DATA_DIR", "data/affect"
+    )
 
     columns_to_keep: List[str] = [
         "date",
