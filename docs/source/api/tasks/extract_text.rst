@@ -1,4 +1,4 @@
 Extract Text
 ============
 
-.. autoclass:: tasks.extract_text.ExtractText
+.. autoclass:: src.openCHA.tasks.extract_text.ExtractText

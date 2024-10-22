@@ -23,7 +23,7 @@ and the **value** naming convention should be underscore_case: `NAME_OF_TASK = t
 
 
 
-.. literalinclude:: ../../../../tasks/task_types.py
+.. literalinclude:: ../../../../src/openCHA/tasks/task_types.py
     :language: python
 
 
@@ -41,5 +41,5 @@ It allows for easy retrieval of the appropriate class based on the planner type.
 
 
 
-.. literalinclude:: ../../../../tasks/types.py
+.. literalinclude:: ../../../../src/openCHA/tasks/types.py
     :language: python

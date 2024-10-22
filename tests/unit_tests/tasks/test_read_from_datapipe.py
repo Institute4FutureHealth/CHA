@@ -1,7 +1,8 @@
 import pytest
+from tasks import ReadDataPipe
+
 from datapipes import DatapipeType
 from datapipes import initialize_datapipe
-from tasks import ReadDataPipe
 
 
 @pytest.fixture

@@ -1,4 +1,4 @@
 Anthropic
 =========
 
-.. autoclass:: llms.anthropic.AntropicLLM
+.. autoclass:: src.openCHA.llms.anthropic.AntropicLLM

@@ -1,4 +1,4 @@
 Sleep Get
 =========
 
-.. autoclass:: tasks.affect.sleep_get.SleepGet
+.. autoclass:: src.openCHA.tasks.affect.sleep_get.SleepGet

@@ -1,4 +1,4 @@
 SerpApi
 =======
 
-.. autoclass:: tasks.serpapi.SerpAPI
+.. autoclass:: src.openCHA.tasks.serpapi.SerpAPI

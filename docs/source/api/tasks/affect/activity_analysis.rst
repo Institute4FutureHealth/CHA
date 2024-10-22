@@ -1,4 +1,4 @@
 Activity Analysis
 ==================
 
-.. autoclass:: tasks.affect.activity_analysis.ActivityAnalysis
+.. autoclass:: src.openCHA.tasks.affect.activity_analysis.ActivityAnalysis

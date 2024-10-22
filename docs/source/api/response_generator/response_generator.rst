@@ -1,4 +1,4 @@
 Response generators
 ===================
 
-.. autoclass:: response_generators.response_generator.BaseResponseGenerator
+.. autoclass:: src.openCHA.response_generators.response_generator.BaseResponseGenerator

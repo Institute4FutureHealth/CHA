@@ -1,4 +1,4 @@
 Orchestrator
 ============
 
-.. autoclass:: orchestrator.orchestrator.Orchestrator
+.. autoclass:: src.openCHA.orchestrator.orchestrator.Orchestrator

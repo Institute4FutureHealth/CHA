@@ -1,4 +1,4 @@
 LLMs
 ====
 
-.. autoclass:: llms.llm.BaseLLM
+.. autoclass:: src.openCHA.llms.llm.BaseLLM

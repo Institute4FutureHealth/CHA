@@ -1,9 +1,10 @@
 import os
 
 import pytest
+from tasks import RunPythonCode
+
 from datapipes import DatapipeType
 from datapipes import initialize_datapipe
-from tasks import RunPythonCode
 
 
 @pytest.fixture

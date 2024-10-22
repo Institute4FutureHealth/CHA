@@ -16,26 +16,36 @@ python -m venv /path/to/new/virtual/environment
 source /path/to/new/virtual/environment/bin/activate
 ```
 
-Now, install the CHA package. Unfortunately, currently due to PyPi registration problem, we could not upload our package to be
-installed via pip directly. For now you can simply clone our code and do the installation as follows:
+Now, install the CHA package.
+```bash
+pip install openCHA
+playwright install
+```
+
+Manual Installation
+-------------------
 
 ```bash
 git clone https://github.com/Institute4FutureHealth/CHA.git
 cd CHA
-pip install '.[all]'
+pip install -e '.[all]'
+playwright install
 ```
 
 To simplify installation with minimum requirements and be ready to go, you can use the following command. This installs OpenAI, React Planner, as well as SerpAPI (search) and Playwright (browser) tasks:
 
 ```bash
-pip install '.[minimum]'
+pip install -e '.[minimum]'
 ```
 
 If you want to install all requirements for all tasks and other components, use the following command:
 
 ```bash
-pip install '.[all]'
+pip install -e '.[all]'
 ```
+
+Running openCHA
+-------------------
 
 After installing the package, based on what tasks you want to use, you may need to acquire some api_keys. For example, to get started using openAI GPT3.5 model as LLM in CHA, you need to signup
 in their website and get the api_key. Then you should add openAI api_key as environment vairable in your terminal:
@@ -53,9 +63,9 @@ export SERPAPI_API_KEY="your api_key"
 Finally, you can start running our framework with the following simple code:
 
 ```python
-from src.CHA import CHA
+from openCHA import openCHA
 
-cha = CHA()
+cha = openCHA()
 cha.run_with_interface()
 ```
 
@@ -65,4 +75,4 @@ This code will run the default interface, and you can access it at the following
 
 For more examples, visit the [Examples page](https://docs.opencha.com/examples/index.html).
 
-![Alt Text](./docs/figs/Interface.png)
+![Alt Text](https://docs.opencha.com/_images/Interface.png)

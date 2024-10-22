@@ -115,7 +115,7 @@ Each value in this enumeration represents a specific type of task. The **key** n
 and the **value** naming convention should be underscore_case: `NAME_OF_TASK = this_is_a_sample_task_name`
 
 
-.. literalinclude:: ../../../tasks/task_types.py
+.. literalinclude:: ../../../src/openCHA/tasks/task_types.py
     :language: python
 
 
@@ -134,7 +134,7 @@ It allows for easy retrieval of the appropriate class based on the planner type.
 
 
 
-.. literalinclude:: ../../../tasks/types.py
+.. literalinclude:: ../../../src/openCHA/tasks/types.py
     :language: python
 
 

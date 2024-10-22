@@ -11,8 +11,8 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="CHA",
-    version="0.1.0",
+    name="openCHA",
+    version="0.1.1",
     author="Mahyar Abbasian",
     description=(
         "Conversational Health Agents (CHAs) are interactive systems designed to enhance personal"
@@ -24,7 +24,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Institute4FutureHealth/CHA.git",
-    download_url="https://github.com/user/reponame/archive/v_01.tar.gz",
     install_requires=[
         "httpcore==1.0.2",
         "requests",
