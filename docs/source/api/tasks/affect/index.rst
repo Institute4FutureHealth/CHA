@@ -5,7 +5,11 @@ This folder contains the implementation of Affect dataset connection and analysi
 and return the results.
 To use Affect in CHA, please download the sample dataset from
 `data.zip <https://drive.google.com/file/d/1VRb79cbNgWX0Xn-jylzFVQfudd5bKFnz/view>`_.
-Next, unzip the file, and then copy the extracted “data” folder into the CHA directory.
+Next, unzip the file, and then add DATA_DIR to your environment pointing to your folders.
+
+.. code-block:: bash
+
+  export DATA_DIR="path/to/folder"
 
 .. toctree::
    :maxdepth: 1

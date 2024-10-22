@@ -4,6 +4,8 @@ from typing import List
 
 from openCHA.tasks.affect import Affect
 
+from src.openCHA.utils import get_from_dict_or_env
+
 
 class PPGGet(Affect):
     """
@@ -39,7 +41,7 @@ class PPGGet(Affect):
     #
     file_name: str = "ppg.csv"
     device_name: str = "samsung"
-    local_dir: str = "data/affect"
+    local_dir: str = get_from_dict_or_env("DATA_DIR")
     columns_to_keep: List[str] = [
         "timestamp",
         "ppg",
