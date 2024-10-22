@@ -12,7 +12,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="openCHA",
-    version="0.1.1",
+    version="0.1.2",
     author="Mahyar Abbasian",
     description=(
         "Conversational Health Agents (CHAs) are interactive systems designed to enhance personal"
