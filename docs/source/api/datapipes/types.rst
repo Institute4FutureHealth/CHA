@@ -18,7 +18,7 @@ Each value in this enumeration represents a specific type of datapipe. The **key
 and the **value** naming convention should be underscore_case: `NAME_OF_DATAPIP = this_is_a_sample_datapipe_name`
 
 
-.. literalinclude:: ../../../../datapipes/datapipe_types.py
+.. literalinclude:: ../../../../src/openCHA/datapipes/datapipe_types.py
     :language: python
 
 
@@ -33,5 +33,5 @@ This dictionary is used to map each DatapipeType value to its corresponding Data
 It allows for easy retrieval of the appropriate class based on the datapipe type.
 
 
-.. literalinclude:: ../../../../datapipes/types.py
+.. literalinclude:: ../../../../src/openCHA/datapipes/types.py
     :language: python

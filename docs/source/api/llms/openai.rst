@@ -3,4 +3,4 @@
 Open AI
 =======
 
-.. autoclass:: llms.openai.OpenAILLM
+.. autoclass:: src.openCHA.llms.openai.OpenAILLM

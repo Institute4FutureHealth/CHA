@@ -1,8 +1,6 @@
 import pytest
-
-from orchestrator.orchestrator import Action
-from orchestrator.orchestrator import Orchestrator
-from orchestrator.orchestrator import PlanFinish
+from orchestrator import Action
+from orchestrator import Orchestrator
 
 
 @pytest.fixture

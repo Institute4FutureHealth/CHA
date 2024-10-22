@@ -2,10 +2,9 @@ import os
 from unittest.mock import MagicMock
 
 import pytest
-
-from llms.initialize_llm import initialize_llm
-from llms.llm_types import LLMType
-from llms.types import LLM_TO_CLASS
+from llms import initialize_llm
+from llms import LLM_TO_CLASS
+from llms import LLMType
 
 
 def test_initialize_llm_valid_type():

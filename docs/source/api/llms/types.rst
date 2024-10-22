@@ -21,7 +21,7 @@ and the **value** naming convention should be underscore_case: `NAME_OF_LLM = th
 
 
 
-.. literalinclude:: ../../../../llms/llm_types.py
+.. literalinclude:: ../../../../src/openCHA/llms/llm_types.py
     :language: python
 
 
@@ -33,5 +33,5 @@ This dictionary is used to map each LLMType value to its corresponding LLM class
 It allows for easy retrieval of the appropriate class based on the llm type.
 
 
-.. literalinclude:: ../../../../llms/types.py
+.. literalinclude:: ../../../../src/openCHA/llms/types.py
     :language: python

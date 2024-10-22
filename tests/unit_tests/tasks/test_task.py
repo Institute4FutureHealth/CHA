@@ -3,10 +3,10 @@ from typing import Any
 from typing import List
 
 import pytest
+from tasks import BaseTask
 
-from datapipes.datapipe_types import DatapipeType
-from datapipes.initialize_datapipe import initialize_datapipe
-from tasks.task import BaseTask
+from datapipes import DatapipeType
+from datapipes import initialize_datapipe
 
 
 class SampleTask(BaseTask):

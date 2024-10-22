@@ -20,25 +20,33 @@ You should now be able to see the environment showing in your terminal.
 
 Now install the CHA package:
 
-This command only installs the based requirements and later you need to install different packages needed based on tasks, planner, response generator, and llm types you want to use
+.. code-block:: bash
 
+  pip install openCHA
+  playwright install
+
+
+Manual Installation
+-------------------
 .. code-block:: bash
 
   git clone https://github.com/Institute4FutureHealth/CHA.git
   cd CHA
+  pip install -e '.[all]'
+  playwright install
 
 To make it easier, you can use the following command to install the minimum requirments and ready to go. This will \
 install openai, tree of thought planner, as well as serpapi (search), and extract_text tasks.
 
 .. code-block:: bash
 
-  pip install '.[minimum]'
+  pip install -e '.[minimum]'
 
 If you want to install all requirements for all tasks and other components, use the following command:
 
 .. code-block:: bash
 
-  pip install '.[all]'
+  pip install -e '.[all]'
 
 After installing the package, based on what tasks you want to use, you may need to acquire some api_keys. For example, to get started using openAI GPT3.5 model as LLM in CHA, you need to signup
 in their website and get the api_key. Then you should add openAI api_key as environment vairable in your terminal:
@@ -59,13 +67,17 @@ To make the `extract_text` work, you need to also install playwright using playw
 
   playwright install
 
-Finally, you can start running our framework with the following simple code:
+Running openCHA
+-------------------
+
+After installing the package, based on what tasks you want to use, you may need to acquire some api_keys. For example, to get started using openAI GPT3.5 model as LLM in CHA, you need to signup
+in their website and get the api_key. Then you should add openAI api_key as environment vairable in your terminal:
 
 .. code-block:: python
 
-  from CHA import CHA
+  from openCHA import openCHA
 
-  cha = CHA()
+  cha = openCHA()
   cha.run_with_interface()
 
 This code will run the default interface. You can route to the following url:

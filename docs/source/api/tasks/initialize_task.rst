@@ -8,5 +8,5 @@ The selected task class is then instantiated with the provided keyword arguments
 
 - ``initialize_task`` : Initializes a task based on the provided task name.
 
-    .. autofunction:: tasks.initialize_task.initialize_task
+    .. autofunction:: src.openCHA.tasks.initialize_task.initialize_task
         :no-index:

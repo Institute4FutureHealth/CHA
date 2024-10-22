@@ -1,4 +1,4 @@
 Google Translate
 =================
 
-.. autoclass:: tasks.google_translator.GoogleTranslate
+.. autoclass:: src.openCHA.tasks.google_translator.GoogleTranslate

@@ -3,4 +3,4 @@
 Memory
 ======
 
-.. autoclass:: datapipes.memory.Memory
+.. autoclass:: src.openCHA.datapipes.memory.Memory

@@ -22,7 +22,7 @@ Each value in this enumeration represents a specific type of response generator.
 and the **value** naming convention should be underscore_case: `NAME_OF_RESPONSE_GENERATOR = this_is_a_sample_response_generator_name`
 
 
-.. literalinclude:: ../../../../response_generators/response_generator_types.py
+.. literalinclude:: ../../../../src/openCHA/response_generators/response_generator_types.py
     :language: python
 
 
@@ -39,5 +39,5 @@ It allows for easy retrieval of the appropriate class based on the response gene
 
 
 
-.. literalinclude:: ../../../../response_generators/types.py
+.. literalinclude:: ../../../../src/openCHA/response_generators/types.py
     :language: python

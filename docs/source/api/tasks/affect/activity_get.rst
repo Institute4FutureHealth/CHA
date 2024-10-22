@@ -1,4 +1,4 @@
 Activity Get
 =============
 
-.. autoclass:: tasks.affect.activity_get.ActivityGet
+.. autoclass:: src.openCHA.tasks.affect.activity_get.ActivityGet

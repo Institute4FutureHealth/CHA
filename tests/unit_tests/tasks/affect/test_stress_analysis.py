@@ -1,8 +1,6 @@
 import json
 
-import pytest
-
-from tasks.affect.stress_analysis import StressAnalysis
+from tasks.affect import StressAnalysis
 
 
 def test_ppg_analysis_execute():

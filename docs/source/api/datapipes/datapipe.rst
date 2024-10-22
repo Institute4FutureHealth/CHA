@@ -1,4 +1,4 @@
 DataPipe
 =========
 
-.. autoclass:: datapipes.datapipe.DataPipe
+.. autoclass:: src.openCHA.datapipes.datapipe.DataPipe

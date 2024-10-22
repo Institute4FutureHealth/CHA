@@ -1,7 +1,6 @@
 import pandas as pd
-
-from CHA import CHA
-from tasks.task_types import TaskType
+from openCHA import openCHA
+from tasks import TaskType
 
 available_tasks = [
     TaskType.QUERY_NUTRITIONIX,
@@ -33,7 +32,7 @@ kwargs = {
 
 with open("questions.txt", "r") as file:
     for line in file:
-        cha = CHA()
+        cha = openCHA()
         responses.append(
             cha.run(
                 planner_prefix + line,

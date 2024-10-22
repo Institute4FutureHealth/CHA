@@ -1,7 +1,7 @@
 import pytest
 
-from datapipes.datapipe_types import DatapipeType
-from datapipes.initialize_datapipe import initialize_datapipe
+from datapipes import DatapipeType
+from datapipes import initialize_datapipe
 
 
 def test_memory_datapipe_store_and_retrieve():

@@ -21,7 +21,7 @@ Each value in this enumeration represents a specific type of planner. The **key*
 and the **value** naming convention should be underscore_case: `NAME_OF_PLANNER = this_is_a_sample_planner_name`
 
 
-.. literalinclude:: ../../../../planners/planner_types.py
+.. literalinclude:: ../../../../src/openCHA/planners/planner_types.py
     :language: python
 
 
@@ -37,5 +37,5 @@ This dictionary is used to map each PlannerType value to its corresponding Plann
 It allows for easy retrieval of the appropriate class based on the planner type.
 
 
-.. literalinclude:: ../../../../planners/types.py
+.. literalinclude:: ../../../../src/openCHA/planners/types.py
     :language: python

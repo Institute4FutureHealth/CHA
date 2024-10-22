@@ -1,4 +1,4 @@
 Affect
 =======
 
-.. autoclass:: tasks.affect.base.Affect
+.. autoclass:: src.openCHA.tasks.affect.base.Affect

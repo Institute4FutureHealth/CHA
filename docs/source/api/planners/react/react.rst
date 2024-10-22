@@ -1,4 +1,4 @@
 ReAct
 =====
 
-.. autoclass:: planners.react.base.ReActPlanner
+.. autoclass:: src.openCHA.planners.react.base.ReActPlanner

@@ -3,4 +3,4 @@
 Task
 ====
 
-.. autoclass:: tasks.task.BaseTask
+.. autoclass:: src.openCHA.tasks.task.BaseTask

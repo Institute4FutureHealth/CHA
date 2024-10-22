@@ -1,4 +1,4 @@
 Sleep Analysis
 ===============
 
-.. autoclass:: tasks.affect.sleep_analysis.SleepAnalysis
+.. autoclass:: src.openCHA.tasks.affect.sleep_analysis.SleepAnalysis
