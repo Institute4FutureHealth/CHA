@@ -1,0 +1,1499 @@
+/* ============================================
+   OpenCHA Custom Interface Styles
+   ============================================ */
+
+/* CSS Variables for Easy Theme Customization - Cozy Light Green Theme */
+:root {
+    /* Cozy Light Green Color Palette */
+    --primary-color: #4caf50;  /* Medium green */
+    --primary-dark: #388e3c;
+    --secondary-color: #66bb6a;  /* Light green */
+    --accent-color: #2e7d32;
+    --background: #e8f5e9;  /* Light mint green background */
+    --surface: #c8e6c9;  /* Light green surface */
+    --surface-dark: #a5d6a7;  /* Medium light green */
+    --text-primary: #1b5e20;  /* Dark green text */
+    --text-secondary: #4caf50;  /* Medium green */
+    --border-color: #81c784;
+    --success-color: #2e7d32;  /* Dark green for success */
+    --error-color: #d32f2f;  /* Red for errors */
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Shadows - Soft glow effects for cozy theme */
+    --shadow-sm: 0 1px 2px 0 rgba(46, 125, 50, 0.1);
+    --shadow-md: 0 4px 15px -1px rgba(46, 125, 50, 0.15), 0 0 20px rgba(76, 175, 80, 0.1);
+    --shadow-lg: 0 10px 25px -3px rgba(46, 125, 50, 0.2), 0 0 30px rgba(76, 175, 80, 0.15);
+    --glow-green: 0 0 20px rgba(76, 175, 80, 0.3);
+    --glow-green-light: 0 0 20px rgba(102, 187, 106, 0.4);
+}
+
+/* Full page background - Cozy Light Green Theme */
+html {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    min-height: 100vh !important;
+    width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
+body {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    min-height: 100vh !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
+/* Make sure Gradio container has the background - Full Width */
+.gradio-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: transparent !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    color: var(--text-primary) !important;
+    padding: var(--spacing-xl) var(--spacing-lg) !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+}
+
+/* Ensure parent elements also have full width background */
+.gradio-container-wrapper,
+div[class*="gradio-container"],
+body > div,
+body > main,
+#__root__,
+#root {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove white backgrounds from Gradio wrapper components (but not content) */
+.gradio-container > div,
+.gradio-container > form,
+.gradio-container main {
+    background-color: transparent !important;
+}
+
+/* Fix white blocks - override Gradio defaults */
+.panel,
+.gradio-block,
+.gradio-row,
+.gradio-column,
+[class*="panel"],
+[class*="block"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Header Section - TikTok Style */
+.interface-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--glow-green), var(--glow-green-light);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.interface-header h1 {
+    margin: 0;
+    font-size: 1.875rem;
+    font-weight: 600;
+}
+
+.interface-header p {
+    margin: var(--spacing-sm) 0 0 0;
+    opacity: 0.9;
+    font-size: 0.875rem;
+}
+
+/* Chatbot Container - Dark with Neon Accents */
+.chatbot-container {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    min-height: 500px;
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+/* Chat Input Area - Dark with Glow */
+.input-container {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.input-row {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Text Input Styling - Floating Card Style - No Borders */
+input[type="text"],
+textarea {
+    border: none;
+    border-radius: 16px;
+    padding: var(--spacing-md);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(76, 175, 80, 0.1);
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4),
+                var(--glow-green-light),
+                0 0 0 2px rgba(102, 187, 106, 0.1);
+    background: var(--surface-dark);
+    transform: translateY(-2px);
+}
+
+/* Buttons - TikTok Neon Style */
+button,
+.btn {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button:hover,
+.btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--glow-green), var(--glow-green-light);
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+}
+
+button:active,
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Upload Button - TikTok Style */
+.upload-button {
+    background: var(--surface-dark);
+    color: var(--text-primary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    border-color: var(--secondary-color);
+    background: rgba(102, 187, 106, 0.15);
+    box-shadow: var(--glow-green-light);
+}
+
+/* Checkbox Styling - Floating Card Container */
+.gradio-checkbox {
+    background: var(--surface-dark) !important;
+    border-radius: 12px !important;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--secondary-color);
+}
+
+/* Settings Panel (Collapsible) - Dark Theme */
+.settings-panel {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    padding: var(--spacing-md);
+    background: var(--surface-dark);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.settings-header:hover {
+    background: var(--surface);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
+}
+
+.settings-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+/* Task Selection - Dark Theme */
+.tasks-container {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Dropdown Styling - TikTok Dark */
+select {
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    font-size: 1rem;
+    background: var(--surface-dark);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-green-light);
+    background: var(--surface) !important;
+}
+
+/* API Key Inputs - Dark with Neon */
+.api-key-input {
+    background: var(--surface-dark);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+}
+
+.api-key-input label {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.api-key-input input {
+    width: 100%;
+    font-family: 'Courier New', monospace;
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.api-key-input input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-green-light);
+}
+
+/* Chat Messages - TikTok Neon Bubble Style */
+.message-bubble {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message-user {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: var(--radius-sm);
+    box-shadow: var(--glow-green);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+}
+
+.message-bot {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-dark) 100%);
+    color: var(--text-primary);
+    margin-right: auto;
+    border-bottom-left-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(46, 125, 50, 0.2);
+}
+
+/* Clear Button - Floating Card Style */
+.clear-button {
+    background: linear-gradient(135deg, var(--error-color) 0%, #b71c1c 100%);
+    color: white;
+    border-radius: 16px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2),
+                0 2px 8px rgba(211, 47, 47, 0.3);
+    transition: all 0.3s ease;
+}
+
+.clear-button:hover {
+    background: linear-gradient(135deg, #b71c1c 0%, var(--error-color) 100%);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(211, 47, 47, 0.4);
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Labels and Info Text - TikTok Style */
+label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.info-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-row {
+        flex-direction: column;
+    }
+    
+    .message-bubble {
+        max-width: 90%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Scrollbar Styling - TikTok Neon */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-dark);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    box-shadow: var(--glow-green-light);
+}
+
+/* Loading State */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--primary-color);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* TikTok-style Neon Glow Animation */
+@keyframes neon-pulse {
+    0%, 100% {
+        box-shadow: var(--glow-green);
+    }
+    50% {
+        box-shadow: var(--glow-green-light);
+    }
+}
+
+.neon-pulse {
+    animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* Additional TikTok-style Enhancements */
+.gradio-container * {
+    box-sizing: border-box;
+}
+
+/* Smooth transitions for all interactive elements */
+button, input, select, textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* TikTok-style selection */
+::selection {
+    background: var(--primary-color);
+    color: white;
+}
+
+::-moz-selection {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* ============================================
+   Gradio Component Specific Styling
+   ============================================ */
+
+/* Gradio Chatbot Component - Floating Card Style */
+.gradio-chatbot {
+    background: var(--surface) !important;
+    border: none !important;
+    border-radius: 24px !important;
+    color: var(--text-primary) !important;
+    min-height: 600px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+                0 4px 16px rgba(76, 175, 80, 0.1),
+                0 0 40px rgba(102, 187, 106, 0.05) !important;
+    margin-bottom: var(--spacing-lg) !important;
+    padding: var(--spacing-lg) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Remove white background from chatbot container - Floating Card */
+.gradio-chatbot > div,
+.gradio-chatbot-container,
+[id*="chatbot"] {
+    background: var(--surface) !important;
+    border-radius: 24px !important;
+}
+
+/* Gradio Chatbot Messages Container */
+.gradio-chatbot > div {
+    background: var(--surface) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Chatbot message bubbles */
+.gradio-chatbot .message {
+    color: var(--text-primary) !important;
+    padding: 12px 16px !important;
+    border-radius: var(--radius-lg) !important;
+    margin-bottom: 12px !important;
+    max-width: 80% !important;
+    word-wrap: break-word !important;
+}
+
+/* User messages (right-aligned) */
+.gradio-chatbot .message.user-message,
+.gradio-chatbot .message[data-is-user="true"],
+.gradio-chatbot .message-wrap.user,
+.gradio-chatbot .user {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: white !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    border-bottom-right-radius: var(--radius-sm) !important;
+    box-shadow: var(--glow-green) !important;
+    border: 1px solid rgba(76, 175, 80, 0.5) !important;
+    text-align: left !important;
+}
+
+/* Bot messages (left-aligned) */
+.gradio-chatbot .message.bot-message,
+.gradio-chatbot .message[data-is-user="false"],
+.gradio-chatbot .message-wrap.bot,
+.gradio-chatbot .bot {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-dark) 100%) !important;
+    color: var(--text-primary) !important;
+    margin-right: auto !important;
+    margin-left: 0 !important;
+    border-bottom-left-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 2px 10px rgba(46, 125, 50, 0.2) !important;
+}
+
+/* Chatbot container wrapper */
+.gradio-chatbot-container,
+[id*="chatbot"] > div,
+.panel {
+    background: var(--surface) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Text input styling - No Borders */
+.gradio-textbox textarea,
+.gradio-textbox input[type="text"] {
+    background: var(--surface-dark) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.gradio-textbox textarea:focus,
+.gradio-textbox input[type="text"]:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: var(--glow-green-light) !important;
+    background: var(--surface) !important;
+}
+
+/* Dropdown styling - No Borders */
+.gradio-dropdown select {
+    background: var(--surface-dark) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+}
+
+.gradio-dropdown select:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: var(--glow-green-light) !important;
+}
+
+/* Button styling */
+.gradio-button,
+button.primary,
+.gradio-button-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.gradio-button:hover,
+button.primary:hover {
+    box-shadow: var(--glow-green), var(--glow-green-light) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+}
+
+/* Checkbox styling */
+.gradio-checkbox input[type="checkbox"] {
+    accent-color: var(--secondary-color) !important;
+}
+
+/* Clear button */
+.gradio-button-clear,
+.gradio-button.secondary {
+    background: linear-gradient(135deg, var(--error-color) 0%, #b71c1c 100%) !important;
+    color: white !important;
+}
+
+/* Upload button */
+.gradio-button-upload:not(.circular-upload-button) {
+    background: var(--surface-dark) !important;
+    border: 2px dashed var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.gradio-button-upload:not(.circular-upload-button):hover {
+    border-color: var(--secondary-color) !important;
+    box-shadow: var(--glow-green-light) !important;
+    background: rgba(102, 187, 106, 0.1) !important;
+}
+
+/* Label styling */
+.gradio-label,
+label {
+    color: var(--text-primary) !important;
+}
+
+/* Info text */
+.gradio-info,
+.info {
+    color: var(--text-secondary) !important;
+    opacity: 0.8 !important;
+}
+
+/* General background fixes - Remove all white backgrounds but keep floating cards */
+.gradio-block,
+.gradio-panel {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Column spacing for floating cards */
+.gradio-column {
+    background: transparent !important;
+    gap: var(--spacing-lg) !important;
+    padding: var(--spacing-md) 0 !important;
+}
+
+/* Individual rows can be floating cards */
+.gradio-row {
+    background: transparent !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    gap: var(--spacing-sm) !important;
+}
+
+/* Style the input row specifically - add class or ID if needed */
+.gradio-row .gradio-textbox {
+    /* Ensure spacing between elements in the row */
+    margin: 0 !important;
+}
+
+/* Style the button+checkbox column to align properly */
+.gradio-row .gradio-column .gradio-button-upload,
+.gradio-row .gradio-column .gradio-checkbox {
+    margin: 0 !important;
+    margin-bottom: var(--spacing-xs) !important;
+}
+
+.gradio-row .gradio-column .gradio-checkbox {
+    margin-bottom: 0 !important;
+}
+
+/* Wrap input row elements in a card appearance */
+.gradio-column > .gradio-row:nth-of-type(2),
+.gradio-column > .gradio-row:has(.gradio-textbox) {
+    background: var(--surface) !important;
+    border-radius: 20px !important;
+    padding: var(--spacing-md) !important;
+    margin: var(--spacing-lg) 0 !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
+                0 2px 12px rgba(76, 175, 80, 0.1),
+                0 0 30px rgba(102, 187, 106, 0.05) !important;
+    border: none !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Accordion styling - Floating Card Style */
+.gradio-accordion,
+details {
+    background: var(--surface) !important;
+    border: none !important;
+    border-radius: 20px !important;
+    margin: var(--spacing-lg) 0 !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
+                0 2px 12px rgba(76, 175, 80, 0.1),
+                0 0 30px rgba(102, 187, 106, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    overflow: hidden !important;
+    width: 80% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.gradio-accordion summary,
+details summary {
+    background: var(--surface-dark) !important;
+    color: var(--text-primary) !important;
+    padding: var(--spacing-md) !important;
+    border-radius: var(--radius-md) !important;
+    cursor: pointer !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.gradio-accordion summary:hover,
+details summary:hover {
+    background: var(--surface) !important;
+    border-color: var(--secondary-color) !important;
+    box-shadow: 0 0 10px rgba(102, 187, 106, 0.3) !important;
+}
+
+.gradio-accordion > div,
+details > div {
+    background: var(--surface-dark) !important;
+    padding: var(--spacing-md) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+/* Textbox container fixes - Floating Card */
+.gradio-textbox,
+.gradio-textbox > div {
+    background: transparent !important;
+}
+
+/* Input row as floating card - target rows with textbox */
+.gradio-row {
+    position: relative !important;
+}
+
+/* Style rows that contain text inputs */
+.gradio-row .gradio-textbox ~ *,
+.gradio-row:has(.gradio-textbox),
+.gradio-row:has(.gradio-button-upload) {
+    /* This will style the row containing input elements */
+}
+
+/* Alternative: Style the input container directly */
+.gradio-textbox-container,
+div[class*="textbox"]:first-child {
+    background: var(--surface) !important;
+    border-radius: 20px !important;
+    padding: var(--spacing-md) !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
+                0 2px 12px rgba(76, 175, 80, 0.1),
+                0 0 30px rgba(102, 187, 106, 0.05) !important;
+    border: none !important;
+    backdrop-filter: blur(10px) !important;
+    margin-bottom: var(--spacing-lg) !important;
+}
+
+.gradio-textbox textarea,
+.gradio-textbox input {
+    background: var(--surface-dark) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+}
+
+/* Dropdown container fixes - Floating Card */
+.gradio-dropdown,
+.gradio-dropdown > div {
+    background: transparent !important;
+}
+
+.gradio-dropdown select {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(76, 175, 80, 0.1) !important;
+}
+
+.gradio-dropdown select:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4),
+                var(--glow-green-light) !important;
+}
+
+/* Button container fixes - Floating Card */
+.gradio-button-wrapper,
+.gradio-button-group {
+    background: transparent !important;
+}
+
+/* Buttons with floating effect */
+.gradio-button {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(76, 175, 80, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.gradio-button:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                var(--glow-green),
+                var(--glow-green-light) !important;
+}
+
+.gradio-button:active {
+    transform: translateY(-1px) !important;
+}
+
+/* Upload button floating card style */
+.gradio-button-upload:not(.circular-upload-button) {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(102, 187, 106, 0.1) !important;
+}
+
+/* Ensure text is visible */
+.gradio-chatbot * {
+    color: inherit !important;
+}
+
+/* Fix for dark theme text visibility */
+.gradio-chatbot,
+.gradio-chatbot p,
+.gradio-chatbot div,
+.gradio-chatbot span {
+    color: var(--text-primary) !important;
+}
+
+/* More generic Gradio chatbot selectors */
+[id*="chatbot"] {
+    background: var(--surface) !important;
+    border: none !important;
+    border-radius: var(--radius-lg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Chatbot message pairs (tuple format) */
+[id*="chatbot"] .message-pair,
+[id*="chatbot"] .wrap,
+[id*="chatbot"] > div > div {
+    background: transparent !important;
+}
+
+/* User message styling in tuple format */
+[id*="chatbot"] .user,
+[id*="chatbot"] .message.user,
+[id*="chatbot"] > div > div:first-child {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    color: white !important;
+    padding: 12px 16px !important;
+    border-radius: var(--radius-lg) !important;
+    margin: 8px 0 !important;
+    margin-left: auto !important;
+    max-width: 80% !important;
+    box-shadow: var(--glow-green) !important;
+}
+
+/* Bot message styling in tuple format */
+[id*="chatbot"] .bot,
+[id*="chatbot"] .message.bot,
+[id*="chatbot"] > div > div:last-child {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-dark) 100%) !important;
+    color: var(--text-primary) !important;
+    padding: 12px 16px !important;
+    border-radius: var(--radius-lg) !important;
+    margin: 8px 0 !important;
+    margin-right: auto !important;
+    max-width: 80% !important;
+    border: none !important;
+}
+
+/* General message content */
+[id*="chatbot"] .message-content,
+[id*="chatbot"] p,
+[id*="chatbot"] span,
+[id*="chatbot"] div {
+    color: inherit !important;
+}
+
+/* Ensure chatbot is visible - remove white overlays */
+.gradio-chatbot,
+[id*="chatbot"],
+[class*="chatbot"] {
+    min-height: 600px !important;
+    max-height: 800px !important;
+    overflow-y: auto !important;
+}
+
+/* Fix specific white overlay issues */
+.wrap,
+.panel-wrap,
+.component-wrap {
+    background: transparent !important;
+}
+
+/* Remove white backgrounds from form elements */
+form,
+.form,
+.gradio-form {
+    background: transparent !important;
+}
+
+/* Remove all borders from major floating card blocks */
+.gradio-chatbot,
+.gradio-accordion,
+details,
+.gradio-row,
+.gradio-column > .gradio-row,
+[id*="chatbot"],
+[id*="component"] {
+    /* border: none !important; */
+    outline: none !important;
+}
+
+/* Ensure no white borders on container/wrapper elements */
+.gradio-block,
+.gradio-panel,
+.gradio-component-wrapper,
+.wrap,
+.panel {
+    /* border-color: transparent !important; */
+}
+
+/* Remove borders from all interactive inputs */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+    /* border: none !important; */
+    outline: none !important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+    /* border: none !important; */
+    outline: none !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4),
+                var(--glow-green-light) !important;
+}
+
+/* Comprehensive border removal - Remove ALL visible borders from ALL components */
+.gradio-container *,
+.gradio-container *::before,
+.gradio-container *::after {
+    /* border-color: transparent !important; */
+}
+
+/* Remove borders from all Gradio component types */
+.gradio-textbox,
+.gradio-textbox > *,
+.gradio-dropdown,
+.gradio-dropdown > *,
+.gradio-checkbox,
+.gradio-checkbox > *,
+.gradio-button,
+.gradio-button > *,
+.gradio-label,
+.gradio-label > *,
+.gradio-info,
+.gradio-info > *,
+.gradio-group,
+.gradio-group > * {
+    /* border: none !important; */
+    outline: none !important;
+    /* border-color: transparent !important; */
+}
+
+/* Remove borders from component containers and wrappers */
+div[class*="gradio"],
+span[class*="gradio"],
+label[class*="gradio"],
+.gradio-container div,
+.gradio-container span,
+.gradio-container label,
+.gradio-container form {
+    /* border: none !important; */
+    /* border-color: transparent !important; */
+    outline: none !important;
+}
+
+/* Remove any white borders specifically */
+.gradio-container * {
+    /* border-top: none !important; */
+    /* border-bottom: none !important; */
+    /* border-left: none !important; */
+    /* border-right: none !important; */
+}
+
+/* But allow shadows and backgrounds */
+.gradio-chatbot,
+.gradio-accordion,
+.gradio-row,
+input,
+textarea,
+select {
+    /* Keep these for visual structure */
+}
+
+/* Remove borders from all Gradio container elements */
+.gradio-container > *,
+.gradio-container > * > *,
+.gradio-block > *,
+.gradio-panel > *,
+div[id],
+div[class],
+form,
+fieldset {
+    /* border: none !important; */
+    /* border-color: transparent !important; */
+}
+
+/* Specifically target common border sources */
+.wrap,
+.panel,
+.component,
+.container,
+.block {
+    /* border: none !important; */
+    outline: none !important;
+}
+
+/* Exception: Only visible borders on focus states for inputs (cyan glow) */
+input:focus,
+textarea:focus,
+select:focus {
+    /* Glow effect only, no actual border */
+}
+
+/* Debug borders - make all containers visible */
+.gradio-row,
+.gradio-column,
+.gradio-block,
+.gradio-panel {
+    border: 2px solid rgba(76, 175, 80, 0.5) !important;
+    box-shadow: inset 0 0 0 1px rgba(102, 187, 106, 0.3) !important;
+}
+
+/* ============================================
+   Tasks Sidebar Styling
+   ============================================ */
+
+/* Tasks Sidebar Container */
+.tasks-sidebar {
+    background: var(--surface) !important;
+    border-radius: 20px !important;
+    padding: var(--spacing-md) !important;
+    margin-right: var(--spacing-lg) !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
+                0 2px 12px rgba(76, 175, 80, 0.1),
+                0 0 30px rgba(102, 187, 106, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    height: fit-content !important;
+    max-height: calc(100vh - 2rem) !important;
+    position: sticky !important;
+    top: var(--spacing-md) !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Tasks Container - Scrollable */
+.tasks-container {
+    background: transparent !important;
+    border-radius: 20px !important;
+    padding: var(--spacing-sm) 0 !important;
+    margin: 0 !important;
+    max-height: calc(100vh - 150px) !important;
+    min-height: fit-content !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border: none !important;
+    gap: var(--spacing-sm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+}
+
+/* Ensure all children of tasks container are in a column layout */
+.tasks-container > * {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+}
+
+/* Individual Task Checkbox Item - Rounded Rectangle */
+.task-checkbox-item {
+    background: var(--surface-dark) !important;
+    border-radius: 12px !important;
+    padding: var(--spacing-md) !important;
+    margin-bottom: var(--spacing-sm) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Task checkbox hover state (unchecked) */
+.task-checkbox-item:hover:not(:has(input[type="checkbox"]:checked)),
+.gradio-checkbox.task-checkbox-item:hover:not(:has(input[type="checkbox"]:checked)) {
+    background: var(--surface) !important;
+    transform: translateX(4px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(102, 187, 106, 0.25) !important;
+}
+
+/* Task checkbox checked state (Fancier/Brighter) */
+.task-checkbox-item:has(input[type="checkbox"]:checked),
+.gradio-checkbox.task-checkbox-item:has(input[type="checkbox"]:checked) {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.4) 0%, 
+        rgba(102, 187, 106, 0.4) 50%,
+        rgba(76, 175, 80, 0.3) 100%) !important;
+    box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4),
+                0 4px 12px rgba(76, 175, 80, 0.3),
+                0 0 30px rgba(102, 187, 106, 0.3) !important;
+    border: none !important;
+    transform: translateX(4px) scale(1.02) !important;
+}
+
+/* Task checkbox hover state (checked) */
+.task-checkbox-item:has(input[type="checkbox"]:checked):hover,
+.gradio-checkbox.task-checkbox-item:has(input[type="checkbox"]:checked):hover {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.5) 0%, 
+        rgba(102, 187, 106, 0.5) 50%,
+        rgba(76, 175, 80, 0.4) 100%) !important;
+    box-shadow: 0 8px 24px rgba(102, 187, 106, 0.5),
+                0 6px 16px rgba(76, 175, 80, 0.4),
+                0 0 40px rgba(102, 187, 106, 0.4) !important;
+}
+
+/* Task checkbox label styling */
+.task-checkbox-item label,
+.gradio-checkbox.task-checkbox-item label {
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+/* Task checkbox checked label styling */
+.task-checkbox-item:has(input[type="checkbox"]:checked) label,
+.gradio-checkbox.task-checkbox-item:has(input[type="checkbox"]:checked) label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Task checkbox input styling */
+.task-checkbox-item input[type="checkbox"],
+.gradio-checkbox.task-checkbox-item input[type="checkbox"] {
+    accent-color: var(--secondary-color) !important;
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    margin-right: var(--spacing-sm) !important;
+}
+
+/* Tasks sidebar header */
+.tasks-header {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    margin-bottom: var(--spacing-md) !important;
+    padding: var(--spacing-sm) !important;
+}
+
+.tasks-header h3 {
+    margin: 0 !important;
+    color: var(--text-primary) !important;
+}
+
+/* Sidebar scrollbar styling */
+.tasks-container::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.tasks-container::-webkit-scrollbar-track {
+    background: var(--surface-dark) !important;
+    border-radius: 10px !important;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border-radius: 10px !important;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%) !important;
+}
+
+/* ============================================
+   Circular Upload Button
+   ============================================ */
+
+/* Make upload button circular with plus icon */
+.gradio-button.circular-upload-button,
+.gradio-button-upload.circular-upload-button,
+.circular-upload-button {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(76, 175, 80, 0.3) !important;
+    font-size: 1.5rem !important;
+    font-weight: 300 !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.gradio-button.circular-upload-button:hover,
+.gradio-button-upload.circular-upload-button:hover,
+.circular-upload-button:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: var(--glow-green), var(--glow-green-light) !important;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%) !important;
+    border: none !important;
+}
+
+.gradio-button.circular-upload-button:active,
+.gradio-button-upload.circular-upload-button:active,
+.circular-upload-button:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+/* Remove text content from circular button except the plus */
+.gradio-button.circular-upload-button > *:not(:first-child),
+.gradio-button-upload.circular-upload-button > *:not(:first-child),
+.circular-upload-button > *:not(:first-child) {
+    display: none !important;
+}
+
+/* ============================================
+   Toggle Switch Styling
+   ============================================ */
+
+/* Toggle container styling */
+.gradio-checkbox.toggle-switch {
+    background: transparent !important;
+    padding: var(--spacing-sm) !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--spacing-xs) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+/* Target any wrapper divs inside toggle-switch */
+.gradio-checkbox.toggle-switch > div,
+.gradio-checkbox.toggle-switch > form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--spacing-xs) !important;
+}
+
+/* Hide the default checkbox and create toggle switch */
+.gradio-checkbox.toggle-switch input[type="checkbox"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    width: 120px !important;
+    height: 32px !important;
+    border-radius: 16px !important;
+    background: var(--surface-dark) !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid var(--border-color) !important;
+    order: 1 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Create the toggle thumb/circle */
+.gradio-checkbox.toggle-switch input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    top: 1px;
+    left: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+/* Add text to the toggle */
+.gradio-checkbox.toggle-switch input[type="checkbox"]::after {
+    content: 'HISTORY OFF';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* When checked, move thumb to the right and change colors */
+.gradio-checkbox.toggle-switch input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border-color: transparent !important;
+}
+
+.gradio-checkbox.toggle-switch input[type="checkbox"]:checked::before {
+    left: 90px;
+    background: white !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 
+                0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.gradio-checkbox.toggle-switch input[type="checkbox"]:checked::after {
+    content: 'HISTORY ON';
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Hover effect */
+.gradio-checkbox.toggle-switch input[type="checkbox"]:hover {
+    border-color: var(--secondary-color) !important;
+    box-shadow: 0 0 15px rgba(102, 187, 106, 0.3) !important;
+}
+
+.gradio-checkbox.toggle-switch input[type="checkbox"]:checked:hover {
+    box-shadow: var(--glow-green), var(--glow-green-light) !important;
+}
+
+/* Toggle label styling */
+.gradio-checkbox.toggle-switch label {
+    order: 2 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    text-align: center !important;
+}
+
+/* When checkbox is checked, brighten the label */
+.gradio-checkbox.toggle-switch:has(input[type="checkbox"]:checked) label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Force override any base checkbox styles for toggle */
+input.toggle-switch[type="checkbox"],
+.toggle-switch input[type="checkbox"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    width: 120px !important;
+    height: 32px !important;
+    border-radius: 16px !important;
+    background: var(--surface-dark) !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid var(--border-color) !important;
+    overflow: hidden !important;
+}
+
+.toggle-switch input[type="checkbox"]::before {
+    content: '' !important;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    top: 1px;
+    left: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.toggle-switch input[type="checkbox"]::after {
+    content: 'HISTORY OFF' !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.5rem !important;
+    font-weight: 700 !important;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.toggle-switch input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border-color: transparent !important;
+}
+
+.toggle-switch input[type="checkbox"]:checked::before {
+    left: 90px !important;
+    background: white !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 
+                0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.toggle-switch input[type="checkbox"]:checked::after {
+    content: 'HISTORY ON' !important;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.toggle-switch input[type="checkbox"]:hover {
+    border-color: var(--secondary-color) !important;
+    box-shadow: 0 0 15px rgba(102, 187, 106, 0.3) !important;
+}
+
+.toggle-switch input[type="checkbox"]:checked:hover {
+    box-shadow: var(--glow-green), var(--glow-green-light) !important;
+}
+
