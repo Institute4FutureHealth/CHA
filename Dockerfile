@@ -17,6 +17,8 @@ WORKDIR /code
 #RUN pip install --no-cache-dir -r /code/requirements.txt
 
 COPY setup.py /code/setup.py
+COPY README.md /code/README.md
+COPY src /code/src
 
 RUN pip install --no-cache-dir '.[all]'
 
