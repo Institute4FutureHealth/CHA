@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Any
 from typing import Dict
 
@@ -46,6 +47,23 @@ class Interface(BaseModel):
         extra = Extra.forbid
         arbitrary_types_allowed = True
 
+    def _load_custom_css(self) -> str:
+        """
+        Load custom CSS file for styling the interface.
+
+        Returns:
+            str: The CSS content as a string, or empty string if file not found.
+        """
+        css_path = Path(__file__).parent / "styles.css"
+        try:
+            with open(css_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except FileNotFoundError:
+            return ""
+        except Exception as e:
+            print(f"Warning: Could not load custom CSS: {e}")
+            return ""
+
     def prepare_interface(
         self,
         respond,
@@ -82,58 +100,130 @@ class Interface(BaseModel):
             print("keys submitted")
             print(openai_api_key)
 
-        with self.gr.Blocks() as demo:
-            chatbot = self.gr.Chatbot(bubble_full_width=False)
-            with self.gr.Row():
-                msg = self.gr.Textbox(
-                    scale=9,
-                    label="Question",
-                    info="Put your query here and press enter.",
-                )
-                btn = self.gr.UploadButton(
-                    "📁",
-                    scale=1,
-                    file_types=["image", "video", "audio", "text"],
-                )
-                check_box = self.gr.Checkbox(
-                    scale=1,
-                    value=True,
-                    label="Use History",
-                    info="If checked, the chat history will be sent over along with the next query.",
-                )
+        # Load custom CSS
+        custom_css = self._load_custom_css()
+        
+        # Define welcome message (used for initialization and reset)
+        welcome_message = [(None, "Welcome to OpenCHA! 👋\n\nI'm your AI-powered health and wellness assistant. How can I help you today?")]
 
+        with self.gr.Blocks(css=custom_css, title="OpenCHA Assistant") as demo:
+            # Main layout: Left sidebar for tasks, Right side for main content
             with self.gr.Row():
-                tasks = self.gr.Dropdown(
-                    value=[],
-                    choices=available_tasks,
-                    multiselect=True,
-                    label="Tasks List",
-                    info="The list of available tasks. Select the ones that you want to use.",
-                )
+                # Left Sidebar: Tasks List
+                with self.gr.Column(scale=1, min_width=250):
+                    with self.gr.Column(elem_classes=["tasks-sidebar"]):
+                        with self.gr.Column(elem_classes=["tasks-header"]):
+                            self.gr.Markdown("## 📋 Available Tasks")
+                        
+                        # Create checkboxes for each task
+                        task_checkboxes = []
+                        
+                        with self.gr.Column(elem_classes=["tasks-container"]):
+                            for task in available_tasks:
+                                checkbox = self.gr.Checkbox(
+                                    label=task,
+                                    value=False,
+                                    elem_classes=["task-checkbox-item"]
+                                )
+                                task_checkboxes.append(checkbox)
+                        
+                        # Store selected tasks - will be updated by checkboxes
+                        tasks = self.gr.State(value=[])
+                        
+                        # Function to collect selected tasks from all checkboxes
+                        def collect_selected_tasks(*checkbox_values):
+                            selected = [available_tasks[i] for i, checked in enumerate(checkbox_values) if checked]
+                            return selected
+                        
+                        # Update tasks state whenever any checkbox changes
+                        if task_checkboxes:
+                            def update_tasks(*vals):
+                                return [available_tasks[i] for i, checked in enumerate(vals) if checked]
+                            
+                            for checkbox in task_checkboxes:
+                                checkbox.change(
+                                    fn=update_tasks,
+                                    inputs=task_checkboxes,
+                                    outputs=[tasks],
+                                    queue=False
+                                )
+                
+                # Right Side: Main content
+                with self.gr.Column(scale=4):
+                    # Chatbot section - full width
+                    chatbot = self.gr.Chatbot(
+                        bubble_full_width=False,
+                        value=welcome_message,
+                        height=600,
+                        show_label=False,
+                        container=True
+                    )
+                    
+                    # Input row - compact
+                    with self.gr.Row():
+                        msg = self.gr.Textbox(
+                            scale=8,
+                            label="Question",
+                            info="Type your question and press Enter",
+                            placeholder="Ask me anything...",
+                        )
+                        with self.gr.Column(scale=1):
+                            btn = self.gr.UploadButton(
+                                "+",
+                                file_types=["image", "video", "audio", "text"],
+                                elem_classes=["circular-upload-button"]
+                            )
+                            check_box = self.gr.Checkbox(
+                                value=True,
+                                label=" ",
+                                elem_classes=["toggle-switch"]
+                            )
 
-            with self.gr.Row():
-                openai_api_key_input = self.gr.Textbox(
-                    label="OpenAI API Key",
-                    info="Enter your OpenAI API key here.",
-                )
-                serp_api_key_input = self.gr.Textbox(
-                    label="Serp API Key",
-                    info="Enter your Serp API key here.",
-                )
+                    # Settings in accordion - collapsible (API keys only now)
+                    with self.gr.Accordion("⚙️ Settings", open=False):
+                        with self.gr.Row():
+                            openai_api_key_input = self.gr.Textbox(
+                                label="OpenAI API Key",
+                                info="Enter your OpenAI API key",
+                                type="password",
+                                scale=1,
+                            )
+                            serp_api_key_input = self.gr.Textbox(
+                                label="Serp API Key",
+                                info="Enter your Serp API key",
+                                type="password",
+                                scale=1,
+                            )
 
+            def reset_with_welcome():
+                reset()
+                return "", welcome_message
+            
             clear = self.gr.ClearButton([msg, chatbot])
-            clear.click(reset)
+            clear.click(
+                reset_with_welcome,
+                outputs=[msg, chatbot]
+            )
 
+            # Wrapper function to collect current checkbox values and call respond
+            def respond_with_current_tasks(message, openai_key, serp_key, history, use_hist, tasks_state, *checkbox_values):
+                # Collect selected tasks from checkbox values
+                current_tasks = [available_tasks[i] for i, checked in enumerate(checkbox_values) if checked]
+                return respond(message, openai_key, serp_key, history, use_hist, current_tasks)
+            
+            # Include all task checkboxes as inputs
+            all_inputs = [
+                msg,
+                openai_api_key_input,
+                serp_api_key_input,
+                chatbot,
+                check_box,
+                tasks,
+            ] + task_checkboxes
+            
             msg.submit(
-                respond,
-                [
-                    msg,
-                    openai_api_key_input,
-                    serp_api_key_input,
-                    chatbot,
-                    check_box,
-                    tasks,
-                ],
+                respond_with_current_tasks,
+                all_inputs,
                 [msg, chatbot],
             )
 
